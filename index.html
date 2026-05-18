@@ -44,6 +44,16 @@ html,body{height:100%;font-family:var(--fn);background:var(--bg0);color:var(--t1
 .stat-val{font-size:24px;font-weight:700;color:var(--t1);line-height:1}
 .stat-sub{font-size:11px;color:var(--t3);margin-top:4px}
 .stat-accent{position:absolute;right:12px;top:12px;font-size:18px;opacity:.4}
+/* Tooltip system */
+.info{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:var(--bg4);color:var(--t3);font-size:9px;font-weight:700;cursor:help;margin-left:5px;border:1px solid var(--bd2);font-family:Georgia,serif;font-style:italic;position:relative;vertical-align:middle;flex-shrink:0;transition:all .15s}
+.info:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+.info[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--bg5);color:var(--t1);font-size:11px;font-family:var(--fn);font-style:normal;font-weight:400;padding:8px 10px;border-radius:6px;border:1px solid var(--bd3);width:220px;white-space:normal;text-align:left;line-height:1.5;z-index:1000;box-shadow:0 4px 12px rgba(0,0,0,.3);pointer-events:none}
+.info[data-tip]:hover::before{content:'';position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--bg5);z-index:1000;pointer-events:none}
+.card-subtitle{font-size:11px;color:var(--t3);font-weight:400;margin-top:-6px;margin-bottom:10px;letter-spacing:0;text-transform:none}
+.chart-legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px;font-size:11px;color:var(--t2)}
+.chart-legend-item{display:inline-flex;align-items:center;gap:5px}
+.chart-legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.chart-legend-line{width:14px;height:2px;flex-shrink:0;border-radius:1px}
 /* Tables */
 .tbl-wrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--bd)}
 table{width:100%;border-collapse:collapse;font-size:12px}
@@ -205,35 +215,54 @@ tr:hover td{background:var(--bg3)}
   <div class="grid-4" id="kpiCards"></div>
   <div class="grid-2">
     <div class="card">
-      <div class="card-hd"><span class="card-title">Sentiment Trend by Month</span><span id="sentTrendLabel" style="font-size:11px;color:var(--t3)"></span></div>
+      <div class="card-hd">
+        <div><span class="card-title">Sentiment Trend by Month</span><span class="info" data-tip="Shows how positive, negative, and neutral reviews evolve month-to-month. An upward green line means improvement; a rising red line means more complaints.">i</span></div>
+        <span id="sentTrendLabel" style="font-size:11px;color:var(--t3)"></span>
+      </div>
+      <div class="card-subtitle">Monthly sentiment volume from uploaded review dates · upward green = improving</div>
+      <div class="chart-legend">
+        <span class="chart-legend-item"><span class="chart-legend-line" style="background:#35c985"></span>Positive</span>
+        <span class="chart-legend-item"><span class="chart-legend-line" style="background:#e85566"></span>Negative</span>
+        <span class="chart-legend-item"><span class="chart-legend-line" style="background:#f0b020"></span>Neutral</span>
+      </div>
       <div class="chart-wrap" style="height:220px"><canvas id="sentTrendChart" role="img" aria-label="Sentiment trend by month">Monthly sentiment trend.</canvas></div>
     </div>
     <div class="card">
-      <div class="card-hd"><span class="card-title">Platform Performance</span></div>
+      <div class="card-hd"><div><span class="card-title">Platform Performance</span><span class="info" data-tip="Average guest rating per OTA platform. Higher bars = better experience reported on that channel. Use this to identify where to focus reputation management.">i</span></div></div>
+      <div class="card-subtitle">Average rating (out of 10) per booking platform</div>
       <div class="chart-wrap" style="height:220px"><canvas id="platformChart" role="img" aria-label="Platform comparison">Platform ratings.</canvas></div>
     </div>
   </div>
   <div class="grid-2">
     <div class="card">
-      <div class="card-hd"><span class="card-title">Category Breakdown</span></div>
-      <div id="catBars"></div>
+      <div class="card-hd"><div><span class="card-title">Category Sentiment Trend</span><span class="info" data-tip="Positive vs Negative mentions across operational categories. Compare the green bar to the red bar — if red is taller, that area needs immediate attention.">i</span></div></div>
+      <div class="card-subtitle">Compare positive (green) vs negative (red) mentions per category</div>
+      <div class="chart-legend">
+        <span class="chart-legend-item"><span class="chart-legend-dot" style="background:#35c985"></span>Positive mentions</span>
+        <span class="chart-legend-item"><span class="chart-legend-dot" style="background:#e85566"></span>Negative mentions</span>
+      </div>
+      <div class="chart-wrap" style="height:240px"><canvas id="catSentChart" role="img" aria-label="Category sentiment comparison">Category sentiment breakdown.</canvas></div>
     </div>
     <div class="card">
-      <div class="card-hd"><span class="card-title">Recent Alerts Summary</span></div>
+      <div class="card-hd"><div><span class="card-title">Recent Alerts Summary</span><span class="info" data-tip="Critical (severity 5) issues that are still Open or Escalated. These need immediate operational attention.">i</span></div></div>
+      <div class="card-subtitle">Critical issues currently open or escalated</div>
       <div id="alertSummary"></div>
     </div>
   </div>
   <div class="grid-3">
     <div class="card">
-      <div class="card-hd"><span class="card-title">Top Complaint Types</span></div>
+      <div class="card-hd"><div><span class="card-title">Top Complaint Types</span><span class="info" data-tip="The most common operational issues reported in negative reviews. Use this to prioritize maintenance and housekeeping workstreams.">i</span></div></div>
+      <div class="card-subtitle">Recurring negative subcategories — frequency count</div>
       <div id="complaintTypes"></div>
     </div>
     <div class="card">
-      <div class="card-hd"><span class="card-title">Rating Distribution</span></div>
-      <div class="chart-wrap" style="height:160px"><canvas id="ratingDistChart" role="img" aria-label="Rating distribution">Rating distribution.</canvas></div>
+      <div class="card-hd"><div><span class="card-title">Rating Distribution</span><span class="info" data-tip="Number of reviews per rating (1-10 scale, grouped into star bands). Shows guest satisfaction distribution. Red bars (1-4) signal dissatisfied guests; green bars (7-10) signal happy guests.">i</span></div></div>
+      <div class="card-subtitle">Number of reviews per rating band · red = dissatisfied · green = satisfied</div>
+      <div class="chart-wrap" style="height:170px"><canvas id="ratingDistChart" role="img" aria-label="Rating distribution">Rating distribution.</canvas></div>
     </div>
     <div class="card">
-      <div class="card-hd"><span class="card-title">Operational Health</span></div>
+      <div class="card-hd"><div><span class="card-title">Operational Health</span><span class="info" data-tip="Snapshot of resolution lifecycle. Higher Resolved + lower Open = better operational responsiveness.">i</span></div></div>
+      <div class="card-subtitle">Resolution status mix across all flagged issues</div>
       <div id="opsHealth"></div>
     </div>
   </div>
@@ -616,7 +645,7 @@ function showPage(p){
 
 // ── OVERVIEW ──
 function renderOverview(){
-  var rv=State.reviews;
+  var rv=State.reviews||[];
   var total=rv.length;
   var pos=rv.filter(function(r){return r.sentiment==='Positive';}).length;
   var neg=rv.filter(function(r){return r.sentiment==='Negative';}).length;
@@ -624,56 +653,101 @@ function renderOverview(){
   var cleanN=rv.filter(function(r){return r.cleanFlag===true||r.cleanFlag==='Yes'||r.cleanFlag==='true';}).length;
   var avgR=total?Math.round(rv.reduce(function(a,b){return a+(parseFloat(b.rating)||0);},0)/total*10)/10:0;
   var open=rv.filter(function(r){return !r.resolutionStatus||r.resolutionStatus==='Open';}).length;
+  var posPct=Math.round(total?pos/total*100:0);
+  var negPct=Math.round(total?neg/total*100:0);
+  var satScore=Math.max(0,posPct-negPct);
+
+  function kpi(label,val,sub,color,icon,tip){
+    return '<div class="stat">'+
+      '<div class="stat-label">'+label+'<span class="info" data-tip="'+esc(tip)+'">i</span></div>'+
+      '<div class="stat-val"'+(color?' style="color:'+color+'"':'')+'>'+val+'</div>'+
+      '<div class="stat-sub">'+sub+'</div>'+
+      '<div class="stat-accent">'+icon+'</div>'+
+    '</div>';
+  }
 
   document.getElementById('kpiCards').innerHTML=
-    '<div class="stat"><div class="stat-label">Total Reviews</div><div class="stat-val">'+total+'</div><div class="stat-sub">Analysed entries</div><div class="stat-accent">✉</div></div>'+
-    '<div class="stat"><div class="stat-label">Avg Rating</div><div class="stat-val">'+avgR+'<span style="font-size:14px;color:var(--t3)">/10</span></div><div class="stat-sub"><span class="stars">'+stars(avgR)+'</span></div><div class="stat-accent">★</div></div>'+
-    '<div class="stat"><div class="stat-label">Positive Sentiment</div><div class="stat-val" style="color:var(--green)">'+Math.round(total?pos/total*100:0)+'%</div><div class="stat-sub">'+pos+' positive reviews</div><div class="stat-accent">↑</div></div>'+
-    '<div class="stat"><div class="stat-label">Negative Sentiment</div><div class="stat-val" style="color:var(--red)">'+Math.round(total?neg/total*100:0)+'%</div><div class="stat-sub">'+neg+' negative reviews</div><div class="stat-accent">↓</div></div>'+
-    '<div class="stat"><div class="stat-label">Maint. Flags</div><div class="stat-val" style="color:var(--amber)">'+maintN+'</div><div class="stat-sub">Rooms need attention</div><div class="stat-accent">🔧</div></div>'+
-    '<div class="stat"><div class="stat-label">Cleaning Flags</div><div class="stat-val" style="color:var(--teal)">'+cleanN+'</div><div class="stat-sub">Housekeeping alerts</div><div class="stat-accent">🧹</div></div>'+
-    '<div class="stat"><div class="stat-label">Open Issues</div><div class="stat-val" style="color:var(--red)">'+open+'</div><div class="stat-sub">Unresolved alerts</div><div class="stat-accent">⚠</div></div>'+
-    '<div class="stat"><div class="stat-label">Satisfaction Score</div><div class="stat-val" style="color:var(--blue)">'+Math.round(total?pos/total*100:0)+'</div><div class="stat-sub">Positive sentiment %</div><div class="stat-accent">◑</div></div>';
+    kpi('Total Reviews',total,'Analysed entries','','✉',
+        'Total number of reviews loaded. Higher volume = more reliable trend signals.')+
+    kpi('Avg Rating',avgR+'<span style="font-size:14px;color:var(--t3)">/10</span>','<span class="stars">'+stars(avgR)+'</span>','','★',
+        'Average guest rating across all platforms (out of 10). 8+ is good, 6-7 average, below 6 needs attention.')+
+    kpi('Positive Sentiment',posPct+'%',pos+' positive reviews','var(--green)','↑',
+        'Percentage of reviews classified as positive. Higher is better. Above 60% indicates healthy guest experience.')+
+    kpi('Negative Sentiment',negPct+'%',neg+' negative reviews','var(--red)','↓',
+        'Percentage of reviews classified as negative. Lower is better. Above 20% signals systemic operational issues.')+
+    kpi('Maint. Flags',maintN,'Rooms need attention','var(--amber)','🔧',
+        'Reviews flagged for engineering follow-up (broken AC, plumbing, electrical, etc).')+
+    kpi('Cleaning Flags',cleanN,'Housekeeping alerts','var(--teal)','🧹',
+        'Reviews flagged for housekeeping follow-up (dirt, dust, mold, hygiene issues).')+
+    kpi('Open Issues',open,'Unresolved alerts','var(--red)','⚠',
+        'Number of issues still awaiting resolution. Should trend downward week-over-week.')+
+    kpi('Satisfaction Score',satScore,'Positive minus Negative %','var(--blue)','◑',
+        'Net sentiment score: positive % minus negative %. Higher = happier guests overall. Target above 50.');
 
   document.getElementById('statsLabel').textContent=total+' reviews loaded';
 
-  // Sentiment trend chart - dynamic months from data
+  // ── SENTIMENT TREND BY MONTH (strict from CSV Date column) ──
   var mdata=Agg.byMonth(rv);
-  var mkeys=mdata.keys;
-  var mlabels=mkeys.map(DateU.toLabel.bind(DateU));
-  document.getElementById('sentTrendLabel').textContent=mlabels.length+' months';
-  makeChart('sentTrendChart',{type:'line',data:{labels:mlabels,datasets:[
-    {label:'Positive',data:mkeys.map(function(k){return mdata.map[k].pos;}),borderColor:'#35c985',backgroundColor:'rgba(53,201,133,.08)',tension:.4,fill:true,pointRadius:3},
-    {label:'Negative',data:mkeys.map(function(k){return mdata.map[k].neg;}),borderColor:'#e85566',backgroundColor:'rgba(232,85,102,.08)',tension:.4,fill:true,pointRadius:3},
-    {label:'Neutral',data:mkeys.map(function(k){return mdata.map[k].neu;}),borderColor:'#f0b020',backgroundColor:'rgba(240,176,32,.08)',tension:.4,fill:true,pointRadius:3}
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5d6488',font:{size:10},maxRotation:45,autoSkip:false},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#5d6488',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'},beginAtZero:true}}}});
+  var mkeys=mdata.keys||[];
+  var mlabels=mkeys.map(function(k){return DateU.toLabel(k);});
+  var sentLabel=document.getElementById('sentTrendLabel');
+  if(sentLabel)sentLabel.textContent=mlabels.length+' month'+(mlabels.length===1?'':'s');
 
-  // Platform chart
+  if(mkeys.length===0){
+    // Defensive empty state — render placeholder instead of broken chart
+    if(Charts['sentTrendChart']){Charts['sentTrendChart'].destroy();delete Charts['sentTrendChart'];}
+    var wrap=document.getElementById('sentTrendChart');
+    if(wrap&&wrap.parentNode){
+      wrap.parentNode.innerHTML='<div class="empty" style="height:200px;display:flex;flex-direction:column;justify-content:center"><span>📅</span>No dated reviews to plot.<br><span style="font-size:11px;margin-top:4px">Check that the CSV Date column uses DD/MM/YYYY or YYYY-MM-DD.</span></div>';
+    }
+  }else{
+    // Ensure canvas exists (re-create if previously replaced)
+    var canvasParent=document.querySelector('#page-overview .chart-wrap');
+    if(canvasParent&&!document.getElementById('sentTrendChart')){
+      canvasParent.innerHTML='<canvas id="sentTrendChart" role="img" aria-label="Sentiment trend by month">Monthly sentiment trend.</canvas>';
+    }
+    var posData=mkeys.map(function(k){return mdata.map[k].pos||0;});
+    var negData=mkeys.map(function(k){return mdata.map[k].neg||0;});
+    var neuData=mkeys.map(function(k){return mdata.map[k].neu||0;});
+    makeChart('sentTrendChart',{type:'line',data:{labels:mlabels,datasets:[
+      {label:'Positive',data:posData,borderColor:'#35c985',backgroundColor:'rgba(53,201,133,.10)',tension:.35,fill:true,pointRadius:4,pointBackgroundColor:'#35c985',borderWidth:2.5},
+      {label:'Negative',data:negData,borderColor:'#e85566',backgroundColor:'rgba(232,85,102,.10)',tension:.35,fill:true,pointRadius:4,pointBackgroundColor:'#e85566',borderWidth:2.5},
+      {label:'Neutral',data:neuData,borderColor:'#f0b020',backgroundColor:'rgba(240,176,32,.06)',tension:.35,fill:true,pointRadius:3,pointBackgroundColor:'#f0b020',borderWidth:2,borderDash:[4,3]}
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(20,23,35,.95)',titleFont:{size:12},bodyFont:{size:11}}},scales:{x:{ticks:{color:'#5d6488',font:{size:11},maxRotation:45,autoSkip:false},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#5d6488',font:{size:10},stepSize:1},grid:{color:'rgba(255,255,255,.04)'},beginAtZero:true,suggestedMax:Math.max.apply(null,[].concat(posData,negData,neuData,[3]))}}}});
+  }
+
+  // ── PLATFORM CHART ──
   var pdata=Agg.byPlatform(rv);
   var plats=Object.keys(pdata);
-  makeChart('platformChart',{type:'bar',data:{labels:plats.map(function(p){return p.replace(' Reviews','').replace('.com','');}),datasets:[{label:'Avg Rating',data:plats.map(function(p){return pdata[p].total?Math.round(pdata[p].ratingSum/pdata[p].total*10)/10:0;}),backgroundColor:'rgba(79,126,240,.7)',borderColor:'#4f7ef0',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5d6488',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#5d6488',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'},min:0,max:10}}}});
+  makeChart('platformChart',{type:'bar',data:{labels:plats.map(function(p){return p.replace(' Reviews','').replace('.com','');}),datasets:[{label:'Avg Rating',data:plats.map(function(p){return pdata[p].total?Math.round(pdata[p].ratingSum/pdata[p].total*10)/10:0;}),backgroundColor:'rgba(79,126,240,.7)',borderColor:'#4f7ef0',borderWidth:1,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(20,23,35,.95)',callbacks:{label:function(ctx){return'Avg rating: '+ctx.parsed.y+'/10';}}}},scales:{x:{ticks:{color:'#5d6488',font:{size:11}},grid:{display:false}},y:{ticks:{color:'#5d6488',font:{size:10},stepSize:2},grid:{color:'rgba(255,255,255,.04)'},min:0,max:10}}}});
 
-  // Category bars
-  var cats={'Room Comfort & Quality':0,'Cleanliness':0,'Staff':0,'Facilities':0,'Value for Money':0,'Other':0};
-  rv.forEach(function(r){if(cats[r.category]!==undefined)cats[r.category]++;else cats['Other']++;});
-  var catMax=Math.max.apply(null,Object.values(cats))||1;
-  var catColors={'Room Comfort & Quality':'#4f7ef0','Cleanliness':'#35c985','Staff':'#8e6de8','Facilities':'#f0b020','Value for Money':'#25bfbf','Other':'#5d6488'};
-  document.getElementById('catBars').innerHTML=Object.keys(cats).map(function(c){
-    return '<div class="bar-row"><div class="bar-label" title="'+c+'">'+c+'</div><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(cats[c]/catMax*100)+'%;background:'+catColors[c]+'"></div></div><div class="bar-val">'+cats[c]+'</div></div>';
-  }).join('');
+  // ── CATEGORY SENTIMENT TREND (NEW: dual green/red comparison) ──
+  var catNames=['Room Comfort & Quality','Cleanliness','Staff','Facilities','Value for Money'];
+  var catSent={};
+  catNames.forEach(function(c){catSent[c]={pos:0,neg:0};});
+  rv.forEach(function(r){
+    var c=catNames.indexOf(r.category)>-1?r.category:null;
+    if(!c)return;
+    if(r.sentiment==='Positive')catSent[c].pos++;
+    else if(r.sentiment==='Negative')catSent[c].neg++;
+  });
+  makeChart('catSentChart',{type:'bar',data:{labels:catNames.map(function(c){return c.length>18?c.replace(' & ','/').slice(0,18)+'…':c;}),datasets:[
+    {label:'Positive',data:catNames.map(function(c){return catSent[c].pos;}),backgroundColor:'rgba(53,201,133,.75)',borderColor:'#35c985',borderWidth:1,borderRadius:4,barPercentage:.7},
+    {label:'Negative',data:catNames.map(function(c){return catSent[c].neg;}),backgroundColor:'rgba(232,85,102,.75)',borderColor:'#e85566',borderWidth:1,borderRadius:4,barPercentage:.7}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(20,23,35,.95)',callbacks:{label:function(ctx){return ctx.dataset.label+': '+ctx.parsed.y+' mentions';}}}},scales:{x:{ticks:{color:'#5d6488',font:{size:11}},grid:{display:false}},y:{ticks:{color:'#5d6488',font:{size:10},stepSize:1},grid:{color:'rgba(255,255,255,.04)'},beginAtZero:true}}}});
 
-  // Alert summary
-  var criticals=rv.filter(function(r){return r.severity>=5&&(!r.resolutionStatus||r.resolutionStatus==='Open'||r.resolutionStatus==='Escalated');});
+  // ── ALERT SUMMARY ──
+  var criticals=rv.filter(function(r){return parseInt(r.severity)>=4&&r.sentiment!=='Positive'&&(!r.resolutionStatus||r.resolutionStatus==='Open'||r.resolutionStatus==='Escalated');});
   document.getElementById('alertSummary').innerHTML=criticals.length?criticals.slice(0,4).map(function(r){
     return '<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd)">'+
-      '<span class="sev sev-5">5</span>'+
-      '<div><div style="font-size:12px;color:var(--t1);margin-bottom:2px">Room '+esc(r.room)+' — '+esc(r.category)+'</div>'+
-      '<div style="font-size:11px;color:var(--t3)">'+esc(r.platform)+' • '+r.date+'</div></div>'+
-      '<div class="status '+resClass(r.resolutionStatus)+'" style="margin-left:auto;flex-shrink:0">'+esc(r.resolutionStatus||'Open')+'</div></div>';
+      '<span class="sev '+getSevClass(parseInt(r.severity)||3)+'">'+(r.severity||'!')+'</span>'+
+      '<div style="flex:1;min-width:0"><div style="font-size:12px;color:var(--t1);margin-bottom:2px">Room '+esc(r.room||'?')+' — '+esc(r.category)+'</div>'+
+      '<div style="font-size:11px;color:var(--t3)">'+esc(r.platform)+' • '+esc(r.date)+'</div></div>'+
+      '<div class="status '+resClass(r.resolutionStatus)+'" style="flex-shrink:0">'+esc(r.resolutionStatus||'Open')+'</div></div>';
   }).join('')+'<div style="text-align:center;margin-top:8px"><button class="fbtn" onclick="showPage(\'alerts\')">View All Alerts →</button></div>':
-  '<div class="empty"><span>✓</span>No critical open alerts</div>';
+  '<div class="empty" style="padding:20px"><span>✓</span>No critical open alerts</div>';
 
-  // Complaint types
+  // ── COMPLAINT TYPES ──
   var subcats={};
   rv.filter(function(r){return r.sentiment==='Negative';}).forEach(function(r){
     var k=r.subcategory||r.category;
@@ -681,16 +755,16 @@ function renderOverview(){
   });
   var scArr=Object.entries(subcats).sort(function(a,b){return b[1]-a[1];}).slice(0,7);
   var scMax=scArr.length?scArr[0][1]:1;
-  document.getElementById('complaintTypes').innerHTML=scArr.map(function(e){
-    return '<div class="bar-row"><div class="bar-label" title="'+e[0]+'">'+e[0]+'</div><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(e[1]/scMax*100)+'%;background:var(--red)"></div></div><div class="bar-val">'+e[1]+'</div></div>';
-  }).join('');
+  document.getElementById('complaintTypes').innerHTML=scArr.length?scArr.map(function(e){
+    return '<div class="bar-row"><div class="bar-label" title="'+esc(e[0])+'">'+esc(e[0])+'</div><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(e[1]/scMax*100)+'%;background:var(--red)"></div></div><div class="bar-val">'+e[1]+'</div></div>';
+  }).join(''):'<div class="empty" style="padding:20px"><span>✓</span>No negative complaints recorded</div>';
 
-  // Rating distribution
+  // ── RATING DISTRIBUTION (clearer banding) ──
   var dist=[0,0,0,0,0,0,0,0,0,0];
   rv.forEach(function(r){var n=Math.round(parseFloat(r.rating)||0);if(n>=1&&n<=10)dist[n-1]++;});
-  makeChart('ratingDistChart',{type:'bar',data:{labels:['1','2','3','4','5','6','7','8','9','10'],datasets:[{data:dist,backgroundColor:dist.map(function(_,i){return i<3?'rgba(232,85,102,.7)':i<5?'rgba(240,176,32,.7)':'rgba(53,201,133,.7)';}),borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5d6488',font:{size:10}},grid:{display:false}},y:{ticks:{color:'#5d6488',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'},beginAtZero:true}}}});
+  makeChart('ratingDistChart',{type:'bar',data:{labels:['1','2','3','4','5','6','7','8','9','10'],datasets:[{label:'Reviews',data:dist,backgroundColor:dist.map(function(_,i){return i<4?'rgba(232,85,102,.75)':i<7?'rgba(240,176,32,.75)':'rgba(53,201,133,.75)';}),borderColor:dist.map(function(_,i){return i<4?'#e85566':i<7?'#f0b020':'#35c985';}),borderWidth:1,borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(20,23,35,.95)',callbacks:{title:function(ctx){return'Rating: '+ctx[0].label+'/10';},label:function(ctx){return ctx.parsed.y+' review'+(ctx.parsed.y===1?'':'s');}}}},scales:{x:{title:{display:true,text:'Rating (1 = lowest, 10 = highest)',color:'#5d6488',font:{size:10}},ticks:{color:'#5d6488',font:{size:10}},grid:{display:false}},y:{title:{display:true,text:'Number of reviews',color:'#5d6488',font:{size:10}},ticks:{color:'#5d6488',font:{size:10},stepSize:1},grid:{color:'rgba(255,255,255,.04)'},beginAtZero:true}}}});
 
-  // Ops health
+  // ── OPS HEALTH ──
   var resolved=rv.filter(function(r){return r.resolutionStatus==='Resolved';}).length;
   var esc2=rv.filter(function(r){return r.resolutionStatus==='Escalated';}).length;
   var inprog=rv.filter(function(r){return r.resolutionStatus==='In Progress';}).length;
@@ -1423,10 +1497,11 @@ var App={
         var reviews=parseCSV(e.target.result);
         State.reviews=reviews;State.source='csv';State.fileName=file.name;State.uploadedAt=new Date().toLocaleString();
         LS.set(CACHE_KEY,{reviews:reviews,fileName:file.name,uploadedAt:State.uploadedAt});
-        document.getElementById('uploadStatus').innerHTML='<div style="padding:10px;background:var(--gs);border:1px solid var(--green);border-radius:var(--r);font-size:12px;color:var(--green)">✓ Loaded <strong>'+reviews.length+' reviews</strong> from '+esc(file.name)+'</div>';
+        document.getElementById('uploadStatus').innerHTML='<div style="padding:10px;background:var(--gs);border:1px solid var(--green);border-radius:var(--r);font-size:12px;color:var(--green)">✓ Loaded <strong>'+reviews.length+' reviews</strong> from '+esc(file.name)+' · Switching to Overview...</div>';
         document.getElementById('dataSourceLabel').textContent='CSV: '+file.name;
-        renderImport();
         toast('✓ Loaded '+reviews.length+' reviews');
+        // Jump to Overview so the user immediately sees the new sentiment trend
+        setTimeout(function(){showPage('overview');},800);
       }catch(err){
         document.getElementById('uploadStatus').innerHTML='<div style="padding:10px;background:var(--rs);border:1px solid var(--red);border-radius:var(--r);font-size:12px;color:var(--red)">⚠ '+esc(err.message)+'</div>';
         toast('⚠ '+err.message);
@@ -1441,6 +1516,7 @@ var App={
     document.getElementById('uploadStatus').innerHTML='';
     document.getElementById('dataSourceLabel').textContent='Sample Data Mode';
     renderImport();
+    renderOverview();
     toast('Data cleared — showing sample dataset');
   },
   exportCSV:exportCSV,
@@ -1449,15 +1525,28 @@ var App={
     if(savedTheme)document.documentElement.setAttribute('data-theme',savedTheme);
     var cached=LS.get(CACHE_KEY,null);
     if(cached&&cached.reviews&&cached.reviews.length){
+      // Re-normalize dates on cached data in case it was saved under an older parser
+      cached.reviews.forEach(function(r){
+        if(r.date){var iso=DateU.toISO(r.date);if(iso)r.date=iso;}
+      });
       State.reviews=cached.reviews;State.source='csv';State.fileName=cached.fileName||null;State.uploadedAt=cached.uploadedAt||null;
       document.getElementById('dataSourceLabel').textContent='CSV: '+(cached.fileName||'uploaded');
     }else{
       State.reviews=SAMPLE.slice();State.source='sample';
     }
-    if(typeof Chart!=='undefined'){renderOverview();}
-    else{setTimeout(function(){if(typeof Chart!=='undefined')renderOverview();},600);}
+    // Wait for Chart.js with polling — single timeout is fragile on slow networks
+    var tries=0;
+    function tryRender(){
+      if(typeof Chart!=='undefined'){renderOverview();return;}
+      if(++tries<30){setTimeout(tryRender,200);return;}
+      renderOverview(); // give up waiting, render the non-chart bits anyway
+    }
+    tryRender();
   }
 };
+
+// Re-render the current page on theme toggle
+document.documentElement.addEventListener('click',function(){},true);
 
 App.init();
 
