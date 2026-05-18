@@ -3,992 +3,1287 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hotel Operations Intelligence Dashboard</title>
 <style>
-:root{--bg0:#08090d;--bg1:#0e1018;--bg2:#141720;--bg3:#1c2030;--bg4:#242840;--bg5:#2e3350;--bd:#252a3a;--bd2:#2e3450;--bd3:#3a4060;--t1:#f0f2ff;--t2:#a8adc8;--t3:#6b718f;--t4:#42475e;--blue:#5b8def;--blue2:#3d6fd4;--green:#3ecf8e;--red:#f05c6e;--amber:#f0b429;--purple:#9b72f0;--teal:#2ec4c4;--bs:rgba(91,141,239,.12);--gs:rgba(62,207,142,.12);--rs:rgba(240,92,110,.12);--as:rgba(240,180,41,.12);--r:10px;--rl:14px;--fn:-apple-system,BlinkMacSystemFont,"Segoe UI","Inter",sans-serif}
-[data-theme="light"]{--bg0:#e8eaf0;--bg1:#f0f2f8;--bg2:#fff;--bg3:#f4f6fc;--bg4:#e8ebf5;--bg5:#dde1ef;--bd:#e0e4f0;--bd2:#d0d5e8;--bd3:#c0c8dc;--t1:#0f1120;--t2:#3d4460;--t3:#7b83a8;--t4:#a8afc8;--bs:rgba(61,111,212,.08);--gs:rgba(30,160,100,.08);--rs:rgba(200,50,60,.08);--as:rgba(200,130,0,.08)}
+:root{--bg0:#07080c;--bg1:#0d0f18;--bg2:#121520;--bg3:#181c2a;--bg4:#1e2335;--bg5:#252c40;--bd:#1e2436;--bd2:#252e45;--bd3:#303850;--t1:#eef0ff;--t2:#9ba3c8;--t3:#5d6488;--t4:#363d58;--blue:#4f7ef0;--blue2:#3564cc;--green:#35c985;--red:#e85566;--amber:#f0b020;--purple:#8e6de8;--teal:#25bfbf;--pink:#d4579a;--bs:rgba(79,126,240,.12);--gs:rgba(53,201,133,.12);--rs:rgba(232,85,102,.12);--as:rgba(240,176,32,.12);--ps:rgba(142,109,232,.12);--r:8px;--rl:12px;--fn:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif}
+[data-theme="light"]{--bg0:#e5e8f0;--bg1:#edf0f8;--bg2:#f8f9ff;--bg3:#f2f4fc;--bg4:#e8ebf5;--bg5:#dde2ef;--bd:#dce1f0;--bd2:#d0d6e8;--bd3:#c4ccdc;--t1:#0d1020;--t2:#3a4268;--t3:#7078a0;--t4:#a0a8c0;--bs:rgba(50,100,210,.08);--gs:rgba(30,160,100,.08);--rs:rgba(200,50,70,.08);--as:rgba(200,130,0,.08)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
-html,body{height:100%;font-family:var(--fn);background:var(--bg0);color:var(--t1);font-size:13px;line-height:1.5}
-::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bd3);border-radius:10px}
-.shell{display:flex;flex-direction:column;height:100vh;overflow:hidden}
-.topbar{display:flex;align-items:center;padding:0 16px;height:52px;background:var(--bg1);border-bottom:1px solid var(--bd);gap:8px;flex-shrink:0;flex-wrap:nowrap;overflow:hidden}
-.brand{display:flex;align-items:center;gap:10px;flex-shrink:0}
-.bmark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
-.bname{font-size:14px;font-weight:600;color:var(--t1);white-space:nowrap}
-.bdiv{width:1px;height:20px;background:var(--bd2);flex-shrink:0}
-.bsub{font-size:11px;color:var(--t3);white-space:nowrap}
-.tr{margin-left:auto;display:flex;align-items:center;gap:6px;flex-shrink:0}
-.nav{display:flex;align-items:center;padding:0 16px;height:44px;background:var(--bg1);border-bottom:1px solid var(--bd);gap:2px;overflow-x:auto;flex-shrink:0}
+html,body{height:100%;font-family:var(--fn);background:var(--bg0);color:var(--t1);font-size:13px;line-height:1.5;overflow:hidden}
+::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bd3);border-radius:10px}
+.shell{display:flex;flex-direction:column;height:100vh}
+/* Topbar */
+.topbar{display:flex;align-items:center;padding:0 16px;height:50px;background:var(--bg1);border-bottom:1px solid var(--bd);gap:10px;flex-shrink:0;z-index:100}
+.brand{display:flex;align-items:center;gap:9px;flex-shrink:0}
+.bmark{width:30px;height:30px;border-radius:7px;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;letter-spacing:-.5px}
+.bname{font-size:13px;font-weight:700;color:var(--t1)}
+.bsub{font-size:11px;color:var(--t3)}
+.bdiv{width:1px;height:18px;background:var(--bd2);flex-shrink:0}
+.tr{margin-left:auto;display:flex;align-items:center;gap:6px}
+.tbtn{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:var(--r);border:1px solid var(--bd2);background:var(--bg3);color:var(--t2);font-size:11px;cursor:pointer;transition:all .15s}
+.tbtn:hover{background:var(--bg4);color:var(--t1);border-color:var(--bd3)}
+/* Nav */
+.nav{display:flex;align-items:center;padding:0 16px;height:40px;background:var(--bg1);border-bottom:1px solid var(--bd);gap:2px;flex-shrink:0;overflow-x:auto}
 .nav::-webkit-scrollbar{height:0}
-.ni{display:flex;align-items:center;gap:4px;padding:5px 11px;border-radius:7px;border:none;background:none;color:var(--t3);font-size:12px;font-weight:500;cursor:pointer;transition:color .15s,background .15s;white-space:nowrap;font-family:var(--fn)}
-.ni:hover{color:var(--t1);background:var(--bg3)}
-.ni.active{color:var(--blue);background:var(--bs)}
-.bpill{font-size:10px;font-weight:700;padding:1px 5px;border-radius:8px;background:var(--red);color:#fff;margin-left:2px}
-.btn{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:7px;border:1px solid var(--bd2);background:var(--bg3);color:var(--t2);font-size:11px;font-weight:500;cursor:pointer;transition:background .15s,color .15s,border-color .15s;font-family:var(--fn);white-space:nowrap}
-.btn:hover{background:var(--bg4);color:var(--t1);border-color:var(--bd3)}
-.bp{background:var(--blue);border-color:var(--blue);color:#fff}.bp:hover{background:var(--blue2);border-color:var(--blue2);color:#fff}
-.bg2{background:var(--gs);border-color:var(--green);color:var(--green)}.bg2:hover{background:var(--green);color:#fff}
-.bdr{background:var(--rs);border-color:var(--red);color:var(--red)}.bdr:hover{background:var(--red);color:#fff}
-.content{flex:1;overflow-y:auto;padding:16px 18px;background:var(--bg0)}
-.tab{display:none}.tab.active{display:block}
-/* Status bar */
-.sbar{display:flex;align-items:center;gap:9px;padding:9px 14px;border-radius:var(--r);margin-bottom:14px;font-size:11px;border:1px solid}
-.sb-live{background:var(--gs);border-color:var(--green);color:var(--green)}
-.sb-sample{background:var(--as);border-color:var(--amber);color:var(--amber)}
-.sb-label{flex:1}
-/* Upload zone */
-.upload-zone{border:2px dashed var(--bd3);border-radius:var(--rl);padding:36px 24px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;background:var(--bg3);margin-bottom:14px}
+.ntab{padding:6px 12px;border-radius:6px;border:none;background:transparent;color:var(--t3);font-size:12px;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:var(--fn)}
+.ntab:hover{color:var(--t1);background:var(--bg3)}
+.ntab.active{color:var(--blue);background:var(--bs);font-weight:600}
+/* Main */
+.main{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.page{display:none;flex:1;overflow-y:auto;padding:16px;gap:14px;flex-direction:column}
+.page.active{display:flex}
+/* Cards */
+.card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rl);padding:14px}
+.card-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px}
+.card-title{font-size:12px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.6px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+/* Stat cards */
+.stat{background:var(--bg3);border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px;position:relative;overflow:hidden}
+.stat-label{font-size:11px;color:var(--t3);margin-bottom:4px;font-weight:500}
+.stat-val{font-size:24px;font-weight:700;color:var(--t1);line-height:1}
+.stat-sub{font-size:11px;color:var(--t3);margin-top:4px}
+.stat-accent{position:absolute;right:12px;top:12px;font-size:18px;opacity:.4}
+/* Tables */
+.tbl-wrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--bd)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{padding:8px 10px;text-align:left;font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;background:var(--bg3);border-bottom:1px solid var(--bd);white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid var(--bd);color:var(--t2);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg3)}
+/* Badges */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap}
+.badge-green{background:var(--gs);color:var(--green)}
+.badge-red{background:var(--rs);color:var(--red)}
+.badge-amber{background:var(--as);color:var(--amber)}
+.badge-blue{background:var(--bs);color:var(--blue)}
+.badge-purple{background:var(--ps);color:var(--purple)}
+.badge-gray{background:var(--bg4);color:var(--t3)}
+/* Upload area */
+.upload-zone{border:2px dashed var(--bd2);border-radius:var(--rl);padding:30px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg3)}
 .upload-zone:hover,.upload-zone.drag{border-color:var(--blue);background:var(--bs)}
-.upload-zone.drag{border-style:solid}
-/* KPI */
-.kstrip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
-.kpi{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rl);padding:15px 17px;position:relative;overflow:hidden}
-.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:var(--rl) var(--rl) 0 0}
-.kb::before{background:var(--blue)}.kg::before{background:var(--green)}.ka::before{background:var(--amber)}.kr::before{background:var(--red)}
-.klb{font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px}
-.kv{font-size:26px;font-weight:700;color:var(--t1);line-height:1;letter-spacing:-.5px}
-.ks{font-size:11px;color:var(--t3);margin-top:4px}
-.kbg{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;margin-top:7px}
-.bgg{background:var(--gs);color:var(--green)}.bgr{background:var(--rs);color:var(--red)}.bga{background:var(--as);color:var(--amber)}.bgb{background:var(--bs);color:var(--blue)}
-.card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rl);padding:15px 17px}
-.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
-.ct{font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;display:flex;align-items:center;gap:5px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
-.g21{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:12px}
-.orow{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.olb{font-size:11px;color:var(--t2);width:82px;flex-shrink:0}
-.otr{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden}
-.ofi{height:6px;border-radius:3px}
-.osc{font-size:12px;font-weight:600;color:var(--t1);width:28px;text-align:right}
-.ocn{font-size:10px;color:var(--t3);width:55px;text-align:right}
-.re{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;background:var(--bg3);margin-bottom:5px}
-.rrk{font-size:11px;font-weight:700;color:var(--t4);width:18px}
-.rnm{font-size:13px;font-weight:700;color:var(--t1);width:44px}
-.rty{font-size:10px;color:var(--t3);flex:1}
-.rtr{width:80px;height:5px;background:var(--bg5);border-radius:3px;overflow:hidden}
-.rfi{height:5px;border-radius:3px}
-.rsc{font-size:12px;font-weight:700;width:30px;text-align:right}
-.rcn{font-size:10px;color:var(--t3);width:45px;text-align:right}
-.tw{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:11px}
-thead tr{background:var(--bg3)}
-th{padding:8px 10px;text-align:left;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--t3);border-bottom:1px solid var(--bd);white-space:nowrap}
-td{padding:7px 10px;border-bottom:1px solid var(--bd);color:var(--t2);vertical-align:middle}
-tbody tr:last-child td{border-bottom:none}
-tbody tr:hover td{background:var(--bg3)}
-.plat{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600;white-space:nowrap}
-.pg{background:rgba(52,168,83,.15);color:#34a853}.pta{background:rgba(0,170,0,.12);color:#00aa00}.pag{background:rgba(91,107,254,.15);color:#5b6bfe}.pbk{background:rgba(0,115,230,.15);color:#0073e6}.ptr{background:rgba(240,110,180,.15);color:#f06eb4}.pex{background:rgba(0,60,190,.15);color:#ffd700}.ptv{background:rgba(22,160,133,.15);color:#16a085}.pun{background:rgba(100,100,100,.15);color:#999}
-.sent{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600}
-.sp{background:var(--gs);color:var(--green)}.sn{background:var(--rs);color:var(--red)}.su{background:var(--as);color:var(--amber)}
-.sev{display:inline-block;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600}
-.sh{background:var(--rs);color:var(--red)}.sm{background:var(--as);color:var(--amber)}.sl{background:var(--gs);color:var(--green)}
-.alcard{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:8px;overflow:hidden;border-left:3px solid}
-.alcard.aim{border-left-color:var(--amber)}.alcard.aic{border-left-color:var(--blue)}.alcard.aicr{border-left-color:var(--red)}.alcard.aifo{border-left-color:var(--purple)}
-.alhead{display:flex;align-items:center;gap:10px;padding:9px 13px;background:var(--bg3)}
-.alroom{font-size:13px;font-weight:700;color:var(--t1);min-width:55px}
-.alisue{font-size:12px;font-weight:600;color:var(--t1);flex:1}
-.albody{display:grid;grid-template-columns:repeat(4,1fr)}
-.alfield{padding:7px 13px;border-top:1px solid var(--bd)}
-.alfield:not(:last-child){border-right:1px solid var(--bd)}
-.alfldlb{font-size:9px;font-weight:600;color:var(--t4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
-.alfldv{font-size:11px;color:var(--t2);font-weight:500}
-.dept{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600}
-.dept-hk{background:rgba(91,141,239,.15);color:var(--blue)}.dept-mt{background:rgba(240,180,41,.15);color:var(--amber)}.dept-fo{background:rgba(155,114,240,.15);color:var(--purple)}.dept-fb{background:rgba(62,207,142,.15);color:var(--green)}.dept-fc{background:rgba(44,196,196,.15);color:var(--teal)}.dept-gm{background:rgba(240,92,110,.15);color:var(--red)}
-.se{display:flex;align-items:center;gap:10px;padding:10px;border-radius:var(--r);background:var(--bg3);margin-bottom:5px;border:1px solid var(--bd)}
-.sav{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
-.hmap{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
-.hc{aspect-ratio:1.4;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;cursor:default;transition:transform .15s}
-.hc:hover{transform:scale(1.05)}
-.prow{margin-bottom:9px}
-.plrw{display:flex;justify-content:space-between;margin-bottom:3px}
-.pnm{font-size:11px;color:var(--t2)}.pvl{font-size:11px;font-weight:600;color:var(--red)}
-.ptr2{height:4px;background:var(--bg4);border-radius:2px;overflow:hidden}
-.pfi{height:4px;border-radius:2px;background:var(--red)}
-.lr{display:flex;flex-wrap:wrap;gap:7px;margin-top:7px}
-.li{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--t3)}
-.ld{width:8px;height:8px;border-radius:2px;flex-shrink:0}
-.cd{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block}
-.pdot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:4px}
-.te{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px}
-.fb{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:11px}
-.fb input[type=text]{flex:1;min-width:160px}
-input[type=text],select{background:var(--bg3);border:1px solid var(--bd2);border-radius:7px;color:var(--t1);padding:7px 10px;font-size:12px;font-family:var(--fn);outline:none;transition:border-color .15s}
-input[type=text]:focus,select:focus{border-color:var(--blue)}
-.sz{max-height:420px;overflow-y:auto}
-.es{text-align:center;padding:32px 16px;color:var(--t3);font-size:12px}
-.stars{color:var(--amber);letter-spacing:-1px;font-size:12px}
-.fw{display:flex;gap:3px}
-.flag{width:21px;height:21px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:12px}
-.fa{background:var(--as);color:var(--amber)}.fc{background:var(--bs);color:var(--blue)}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--bg2);border:1px solid var(--bd3);border-radius:9px;padding:10px 18px;font-size:12px;color:var(--t1);z-index:300;transition:transform .25s,opacity .25s;opacity:0;pointer-events:none;white-space:nowrap}
-.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-.step{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--bd)}
-.step:last-child{border-bottom:none}
-.stepnum{width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.steptxt{font-size:12px;color:var(--t2);line-height:1.6}
-.steptxt strong{color:var(--t1)}
+.upload-zone h3{font-size:14px;color:var(--t1);margin-bottom:6px}
+.upload-zone p{font-size:12px;color:var(--t3)}
+/* Search / Filter bar */
+.filter-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.finput{flex:1;min-width:160px;padding:7px 10px;border-radius:var(--r);border:1px solid var(--bd2);background:var(--bg3);color:var(--t1);font-size:12px;font-family:var(--fn)}
+.finput:focus{outline:none;border-color:var(--blue)}
+.fselect{padding:7px 10px;border-radius:var(--r);border:1px solid var(--bd2);background:var(--bg3);color:var(--t1);font-size:12px;font-family:var(--fn);cursor:pointer}
+.fselect:focus{outline:none;border-color:var(--blue)}
+.fbtn{padding:7px 12px;border-radius:var(--r);border:1px solid var(--bd2);background:var(--bg4);color:var(--t2);font-size:11px;cursor:pointer;font-family:var(--fn);white-space:nowrap}
+.fbtn:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+/* Alert cards */
+.alert-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rl);padding:14px;border-left:3px solid var(--red);margin-bottom:10px}
+.alert-card.medium{border-left-color:var(--amber)}
+.alert-card.low{border-left-color:var(--blue)}
+.alert-card.resolved{border-left-color:var(--green);opacity:.7}
+.alert-hd{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.alert-icon{width:32px;height:32px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.alert-icon.maint{background:var(--rs);color:var(--red)}
+.alert-icon.house{background:var(--as);color:var(--amber)}
+.alert-icon.resolved{background:var(--gs);color:var(--green)}
+.alert-meta{flex:1}
+.alert-title{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:2px}
+.alert-room{font-size:11px;color:var(--t3)}
+.alert-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:10px}
+.alert-field{background:var(--bg3);border-radius:var(--r);padding:8px 10px}
+.alert-field-label{font-size:10px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.alert-field-val{font-size:12px;color:var(--t1)}
+.alert-actions{display:flex;align-items:center;gap:8px;margin-top:10px}
+.abtn{padding:5px 10px;border-radius:var(--r);border:1px solid var(--bd2);background:transparent;color:var(--t2);font-size:11px;cursor:pointer;font-family:var(--fn)}
+.abtn:hover{background:var(--bg4);color:var(--t1)}
+.abtn-primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.abtn-primary:hover{background:var(--blue2)}
+.abtn-green{background:var(--gs);color:var(--green);border-color:transparent}
+.abtn-green:hover{background:var(--green);color:#fff}
+/* Status */
+.status{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600}
+.status-open{background:var(--rs);color:var(--red)}
+.status-inprogress{background:var(--as);color:var(--amber)}
+.status-monitoring{background:var(--bs);color:var(--blue)}
+.status-resolved{background:var(--gs);color:var(--green)}
+.status-escalated{background:var(--ps);color:var(--purple)}
+.status::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor}
+/* Charts */
+.chart-wrap{position:relative;width:100%}
+/* Review cards */
+.rev-card{background:var(--bg3);border:1px solid var(--bd);border-radius:var(--r);padding:12px;margin-bottom:10px;transition:border-color .15s}
+.rev-card:hover{border-color:var(--bd2)}
+.rev-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.rev-meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.rev-text{font-size:12px;color:var(--t2);line-height:1.6}
+.rev-text.collapsed{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.expand-btn{font-size:11px;color:var(--blue);cursor:pointer;margin-top:4px;display:inline-block}
+.expand-btn:hover{color:var(--t1)}
+/* Stars */
+.stars{color:var(--amber);font-size:12px;letter-spacing:1px}
+/* Heatmap */
+.heatmap{display:grid;grid-template-columns:repeat(10,1fr);gap:3px}
+.hc{aspect-ratio:1;border-radius:3px;cursor:pointer;transition:opacity .15s;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600}
+.hc:hover{opacity:.8;transform:scale(1.1)}
+/* Toast */
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--bg4);border:1px solid var(--bd2);border-radius:var(--r);padding:8px 14px;font-size:12px;color:var(--t1);z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none}
+#toast.show{opacity:1}
+/* Trend indicators */
+.trend-up{color:var(--green);font-size:11px}
+.trend-down{color:var(--red);font-size:11px}
+/* Tabs within cards */
+.ctabs{display:flex;gap:4px;background:var(--bg3);border-radius:var(--r);padding:3px;margin-bottom:12px}
+.ctab{flex:1;padding:5px 8px;border-radius:5px;border:none;background:transparent;color:var(--t3);font-size:11px;cursor:pointer;font-family:var(--fn);text-align:center;transition:all .15s}
+.ctab.active{background:var(--bg4);color:var(--t1);font-weight:600}
+/* Summary bars */
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.bar-label{font-size:11px;color:var(--t2);width:100px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;height:6px;background:var(--bg4);border-radius:10px;overflow:hidden}
+.bar-fill{height:100%;border-radius:10px;transition:width .4s}
+.bar-val{font-size:11px;color:var(--t3);width:30px;text-align:right;flex-shrink:0}
+/* Staff mention */
+.staff-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)}
+.staff-row:last-child{border-bottom:none}
+.staff-avatar{width:28px;height:28px;border-radius:50%;background:var(--bs);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.staff-name{flex:1;font-size:12px;color:var(--t1)}
+/* Import panel */
+.import-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+/* Severity dot */
+.sev{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:10px;font-weight:700;flex-shrink:0}
+.sev-1,.sev-2{background:var(--gs);color:var(--green)}
+.sev-3,.sev-4{background:var(--as);color:var(--amber)}
+.sev-5{background:var(--rs);color:var(--red)}
+/* Modal */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;display:none;align-items:center;justify-content:center}
+.modal-backdrop.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--bd2);border-radius:var(--rl);padding:20px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto}
+.modal-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.modal-title{font-size:14px;font-weight:600;color:var(--t1)}
+.modal-close{width:26px;height:26px;border-radius:6px;border:1px solid var(--bd2);background:var(--bg3);color:var(--t2);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.modal-close:hover{background:var(--bg4)}
+/* Empty state */
+.empty{padding:40px;text-align:center;color:var(--t3);font-size:13px}
+.empty span{display:block;font-size:28px;margin-bottom:8px}
+/* Chip filters */
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.chip{padding:3px 9px;border-radius:20px;border:1px solid var(--bd2);background:var(--bg3);color:var(--t3);font-size:11px;cursor:pointer;transition:all .15s}
+.chip.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+/* Resolution tracker */
+.res-track{display:flex;align-items:center;gap:4px;margin-top:8px}
+.res-step{flex:1;height:3px;border-radius:2px;background:var(--bg4)}
+.res-step.done{background:var(--green)}
+.res-step.current{background:var(--amber)}
 </style>
 </head>
 <body>
 <div class="shell">
-
-<header class="topbar">
+<div class="topbar">
   <div class="brand">
-    <div class="bmark">SH</div>
-    <div class="bname">The Sultan Hotel</div>
-    <div class="bdiv"></div>
-    <div class="bsub">Review Intelligence</div>
+    <div class="bmark">HOI</div>
+    <div>
+      <div class="bname">Hotel Operations Intelligence</div>
+      <div class="bsub" id="dataSourceLabel">Sample Data Mode</div>
+    </div>
   </div>
+  <div class="bdiv"></div>
+  <div class="bsub" id="statsLabel" style="font-size:11px;color:var(--t3)">Loading...</div>
   <div class="tr">
-    <button class="btn" onclick="App.toggleTheme()" id="themeBtn">&#9728;</button>
-    <button class="btn bp" onclick="App.triggerUpload()">&#8679; Upload CSV</button>
-    <button class="btn" onclick="App.exportCSV()">&#8681; Export</button>
-    <button class="btn bdr" onclick="App.clearData()">&#128465; Clear</button>
-    <input type="file" id="fileInput" style="display:none" accept=".csv,.xlsx,.xls" onchange="App.handleUpload(this)">
-  </div>
-</header>
-
-<nav class="nav">
-  <button class="ni active" onclick="App.goTab('overview',this)">&#9729; Overview</button>
-  <button class="ni" onclick="App.goTab('reviews',this)">&#9993; Reviews</button>
-  <button class="ni" onclick="App.goTab('rooms',this)">&#9638; Rooms</button>
-  <button class="ni" onclick="App.goTab('alerts',this)">&#9888; Alerts <span class="bpill" id="alertPill">0</span></button>
-  <button class="ni" onclick="App.goTab('staff',this)">&#128100; Staff</button>
-  <button class="ni" onclick="App.goTab('analytics',this)">&#9636; Analytics</button>
-  <button class="ni" onclick="App.goTab('upload',this)">&#128190; Data Source</button>
-</nav>
-
-<main class="content">
-
-<!-- OVERVIEW -->
-<div class="tab active" id="tab-overview">
-  <div id="statusBar"></div>
-  <div class="kstrip" id="kpiStrip"></div>
-  <div class="g21">
-    <div class="card">
-      <div class="ch"><div class="ct">Sentiment Trend</div><div id="trendLeg" class="lr" style="margin-top:0"></div></div>
-      <div style="position:relative;height:185px"><canvas id="cTrend"></canvas></div>
-    </div>
-    <div class="card"><div class="ch"><div class="ct">Platform Scores</div></div><div id="otaBars"></div></div>
-  </div>
-  <div class="g3">
-    <div class="card">
-      <div class="ch"><div class="ct">Category Mix</div></div>
-      <div style="position:relative;height:155px"><canvas id="cCat"></canvas></div>
-      <div class="lr" id="catLeg"></div>
-    </div>
-    <div class="card"><div class="ch"><div class="ct">Platform Sentiment</div></div><div style="position:relative;height:155px"><canvas id="cPlat"></canvas></div></div>
-    <div class="card">
-      <div class="ch"><div class="ct">Severity Split</div></div>
-      <div style="position:relative;height:155px"><canvas id="cSev"></canvas></div>
-      <div class="lr" id="sevLeg"></div>
-    </div>
-  </div>
-  <div class="g2">
-    <div class="card"><div class="ch"><div class="ct">Top Rooms</div></div><div id="topRooms"></div></div>
-    <div class="card"><div class="ch"><div class="ct">Worst Rooms</div></div><div id="worstRooms"></div></div>
+    <button class="tbtn" onclick="App.toggleTheme()">☀ Theme</button>
+    <button class="tbtn" onclick="App.exportCSV()">⬇ Export</button>
+    <button class="tbtn" style="background:var(--bs);color:var(--blue);border-color:transparent" onclick="showPage('import')">⬆ Import Data</button>
   </div>
 </div>
+<div class="nav">
+  <button class="ntab active" onclick="showPage('overview')" id="tab-overview">⊞ Overview</button>
+  <button class="ntab" onclick="showPage('reviews')" id="tab-reviews">✉ Reviews</button>
+  <button class="ntab" onclick="showPage('rooms')" id="tab-rooms">▦ Rooms</button>
+  <button class="ntab" onclick="showPage('alerts')" id="tab-alerts">🔔 Alerts</button>
+  <button class="ntab" onclick="showPage('analytics')" id="tab-analytics">📊 Analytics</button>
+  <button class="ntab" onclick="showPage('staff')" id="tab-staff">👤 Staff</button>
+  <button class="ntab" onclick="showPage('import')" id="tab-import">+ Import</button>
+</div>
+<div class="main">
 
-<!-- REVIEWS -->
-<div class="tab" id="tab-reviews">
-  <div class="fb">
-    <input type="text" id="srch" placeholder="Search reviews, rooms, staff&#8230;" oninput="App.renderTable()">
-    <select id="fPlat" onchange="App.renderTable()"><option value="">All Platforms</option><option>Google</option><option>TripAdvisor</option><option>Agoda</option><option>Booking.com</option><option>Trip.com</option><option>Expedia</option><option>Traveloka</option></select>
-    <select id="fSent" onchange="App.renderTable()"><option value="">All Sentiment</option><option>Positive</option><option>Neutral</option><option>Negative</option></select>
-    <select id="fCat" onchange="App.renderTable()"><option value="">All Categories</option><option>Room Comfort &amp; Quality</option><option>Staff</option><option>Facilities</option><option>Value for Money</option><option>Cleanliness</option></select>
-    <select id="fSev" onchange="App.renderTable()"><option value="">All Severity</option><option>High</option><option>Medium</option><option>Low</option></select>
-    <button class="btn" onclick="App.clearFilters()">&#10005;</button>
-  </div>
-  <div class="card" style="padding:0;overflow:hidden">
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 13px;border-bottom:1px solid var(--bd)">
-      <span id="tblSource" style="font-size:11px;color:var(--t3)"></span>
-      <span id="tblFooter" style="font-size:10px;color:var(--t3)"></span>
+<!-- OVERVIEW PAGE -->
+<div class="page active" id="page-overview">
+  <div class="grid-4" id="kpiCards"></div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Sentiment Trend by Month</span><span id="sentTrendLabel" style="font-size:11px;color:var(--t3)"></span></div>
+      <div class="chart-wrap" style="height:220px"><canvas id="sentTrendChart" role="img" aria-label="Sentiment trend by month">Monthly sentiment trend.</canvas></div>
     </div>
-    <div class="tw">
-      <table>
-        <thead><tr><th>Platform</th><th>Date</th><th>Booking</th><th>Room</th><th>Type</th><th>Review</th><th>Rating</th><th>Sentiment</th><th>Category</th><th>Severity</th><th>Flags</th><th>Staff</th></tr></thead>
-        <tbody id="tblBody"></tbody>
-      </table>
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Platform Performance</span></div>
+      <div class="chart-wrap" style="height:220px"><canvas id="platformChart" role="img" aria-label="Platform comparison">Platform ratings.</canvas></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Category Breakdown</span></div>
+      <div id="catBars"></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Recent Alerts Summary</span></div>
+      <div id="alertSummary"></div>
+    </div>
+  </div>
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Top Complaint Types</span></div>
+      <div id="complaintTypes"></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Rating Distribution</span></div>
+      <div class="chart-wrap" style="height:160px"><canvas id="ratingDistChart" role="img" aria-label="Rating distribution">Rating distribution.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Operational Health</span></div>
+      <div id="opsHealth"></div>
     </div>
   </div>
 </div>
 
-<!-- ROOMS -->
-<div class="tab" id="tab-rooms">
-  <div class="kstrip" id="roomKpis"></div>
-  <div class="g2">
-    <div class="card">
-      <div class="ch">
-        <div class="ct">Complaint Heatmap</div>
-        <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:var(--t3)">Low
-          <div style="display:flex;gap:2px">
-            <div style="width:9px;height:9px;border-radius:2px;background:#1a3a28"></div>
-            <div style="width:9px;height:9px;border-radius:2px;background:#2d5c3a"></div>
-            <div style="width:9px;height:9px;border-radius:2px;background:#f0b429"></div>
-            <div style="width:9px;height:9px;border-radius:2px;background:#e07030"></div>
-            <div style="width:9px;height:9px;border-radius:2px;background:#f05c6e"></div>
-          </div>High
-        </div>
-      </div>
-      <div class="hmap" id="hmap"></div>
+<!-- REVIEWS PAGE -->
+<div class="page" id="page-reviews">
+  <div class="card" style="padding:12px">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+      <input class="finput" id="revSearch" placeholder="🔍 Search: keyword, booking, room, platform, staff..." oninput="R.renderReviews()" style="min-width:240px;max-width:400px">
+      <select class="fselect" id="revSentiment" onchange="R.renderReviews()">
+        <option value="">All Sentiment</option>
+        <option>Positive</option><option>Neutral</option><option>Negative</option>
+      </select>
+      <select class="fselect" id="revSeverity" onchange="R.renderReviews()">
+        <option value="">All Severity</option>
+        <option value="5">Critical (5)</option><option value="4">High (4)</option>
+        <option value="3">Medium (3)</option><option value="1">Low (1-2)</option>
+      </select>
+      <select class="fselect" id="revCategory" onchange="R.renderReviews()">
+        <option value="">All Categories</option>
+        <option>Room Comfort & Quality</option><option>Cleanliness</option>
+        <option>Staff</option><option>Facilities</option><option>Value for Money</option>
+      </select>
+      <select class="fselect" id="revPlatform" onchange="R.renderReviews()">
+        <option value="">All Platforms</option>
+        <option>Google Reviews</option><option>Tripadvisor</option><option>Agoda</option>
+        <option>Booking.com</option><option>Expedia</option><option>Trip.com</option><option>Traveloka</option>
+      </select>
+      <input type="date" class="fselect" id="revDateFrom" onchange="R.renderReviews()" title="Date from">
+      <input type="date" class="fselect" id="revDateTo" onchange="R.renderReviews()" title="Date to">
+      <button class="fbtn" onclick="R.clearFilters()">✕ Clear</button>
     </div>
-    <div class="card"><div class="ch"><div class="ct">Issues by Room Type</div></div><div style="position:relative;height:215px"><canvas id="cRoomType"></canvas></div></div>
+    <div style="font-size:11px;color:var(--t3)" id="revCount">Showing all reviews</div>
   </div>
-  <div class="card" style="padding:0;overflow:hidden">
-    <div style="padding:13px 17px 0"><div class="ct">Room Performance</div></div>
-    <div class="tw"><table><thead><tr><th>Room</th><th>Type</th><th>Reviews</th><th>Avg</th><th>Pos</th><th>Neg</th><th>Top Issue</th><th>Maint.</th><th>Clean</th><th>Status</th></tr></thead><tbody id="roomTbl"></tbody></table></div>
-  </div>
+  <div id="revList"></div>
+  <div id="revPagination" style="display:flex;gap:6px;justify-content:center;margin-top:8px"></div>
 </div>
 
-<!-- ALERTS -->
-<div class="tab" id="tab-alerts">
-  <div class="g2">
-    <div class="card" style="padding:13px 15px"><div class="ch"><div class="ct" style="color:var(--amber)">&#128295; Maintenance</div></div><div class="sz" id="aMaint"></div></div>
-    <div class="card" style="padding:13px 15px"><div class="ch"><div class="ct" style="color:var(--blue)">&#128167; Housekeeping</div></div><div class="sz" id="aClean"></div></div>
-  </div>
-  <div class="card" style="padding:13px 15px"><div class="ch"><div class="ct" style="color:var(--red)">&#9888; Critical</div></div><div id="aCrit"></div></div>
-  <div class="card" style="padding:13px 15px;margin-top:12px"><div class="ch"><div class="ct" style="color:var(--purple)">&#128100; Front Office</div></div><div id="aFO"></div></div>
-</div>
-
-<!-- STAFF -->
-<div class="tab" id="tab-staff">
-  <div class="g3">
-    <div class="card"><div class="ch"><div class="ct" style="color:var(--green)">&#9733; Top Performers</div></div><div id="staffPos"></div></div>
-    <div class="card"><div class="ch"><div class="ct" style="color:var(--red)">&#9785; Needs Coaching</div></div><div id="staffNeg"></div></div>
-    <div class="card"><div class="ch"><div class="ct">All Mentions</div></div><div id="staffAll"></div></div>
-  </div>
-  <div class="card"><div class="ch"><div class="ct">Staff Sentiment</div></div><div style="position:relative;height:195px"><canvas id="cStaff"></canvas></div></div>
-</div>
-
-<!-- ANALYTICS -->
-<div class="tab" id="tab-analytics">
-  <div class="g2">
-    <div class="card"><div class="ch"><div class="ct">Monthly Volume</div></div><div style="position:relative;height:185px"><canvas id="cVol"></canvas></div></div>
-    <div class="card"><div class="ch"><div class="ct">Avg Rating by Platform</div></div><div style="position:relative;height:185px"><canvas id="cRatPlat"></canvas></div></div>
-  </div>
-  <div class="g2">
-    <div class="card"><div class="ch"><div class="ct">Recurring Complaints</div></div><div id="recurring"></div></div>
-    <div class="card"><div class="ch"><div class="ct">Action Summary</div></div><div id="actionSum"></div></div>
-  </div>
-</div>
-
-<!-- DATA SOURCE -->
-<div class="tab" id="tab-upload">
-  <div class="g2">
+<!-- ROOMS PAGE -->
+<div class="page" id="page-rooms">
+  <div class="grid-3" id="roomKpis"></div>
+  <div class="grid-2">
     <div class="card">
-      <div class="ch"><div class="ct">&#8679; Upload Google Sheets CSV</div></div>
-      <!-- Drag & Drop Zone -->
-      <div class="upload-zone" id="dropZone"
-           onclick="App.triggerUpload()"
-           ondragover="App.onDragOver(event)"
-           ondragleave="App.onDragLeave(event)"
-           ondrop="App.onDrop(event)">
-        <div style="font-size:36px;margin-bottom:12px">&#128196;</div>
-        <div style="font-size:14px;font-weight:600;color:var(--t2);margin-bottom:6px">Drop CSV file here or click to browse</div>
-        <div style="font-size:11px;color:var(--t3)">Supports .csv files exported from Google Sheets</div>
-      </div>
-      <div id="uploadStatus"></div>
+      <div class="card-hd"><span class="card-title">Rooms Requiring Attention</span></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Room</th><th>Type</th><th>Complaints</th><th>Maint</th><th>Clean</th><th>Avg Rating</th><th>Last Review</th></tr></thead><tbody id="roomAlertTbl"></tbody></table></div>
     </div>
-
     <div class="card">
-      <div class="ch"><div class="ct">&#128221; How to Export from Google Sheets</div></div>
-      <div class="step"><div class="stepnum">1</div><div class="steptxt">Open your Google Sheet:<br><strong>Hotel Review Intelligence Database 001</strong></div></div>
-      <div class="step"><div class="stepnum">2</div><div class="steptxt">Click <strong>File</strong> in the top menu</div></div>
-      <div class="step"><div class="stepnum">3</div><div class="steptxt">Select <strong>Download</strong> → <strong>Comma Separated Values (.csv)</strong></div></div>
-      <div class="step"><div class="stepnum">4</div><div class="steptxt">A <strong>.csv file</strong> will download to your computer</div></div>
-      <div class="step"><div class="stepnum">5</div><div class="steptxt">Click <strong>Upload CSV</strong> in the top bar or drag the file onto the zone to the left</div></div>
-      <div style="margin-top:14px;padding:10px 12px;background:var(--bg3);border-radius:8px;font-size:11px;color:var(--t3);line-height:1.8">
-        <strong style="color:var(--t2)">Expected columns:</strong><br>
-        Date · Platform · Booking Number · Room Number · Room Type · Review Text · Rating · Sentiment · Category · Severity · Maintenance Flag · Cleaning Flag · Mentioned Staff · Suggested Action
-      </div>
-      <div style="margin-top:12px">
-        <button class="btn bp" style="width:100%;justify-content:center" onclick="App.triggerUpload()">&#8679; Choose CSV File</button>
-      </div>
+      <div class="card-hd"><span class="card-title">Top Rated Rooms</span></div>
+      <div class="tbl-wrap"><table><thead><tr><th>Room</th><th>Type</th><th>Reviews</th><th>Avg Rating</th><th>Positive%</th></tr></thead><tbody id="roomTopTbl"></tbody></table></div>
     </div>
   </div>
-
-  <!-- Current data status -->
   <div class="card">
-    <div class="ch"><div class="ct">&#128190; Current Dataset</div><button class="btn bdr" onclick="App.clearData()" style="font-size:10px">&#128465; Clear Data</button></div>
-    <div id="datasetInfo"></div>
+    <div class="card-hd"><span class="card-title">Complaint Heatmap by Room</span></div>
+    <div id="heatmapWrap"></div>
   </div>
 </div>
 
-</main>
+<!-- ALERTS PAGE -->
+<div class="page" id="page-alerts">
+  <div class="grid-4" id="alertKpis" style="margin-bottom:4px"></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
+    <div class="chips" id="alertTypeChips">
+      <span class="chip active" data-filter="all" onclick="A.filterType(this)">All Alerts</span>
+      <span class="chip" data-filter="maintenance" onclick="A.filterType(this)">🔧 Maintenance</span>
+      <span class="chip" data-filter="housekeeping" onclick="A.filterType(this)">🧹 Housekeeping</span>
+      <span class="chip" data-filter="open" onclick="A.filterType(this)">Open</span>
+      <span class="chip" data-filter="inprogress" onclick="A.filterType(this)">In Progress</span>
+      <span class="chip" data-filter="escalated" onclick="A.filterType(this)">Escalated</span>
+    </div>
+    <label style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--t3);cursor:pointer;margin-left:auto">
+      <input type="checkbox" id="hideResolved" onchange="A.render()" checked> Hide Resolved
+    </label>
+  </div>
+  <div id="alertList"></div>
 </div>
-<div class="toast" id="toast"></div>
 
+<!-- ANALYTICS PAGE -->
+<div class="page" id="page-analytics">
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Monthly Review Volume & Avg Rating</span></div>
+      <div class="chart-wrap" style="height:220px"><canvas id="volRatingChart" role="img" aria-label="Monthly volume and rating">Monthly review volume.</canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Severity Trend Over Time</span></div>
+      <div class="chart-wrap" style="height:220px"><canvas id="severityTrendChart" role="img" aria-label="Severity trend">Severity trend.</canvas></div>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Platform Sentiment Heatmap</span></div>
+      <div id="platformSentHeatmap"></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Recurring Issue Tracker</span></div>
+      <div id="recurringIssues"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hd"><span class="card-title">Positive vs Negative Trend</span></div>
+    <div class="chart-wrap" style="height:200px"><canvas id="posNegChart" role="img" aria-label="Positive vs negative trend">Positive vs negative trend.</canvas></div>
+  </div>
+</div>
+
+<!-- STAFF PAGE -->
+<div class="page" id="page-staff">
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Staff Mention Leaderboard</span></div>
+      <div id="staffLeader"></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Staff Sentiment Breakdown</span></div>
+      <div class="chart-wrap" style="height:260px"><canvas id="staffChart" role="img" aria-label="Staff sentiment">Staff mentions.</canvas></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hd"><span class="card-title">Reviews Mentioning Staff</span></div>
+    <div id="staffReviews"></div>
+  </div>
+</div>
+
+<!-- IMPORT PAGE -->
+<div class="page" id="page-import">
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-hd"><span class="card-title">Import Review Data</span></div>
+      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('csvInput').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="App.handleDrop(event)">
+        <div style="font-size:28px;margin-bottom:8px">📂</div>
+        <h3>Drop CSV file here or click to upload</h3>
+        <p>Supports: Google Sheets CSV, Excel CSV exports</p>
+        <p style="margin-top:6px;font-size:11px;color:var(--t4)">Expected columns: Platform, Date, Rating, Booking Number, Room Number, Room Type, Review Text, Sentiment, Category, Subcategory, Severity, Maintenance Flag, Cleaning Flag, Mentioned Staff, Suggested Action, Resolution Status, Resolved Date, Assigned Department, Assigned Staff, Resolution Notes</p>
+        <input type="file" id="csvInput" accept=".csv,.txt" style="display:none" onchange="App.handleFile(this)">
+      </div>
+      <div id="uploadStatus" style="margin-top:10px"></div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="card-title">CSV Column Guide</span></div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Column Name</th><th>Format</th><th>Required</th></tr></thead>
+        <tbody>
+          <tr><td>Platform</td><td>Google Reviews, Agoda, etc.</td><td><span class="badge badge-red">Yes</span></td></tr>
+          <tr><td>Date</td><td>YYYY-MM-DD or DD/MM/YYYY</td><td><span class="badge badge-red">Yes</span></td></tr>
+          <tr><td>Rating</td><td>1–10 or 1–5</td><td><span class="badge badge-red">Yes</span></td></tr>
+          <tr><td>Booking Number</td><td>BK-XXXXX</td><td><span class="badge badge-amber">Rec</span></td></tr>
+          <tr><td>Room Number</td><td>101, 204, etc.</td><td><span class="badge badge-amber">Rec</span></td></tr>
+          <tr><td>Room Type</td><td>Deluxe, Suite, etc.</td><td><span class="badge badge-amber">Rec</span></td></tr>
+          <tr><td>Review Text</td><td>Full text</td><td><span class="badge badge-red">Yes</span></td></tr>
+          <tr><td>Resolution Status</td><td>Open / In Progress / Resolved / Escalated / Monitoring</td><td><span class="badge badge-gray">Opt</span></td></tr>
+          <tr><td>Resolved Date</td><td>YYYY-MM-DD</td><td><span class="badge badge-gray">Opt</span></td></tr>
+          <tr><td>Assigned Department</td><td>Engineering / Housekeeping / etc.</td><td><span class="badge badge-gray">Opt</span></td></tr>
+          <tr><td>Assigned Staff</td><td>Staff name</td><td><span class="badge badge-gray">Opt</span></td></tr>
+          <tr><td>Resolution Notes</td><td>Free text</td><td><span class="badge badge-gray">Opt</span></td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hd"><span class="card-title">Current Data</span>
+      <button class="fbtn" onclick="App.clearData()">🗑 Clear & Reset</button>
+    </div>
+    <div id="dataInfo" style="font-size:12px;color:var(--t2)">Loading...</div>
+  </div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<div id="toast"></div>
+<div class="modal-backdrop" id="reviewModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title" id="modalTitle">Review Detail</div>
+      <button class="modal-close" onclick="document.getElementById('reviewModal').classList.remove('open')">✕</button>
+    </div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script>
 (function(){
 'use strict';
 
-// ── KEYS & CONFIG ─────────────────────────────────────────────────────
-const CACHE_KEY  = 'sultan_reviews_v4';
-const SETT_KEY   = 'sultan_sett_v4';
-const SOURCE_KEY = 'sultan_source_v4';
-
-// ── STORAGE ───────────────────────────────────────────────────────────
-const LS = {
-  ok: (function(){ try{localStorage.setItem('__t','1');localStorage.removeItem('__t');return true;}catch(e){return false;} })(),
-  get: function(k, fb){ if(!this.ok)return fb; try{var v=localStorage.getItem(k);return v!==null?JSON.parse(v):fb;}catch(e){return fb;} },
-  set: function(k, v){ if(!this.ok)return; try{localStorage.setItem(k,JSON.stringify(v));}catch(e){console.warn('LS write fail:',e.message);} },
-  del: function(k){ if(!this.ok)return; try{localStorage.removeItem(k);}catch(e){} }
-};
-
-// ── SETTINGS ──────────────────────────────────────────────────────────
-var Sett = LS.get(SETT_KEY, {dark:true});
-function saveSett(){ LS.set(SETT_KEY, Sett); }
-
-// ── CONSTANTS ─────────────────────────────────────────────────────────
-var C = {
-  MONTHS: ['Jun','Jul','Aug','Sep','Oct','Nov'],
-  CAT_COL: {'Room Comfort & Quality':'#5b8def','Staff':'#3ecf8e','Facilities':'#9b72f0','Value for Money':'#f0b429','Cleanliness':'#2ec4c4'},
-  PLAT_COL: {'Google':'#34a853','TripAdvisor':'#00aa00','Agoda':'#5b6bfe','Booking.com':'#0073e6','Trip.com':'#f06eb4','Expedia':'#ffd700','Traveloka':'#16a085'},
-  PLAT_CSS: {'Google':'pg','TripAdvisor':'pta','Agoda':'pag','Booking.com':'pbk','Trip.com':'ptr','Expedia':'pex','Traveloka':'ptv'},
-  AV_COLS: ['#5b8def','#3ecf8e','#9b72f0','#f0b429','#2ec4c4','#f06eb4','#f05c6e'],
-  PAT: {
-    maint: /\b(air.?con|aircon|ac unit|a\.c\.|heating|air conditioning|hot water|cold water|no water|water pressure|plumbing|pipe|leak(ing|ed)?|broken|faulty|fault|malfunction|not working|elevator|lift|power outage|socket|light(s)? (not|broken)|bulb|tv (not|broken)|wifi (not|down)|internet (not|down)|door (lock|stuck|broken)|coffee machine|kettle|fridge|minibar)\b/i,
-    clean: /\b(dirty|unclean|not clean|stain(s|ed)?|hair (in|on)|dust(y)?|mold|mould|mildew|smell(s|y|ing)?|odou?r|foul|musty|damp|cockroach|pest|insect|bug(s)?|bed bug|linen|towel(s)?|sheet(s)?|bathroom (dirty|not clean)|toilet (dirty|not clean)|floor (dirty|sticky)|carpet (dirty|stained))\b/i,
-    fo:    /\b(rude|impolite|unprofessional|unfriendly|dismissive|unhelpful|ignor(ed|ing)|attitude|arrogant|slow (service|check.?in|check.?out)|long wait|waiting (long|too long)|check.?in (delay|slow|problem)|check.?out (problem|slow)|wrong room|room not ready|overcharged|billing (error|wrong)|key (card)? (not working|broken))\b/i,
-    fnb:   /\b(breakfast|lunch|dinner|buffet|food (cold|stale|bad|poor|tasteless)|menu (limited|poor|bad)|restaurant (dirty|bad|slow)|room service (late|slow|cold|wrong)|waiter (rude|slow)|waitress (rude|slow))\b/i,
-    fac:   /\b(pool (dirty|closed|cold|crowded)|gym (broken|dirty|closed)|parking (full|no|difficult)|lobby (dirty|noisy)|noise (from|outside|next door|above)|loud (neighbour|party|music|construction)|thin wall)\b/i,
-    val:   /\b(overpriced|too expensive|not worth|poor value|price (too high|unreasonable)|charge(d)? (extra|wrong)|hidden (fee|charge))\b/i
-  }
-};
-
-// ── SAMPLE DATA (always shown when no CSV uploaded) ───────────────────
+// ── Sample Data ──
 var SAMPLE = [
-  {id:'S01',platform:'Google',date:'2025-11-02',booking:'BK-1101',room:'512',roomType:'Heritage Suite',text:'Absolutely stunning stay. Sarah at the front desk was incredibly warm and professional. Beautiful room.',rating:5,sentiment:'Positive',category:'Staff',subcategory:'Service Quality',severity:'Low',maintFlag:false,cleanFlag:false,staffMentioned:'Sarah',action:'Recognize Sarah formally',department:'Front Office'},
-  {id:'S02',platform:'Booking.com',date:'2025-11-05',booking:'BK-1145',room:'312',roomType:'Deluxe Room',text:'Air conditioning was incredibly loud all night. Room was dusty on arrival. Nothing was done after reporting.',rating:2,sentiment:'Negative',category:'Room Comfort & Quality',subcategory:'Maintenance Issue',severity:'High',maintFlag:true,cleanFlag:true,staffMentioned:'',action:'Urgent work order for AC in 312; deep clean required',department:'Maintenance'},
-  {id:'S03',platform:'TripAdvisor',date:'2025-11-07',booking:'BK-1190',room:'201',roomType:'Superior Room',text:'Great location and friendly staff. Room was clean and comfortable. Would recommend.',rating:4,sentiment:'Positive',category:'Room Comfort & Quality',subcategory:'General',severity:'Low',maintFlag:false,cleanFlag:false,staffMentioned:'',action:'Log positive feedback',department:'General'},
-  {id:'S04',platform:'Agoda',date:'2025-11-08',booking:'BK-1201',room:'408',roomType:'Deluxe Room',text:'Found mold in the bathroom. Towels were stained and smelled bad. Complete hygiene failure.',rating:1,sentiment:'Negative',category:'Cleanliness',subcategory:'Housekeeping Issue',severity:'High',maintFlag:false,cleanFlag:true,staffMentioned:'',action:'Immediate deep clean; supervisor inspection required',department:'Housekeeping'},
-  {id:'S05',platform:'Expedia',date:'2025-11-10',booking:'BK-1250',room:'105',roomType:'Deluxe Room',text:'Decent stay overall. Breakfast menu is limited for the price. Staff were okay.',rating:3,sentiment:'Neutral',category:'Value for Money',subcategory:'Pricing Concern',severity:'Medium',maintFlag:false,cleanFlag:false,staffMentioned:'',action:'Review breakfast offerings',department:'F&B'},
-  {id:'S06',platform:'Trip.com',date:'2025-11-11',booking:'BK-1267',room:'601',roomType:'Presidential Suite',text:'Exceptional stay. Marcus at the front desk arranged a birthday surprise for my wife. Suite was flawless.',rating:5,sentiment:'Positive',category:'Staff',subcategory:'Guest Relations',severity:'Low',maintFlag:false,cleanFlag:false,staffMentioned:'Marcus',action:'Formally recognize Marcus',department:'Front Office'},
-  {id:'S07',platform:'Booking.com',date:'2025-11-15',booking:'BK-1330',room:'220',roomType:'Superior Room',text:'The receptionist was rude and dismissive when we asked about late check-out. Completely unprofessional.',rating:2,sentiment:'Negative',category:'Staff',subcategory:'Front Office Issue',severity:'High',maintFlag:false,cleanFlag:false,staffMentioned:'',action:'Coaching session to be scheduled immediately',department:'Front Office'},
-  {id:'S08',platform:'Agoda',date:'2025-11-18',booking:'BK-1380',room:'312',roomType:'Deluxe Room',text:'Third time staying and room 312 feels neglected. Peeling wallpaper and loose curtain rod.',rating:3,sentiment:'Neutral',category:'Room Comfort & Quality',subcategory:'Maintenance Issue',severity:'High',maintFlag:true,cleanFlag:false,staffMentioned:'',action:'Schedule full refurbishment for room 312',department:'Maintenance'},
-  {id:'S09',platform:'Expedia',date:'2025-11-20',booking:'BK-1415',room:'118',roomType:'Deluxe Room',text:'Found cockroaches in the bathroom. Management was slow to respond. Traumatic experience.',rating:1,sentiment:'Negative',category:'Cleanliness',subcategory:'Pest Control',severity:'High',maintFlag:false,cleanFlag:true,staffMentioned:'',action:'Immediate pest control; incident report; management follow-up',department:'Housekeeping'},
-  {id:'S10',platform:'Traveloka',date:'2025-11-22',booking:'BK-1450',room:'601',roomType:'Presidential Suite',text:'Perfect stay for our anniversary. Nadia arranged flowers and wine. We will be back every year.',rating:5,sentiment:'Positive',category:'Staff',subcategory:'Guest Relations',severity:'Low',maintFlag:false,cleanFlag:false,staffMentioned:'Nadia',action:'Recognize Nadia; document as service excellence',department:'Front Office'}
+  {id:'r001',platform:'Google Reviews',date:'2026-01-15',rating:8,booking:'BK-10021',room:'101',roomType:'Deluxe Room',text:'Room was clean and staff were friendly. The air conditioning made a strange rattling noise throughout the night which kept us awake. Maintenance should check the unit. Overall decent stay but the noise was really disruptive.',sentiment:'Neutral',category:'Room Comfort & Quality',subcategory:'HVAC',severity:4,maintFlag:true,cleanFlag:false,staffMentioned:'Ahmad',action:'Inspect FCU blower and clean air filter for Room 101',resolutionStatus:'Open',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'',isSample:true},
+  {id:'r002',platform:'Booking.com',date:'2026-01-18',rating:9,booking:'BK-10022',room:'205',roomType:'Superior Room',text:'Excellent service from the front desk team especially Sarah who helped us with early check-in. Room was spotless and the bed was very comfortable. The view from our window was amazing. Will definitely return.',sentiment:'Positive',category:'Staff',subcategory:'Front Desk',severity:1,maintFlag:false,cleanFlag:false,staffMentioned:'Sarah',action:'Commend staff performance; document for monthly recognition',resolutionStatus:'Resolved',resolvedDate:'2026-01-20',assignedDept:'Front Office',assignedStaff:'Sarah Lee',resolutionNotes:'Positive feedback shared with department head',isSample:true},
+  {id:'r003',platform:'Agoda',date:'2026-01-20',rating:4,booking:'BK-10023',room:'308',roomType:'Deluxe Room',text:'Very disappointing stay. There was mold smell coming from the bathroom. The tiles were dirty and had stains. Housekeeping clearly had not done a thorough clean. Also noticed dust under the bed and behind the nightstand. Complained to reception but nothing was done.',sentiment:'Negative',category:'Cleanliness',subcategory:'Bathroom',severity:5,maintFlag:false,cleanFlag:true,staffMentioned:'',action:'Conduct emergency deep clean Room 308: scrub tiles, treat mold, replace grout, vacuum under all furniture. Schedule manager inspection before re-letting.',resolutionStatus:'In Progress',resolvedDate:'',assignedDept:'Housekeeping',assignedStaff:'Maria Santos',resolutionNotes:'Deep clean scheduled for 22 Jan. Manager walkthrough required.',isSample:true},
+  {id:'r004',platform:'Tripadvisor',date:'2026-01-22',rating:6,booking:'BK-10024',room:'102',roomType:'Standard Room',text:'Water pressure in the shower was very weak. Had to stand under it for a long time to rinse off. Also the hot water took about 5 minutes to come through each morning. Room itself was fine and clean.',sentiment:'Neutral',category:'Facilities',subcategory:'Plumbing',severity:3,maintFlag:true,cleanFlag:false,staffMentioned:'',action:'Inspect water pressure regulator and hot water mixing valve for Room 102 corridor. Check boiler temperature settings.',resolutionStatus:'Open',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'',isSample:true},
+  {id:'r005',platform:'Expedia',date:'2026-02-03',rating:10,booking:'BK-10025',room:'501',roomType:'Executive Suite',text:'Outstanding in every way. The suite was immaculate and beautifully appointed. Chef David prepared a special breakfast for us as it was our anniversary. Butler James was absolutely wonderful and anticipated our every need. The spa was excellent too. Five star experience.',sentiment:'Positive',category:'Staff',subcategory:'F&B',severity:1,maintFlag:false,cleanFlag:false,staffMentioned:'David,James',action:'Log positive feedback for David and James. Escalate for staff excellence award consideration.',resolutionStatus:'Resolved',resolvedDate:'2026-02-04',assignedDept:'F&B',assignedStaff:'David Tan, James Lim',resolutionNotes:'Both staff nominated for February recognition',isSample:true},
+  {id:'r006',platform:'Google Reviews',date:'2026-02-05',rating:3,booking:'BK-10026',room:'408',roomType:'Deluxe Room',text:'The room smelled musty and damp when we arrived. Air conditioning was dripping water onto the floor creating a puddle. We reported it to housekeeping who came but only mopped the floor without fixing the actual unit. The damp smell persisted for our entire 3-night stay.',sentiment:'Negative',category:'Room Comfort & Quality',subcategory:'HVAC',severity:5,maintFlag:true,cleanFlag:true,staffMentioned:'',action:'Inspect FCU drain pan and condensate line for Room 408. Check for refrigerant leak. Inspect wall behind AC unit for moisture damage. Schedule deep deodorization.',resolutionStatus:'Escalated',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'Rajan Kumar',resolutionNotes:'Escalated to Chief Engineer. Possible drain pipe blockage. Parts ordered.',isSample:true},
+  {id:'r007',platform:'Booking.com',date:'2026-02-08',rating:7,booking:'BK-10027',room:'203',roomType:'Superior Room',text:'Generally a good stay. The room was comfortable and clean. One issue was that the TV remote did not work properly and we had to call the front desk twice. Response was slow at about 40 minutes each time. Breakfast was good with plenty of variety.',sentiment:'Neutral',category:'Facilities',subcategory:'In-room Technology',severity:2,maintFlag:false,cleanFlag:false,staffMentioned:'',action:'Replace TV remote and reprogram for Room 203. Review front desk response time protocol.',resolutionStatus:'Resolved',resolvedDate:'2026-02-09',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'Remote replaced. Response time issue flagged to duty manager.',isSample:true},
+  {id:'r008',platform:'Trip.com',date:'2026-02-10',rating:2,booking:'BK-10028',room:'308',roomType:'Deluxe Room',text:'This is our second time having issues with Room 308. Last time it was dirty, this time the mold smell is back and worse than before. The bathroom drain is blocked causing standing water. This room should not be let out until properly fixed. Very unhappy.',sentiment:'Negative',category:'Cleanliness',subcategory:'Bathroom',severity:5,maintFlag:true,cleanFlag:true,staffMentioned:'',action:'URGENT: Take Room 308 offline immediately. Complete bathroom renovation required: replace drainage system, treat mold at source, retile if necessary. Root cause audit required.',resolutionStatus:'Escalated',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'Rajan Kumar',resolutionNotes:'Room 308 flagged as recurring complaint room. Taken offline pending full inspection.',isSample:true},
+  {id:'r009',platform:'Traveloka',date:'2026-02-14',rating:9,booking:'BK-10029',room:'304',roomType:'Deluxe Room',text:'Lovely Valentine\'s Day stay. The room was beautifully decorated when we arrived which was a wonderful surprise. Housekeeping team did an excellent job. Thomas at reception was very helpful sorting our restaurant booking.',sentiment:'Positive',category:'Staff',subcategory:'Housekeeping',severity:1,maintFlag:false,cleanFlag:false,staffMentioned:'Thomas',action:'Share positive feedback with housekeeping team and Thomas. Document for February staff recognition.',resolutionStatus:'Resolved',resolvedDate:'2026-02-15',assignedDept:'Front Office',assignedStaff:'Thomas Wong',resolutionNotes:'Feedback logged. Special occasion decoration programme noted as success.',isSample:true},
+  {id:'r010',platform:'Google Reviews',date:'2026-02-20',rating:5,booking:'BK-10030',room:'112',roomType:'Standard Room',text:'The mattress was very uncomfortable and sagged in the middle. I woke up with back pain both mornings. The pillows were flat and offered no support. For the price we paid I expected much better bedding quality. The room was clean but the furniture looked very worn.',sentiment:'Negative',category:'Room Comfort & Quality',subcategory:'Bedding',severity:4,maintFlag:false,cleanFlag:false,staffMentioned:'',action:'Replace mattress and bedding for Room 112. Conduct furniture condition audit and schedule replacement for worn items.',resolutionStatus:'In Progress',resolvedDate:'',assignedDept:'Housekeeping',assignedStaff:'',resolutionNotes:'New mattress on order. ETA 3 weeks.',isSample:true},
+  {id:'r011',platform:'Agoda',date:'2026-03-02',rating:7,booking:'BK-10031',room:'210',roomType:'Superior Room',text:'Good location and fair value. The gym equipment was outdated and one treadmill was broken with an out of order sign that looked like it had been there for weeks. Pool was clean though. Room was fine.',sentiment:'Neutral',category:'Facilities',subcategory:'Gym',severity:2,maintFlag:true,cleanFlag:false,staffMentioned:'',action:'Service or replace broken treadmill in gym. Conduct full gym equipment audit. Establish preventive maintenance schedule for fitness equipment.',resolutionStatus:'Open',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'',isSample:true},
+  {id:'r012',platform:'Booking.com',date:'2026-03-05',rating:4,booking:'BK-10032',room:'407',roomType:'Deluxe Room',text:'Dust everywhere. Under the bed was completely grey with dust. The curtain rails had visible dust build-up. The bathroom mirror had water marks and the kettle had limescale inside. Clearly only surface cleaning is being done. Not acceptable for 4-star hotel.',sentiment:'Negative',category:'Cleanliness',subcategory:'Deep Cleaning',severity:4,maintFlag:false,cleanFlag:true,staffMentioned:'',action:'Conduct deep clean Room 407: vacuum under all furniture, wipe all surfaces, replace kettle, descale bathroom fixtures, launder curtains.',resolutionStatus:'In Progress',resolvedDate:'',assignedDept:'Housekeeping',assignedStaff:'Maria Santos',resolutionNotes:'Deep clean completed 6 Mar. Supervisor inspection pending.',isSample:true},
+  {id:'r013',platform:'Tripadvisor',date:'2026-03-10',rating:8,booking:'BK-10033',room:'303',roomType:'Deluxe Room',text:'Solid mid-week stay for business. Clean room, good WiFi speed. The breakfast buffet was excellent especially the local options. Nadia at the breakfast station was very attentive. Minor issue: the bathroom fan was noisy.',sentiment:'Positive',category:'Facilities',subcategory:'F&B',severity:2,maintFlag:true,cleanFlag:false,staffMentioned:'Nadia',action:'Service bathroom extractor fan Room 303. Commend Nadia for F&B service.',resolutionStatus:'Open',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'',isSample:true},
+  {id:'r014',platform:'Expedia',date:'2026-03-15',rating:6,booking:'BK-10034',room:'101',roomType:'Deluxe Room',text:'AC rattling noise again in Room 101. Had the same issue reported previously. Seems like nothing was done. Also the light switch by the door was not working. Room was clean. Staff were polite.',sentiment:'Neutral',category:'Room Comfort & Quality',subcategory:'HVAC',severity:4,maintFlag:true,cleanFlag:false,staffMentioned:'',action:'REPEAT COMPLAINT: Escalate Room 101 AC unit to Chief Engineer. Replace blower motor. Replace faulty light switch. Document as recurring maintenance issue.',resolutionStatus:'Escalated',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'Rajan Kumar',resolutionNotes:'Recurring AC complaint. Motor replacement authorised.',isSample:true},
+  {id:'r015',platform:'Google Reviews',date:'2026-03-18',rating:9,booking:'BK-10035',room:'502',roomType:'Executive Suite',text:'Exceptional stay. The room was immaculate and the butler service was phenomenal. Rachel went above and beyond to make our stay special. The in-room dining was superb. Will definitely be back.',sentiment:'Positive',category:'Staff',subcategory:'Butler Service',severity:1,maintFlag:false,cleanFlag:false,staffMentioned:'Rachel',action:'Commend Rachel for outstanding service. Log for March recognition programme.',resolutionStatus:'Resolved',resolvedDate:'2026-03-19',assignedDept:'Rooms',assignedStaff:'Rachel Tan',resolutionNotes:'Positive review shared company-wide.',isSample:true},
+  {id:'r016',platform:'Trip.com',date:'2026-04-02',rating:3,booking:'BK-10036',room:'115',roomType:'Standard Room',text:'Cockroach in the bathroom. Absolutely disgusting. We immediately asked to change rooms and were moved after an hour wait. The new room was fine but the damage was done. Will not return.',sentiment:'Negative',category:'Cleanliness',subcategory:'Pest Control',severity:5,maintFlag:false,cleanFlag:true,staffMentioned:'',action:'URGENT: Deploy pest control for Room 115 and adjacent rooms. Conduct full floor inspection. Identify entry points. Block all gaps. File pest incident report per SOP.',resolutionStatus:'In Progress',resolvedDate:'',assignedDept:'Housekeeping',assignedStaff:'',resolutionNotes:'Pest control contracted. Full floor 1 treatment 3 Apr.',isSample:true},
+  {id:'r017',platform:'Agoda',date:'2026-04-08',rating:8,booking:'BK-10037',room:'209',roomType:'Superior Room',text:'Good overall. Very comfortable bed and clean room. The pool on the 5th floor was lovely. Minor comment: the elevator was slow and one of the two was out of service for our entire stay.',sentiment:'Positive',category:'Facilities',subcategory:'Elevator',severity:2,maintFlag:true,cleanFlag:false,staffMentioned:'',action:'Escalate elevator repair to building maintenance contractor. Provide estimated timeline to guests. Inspect second elevator for preventive maintenance.',resolutionStatus:'Monitoring',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'Elevator contractor on site. Repair ETA 2 weeks.',isSample:true},
+  {id:'r018',platform:'Booking.com',date:'2026-04-12',rating:5,booking:'BK-10038',room:'308',roomType:'Deluxe Room',text:'How is Room 308 still in use? Third time reading complaints about this room. Drain still blocked, smell still there. Hotel management needs to take this room offline and properly fix the underlying drainage issue.',sentiment:'Negative',category:'Cleanliness',subcategory:'Bathroom',severity:5,maintFlag:true,cleanFlag:true,staffMentioned:'',action:'CRITICAL RECURRING: Immediate management review of Room 308. Full plumbing replacement required. Remove from inventory until permanent fix completed. Compensation protocol for affected guests.',resolutionStatus:'Escalated',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'Rajan Kumar',resolutionNotes:'THIRD complaint Room 308. GM notified. Room permanently removed from inventory pending full plumbing overhaul.',isSample:true},
+  {id:'r019',platform:'Google Reviews',date:'2026-04-18',rating:10,booking:'BK-10039',room:'401',roomType:'Premium Room',text:'Absolutely perfect stay for our honeymoon. Everything was arranged beautifully. The staff including Alex and Mei went out of their way to make us feel special. Room was spotless and smelled wonderful. Cannot fault anything.',sentiment:'Positive',category:'Staff',subcategory:'Special Occasions',severity:1,maintFlag:false,cleanFlag:false,staffMentioned:'Alex,Mei',action:'Log excellent feedback. Share with Alex and Mei. Feature in internal newsletter.',resolutionStatus:'Resolved',resolvedDate:'2026-04-19',assignedDept:'Rooms',assignedStaff:'Alex Ng, Mei Lin',resolutionNotes:'Management personally thanked both staff members.',isSample:true},
+  {id:'r020',platform:'Traveloka',date:'2026-04-22',rating:6,booking:'BK-10040',room:'204',roomType:'Superior Room',text:'The room air conditioner was set to cool but was actually blowing warm air. Called engineering who came quickly and said they fixed it but it started doing the same thing again after an hour. Had an uncomfortable night.',sentiment:'Neutral',category:'Room Comfort & Quality',subcategory:'HVAC',severity:4,maintFlag:true,cleanFlag:false,staffMentioned:'',action:'Replace AC thermostat and inspect refrigerant levels for Room 204. Follow up same day to confirm fix is permanent.',resolutionStatus:'In Progress',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'Thermostat replaced. Refrigerant topped up. Monitoring.',isSample:true}
 ];
 
-// ── STATE ─────────────────────────────────────────────────────────────
-var State = {
-  reviews: [],
-  source: 'sample',  // 'uploaded' | 'cached' | 'sample'
-  uploadedAt: null,
-  fileName: null
+var CACHE_KEY='hoi_reviews_v3', SRC_KEY='hoi_source_v3';
+var State={reviews:[],source:'sample',fileName:null,uploadedAt:null,alertFilter:'all'};
+var RevPage={current:0,perPage:10};
+
+// ── Local Storage ──
+var LS={
+  get:function(k,def){try{var v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch(e){return def;}},
+  set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}},
+  del:function(k){try{localStorage.removeItem(k);}catch(e){}}
 };
 
-// ── CSV PARSER ────────────────────────────────────────────────────────
-// Full RFC-4180 compliant: handles quoted fields, embedded commas,
-// embedded newlines, \r\n and \r line endings.
-function parseCSV(raw) {
-  var result = [];
-  var pos = 0, len = raw.length;
-
-  function readField() {
-    if (pos >= len) return '';
-    if (raw[pos] === '"') {
-      pos++;
-      var f = '';
-      while (pos < len) {
-        if (raw[pos] === '"' && raw[pos+1] === '"') { f += '"'; pos += 2; }
-        else if (raw[pos] === '"') { pos++; break; }
-        else { f += raw[pos++]; }
-      }
-      return f;
-    }
-    var f = '';
-    while (pos < len && raw[pos] !== ',' && raw[pos] !== '\n' && raw[pos] !== '\r') {
-      f += raw[pos++];
-    }
-    return f.trim();
-  }
-
-  function readRow() {
-    var cells = [];
-    while (pos < len && raw[pos] !== '\n' && raw[pos] !== '\r') {
-      cells.push(readField());
-      if (pos < len && raw[pos] === ',') pos++;
-    }
-    if (pos < len) { if (raw[pos] === '\r') pos++; if (raw[pos] === '\n') pos++; }
-    return cells;
-  }
-
-  var headers = readRow().map(function(h){ return h.trim(); });
-  console.log('[CSV] Headers:', headers.join(' | '));
-
-  while (pos < len) {
-    var cells = readRow();
-    if (cells.every(function(c){ return !c; })) continue;
-    var obj = {};
-    headers.forEach(function(h, i){ obj[h] = cells[i] !== undefined ? cells[i] : ''; });
-    result.push(obj);
-  }
-  console.log('[CSV] Rows parsed:', result.length);
-  return { headers: headers, rows: result };
-}
-
-// ── FIELD NORMALIZERS ─────────────────────────────────────────────────
-function gf(row) {
-  // Returns a getter that tries multiple key variants
-  return function(/*...keys*/) {
-    for (var i = 0; i < arguments.length; i++) {
-      var v = row[arguments[i]];
-      if (v !== undefined && String(v).trim() !== '') return String(v).trim();
-    }
-    return '';
-  };
-}
-
-function normPlat(p) {
-  var l = p.toLowerCase();
-  if (l.includes('google'))       return 'Google';
-  if (l.includes('tripadvisor') || l.includes('trip advisor')) return 'TripAdvisor';
-  if (l.includes('agoda'))        return 'Agoda';
-  if (l.includes('booking'))      return 'Booking.com';
-  if (l.includes('expedia'))      return 'Expedia';
-  if (l.includes('traveloka'))    return 'Traveloka';
-  if (l.includes('trip.com') || l.includes('ctrip')) return 'Trip.com';
-  return p || 'Unknown';
-}
-
-function normDate(d) {
-  if (!d) return '';
-  d = d.trim();
-  if (/^\d{4}-\d{2}-\d{2}$/.test(d)) return d;
-  var parts = d.split(/[\/\-\.]/);
-  if (parts.length === 3) {
-    var a = parts[0], b = parts[1], c = parts[2];
-    if (c.length === 4) return c + '-' + b.padStart(2,'0') + '-' + a.padStart(2,'0');
-    if (a.length === 4) return a + '-' + b.padStart(2,'0') + '-' + c.padStart(2,'0');
-    return '20' + c + '-' + a.padStart(2,'0') + '-' + b.padStart(2,'0');
-  }
-  var p = new Date(d);
-  return isNaN(p) ? d : p.toISOString().slice(0,10);
-}
-
-function normSent(s) {
-  var l = s.toLowerCase();
-  if (l.includes('pos')) return 'Positive';
-  if (l.includes('neg')) return 'Negative';
-  if (l.includes('neu')) return 'Neutral';
-  return '';
-}
-
-function normSev(s) {
-  var l = s.toLowerCase();
-  if (l.includes('high') || l === '3') return 'High';
-  if (l.includes('med')  || l === '2') return 'Medium';
-  if (l.includes('low')  || l === '1') return 'Low';
-  return '';
-}
-
-function normFlag(v) {
-  var l = String(v).toLowerCase().trim();
-  return ['yes','true','1','y','x'].includes(l);
-}
-
-// ── AUTO ANALYZE ──────────────────────────────────────────────────────
-function autoAnalyze(text, rating) {
-  var t = text.toLowerCase(), P = C.PAT;
-  var NEG = ['dirty','broken','rude','terrible','awful','horrible','unacceptable','worst','bad','poor','disappointing','unclean','problem','issue','leaked','mold','pest','smelly','fault','slow','waited','overcharged','wrong','ignored','dismissive'];
-  var POS = ['great','excellent','amazing','wonderful','fantastic','lovely','clean','comfortable','helpful','friendly','perfect','superb','outstanding','spotless','cozy','beautiful','enjoyed','impressed','professional','efficient','welcoming','attentive','recommend'];
-  var nc = NEG.filter(function(w){ return t.includes(w); }).length;
-  var pc = POS.filter(function(w){ return t.includes(w); }).length;
-  var sent = rating >= 4 ? 'Positive' : rating <= 2 ? 'Negative' : 'Neutral';
-  if (nc > pc && rating < 5) sent = nc >= 3 ? 'Negative' : 'Neutral';
-  if (pc > nc && rating > 2) sent = 'Positive';
-  if (rating <= 2) sent = 'Negative';
-  if (rating === 5 && pc > 0) sent = 'Positive';
-  var cat='Room Comfort & Quality', sub='General', dept='General';
-  var mf=false, cf=false, sev='Low';
-  var action='Monitor and log for pattern analysis';
-  if (P.maint.test(t)) { cat='Room Comfort & Quality'; sub='Maintenance Issue'; dept='Maintenance'; mf=true; sev='High'; action='Raise work order; Engineering to inspect within 4 hours'; }
-  if (P.clean.test(t)) { cat='Cleanliness'; sub='Housekeeping Issue'; dept='Housekeeping'; cf=true; sev=rating<=2?'High':'Medium'; action='Flag for deep clean; Housekeeping supervisor inspection required'; }
-  if (P.fo.test(t))    { cat='Staff'; sub='Front Office Issue'; dept='Front Office'; sev=rating<=2?'High':'Medium'; action='Front Office Manager to review; coaching to be scheduled'; }
-  if (P.fnb.test(t) && cat==='Room Comfort & Quality') { cat='Facilities'; sub='Food & Beverage Issue'; dept='F&B'; sev='Medium'; action='F&B Manager to review'; }
-  if (P.fac.test(t) && cat==='Room Comfort & Quality') { cat='Facilities'; sub='Facilities Issue'; dept='Facilities'; sev='Medium'; action='Facilities team to inspect'; }
-  if (P.val.test(t) && cat==='Room Comfort & Quality') { cat='Value for Money'; sub='Pricing Concern'; dept='Revenue'; sev=rating<=2?'High':'Low'; action='Revenue Manager to review guest value perception'; }
-  if (sent === 'Positive' && !mf && !cf) sev = 'Low';
-  if (rating === 1) sev = 'High';
-  return {sentiment:sent, category:cat, subcategory:sub, department:dept, maintFlag:mf, cleanFlag:cf, severity:sev, action:action};
-}
-
-// ── ROW → REVIEW ──────────────────────────────────────────────────────
-function buildReview(row, idx) {
-  var g = gf(row);
-  var text = g('Review Text','review_text','ReviewText','Text','text','REVIEW TEXT','review','Review');
-  if (!text) return null;
-
-  var platRaw  = g('Platform','platform','PLATFORM');
-  var platform = platRaw ? normPlat(platRaw) : 'Unknown';
-  var dateRaw  = g('Date','date','DATE','Review Date','review_date');
-  var booking  = g('Booking Number','booking_number','BookingNumber','Booking No','booking');
-  var room     = g('Room Number','room_number','RoomNumber','Room No','Room','room') || '—';
-  var roomType = g('Room Type','room_type','RoomType','Type') || 'Unknown';
-  var ratingRaw = g('Rating','rating','RATING','Score','score');
-  var ratingNum = parseFloat(String(ratingRaw).replace('/5','').replace('/10','')) || 3;
-  var rating   = ratingNum > 5 ? ratingNum / 2 : ratingNum;
-
-  var sentSheet = normSent(g('Sentiment','sentiment','SENTIMENT'));
-  var catSheet  = g('Category','category','CATEGORY');
-  var sevSheet  = normSev(g('Severity','severity','SEVERITY'));
-  var mfRaw     = g('Maintenance Flag','maintenance_flag','Maintenance','maintenance');
-  var cfRaw     = g('Cleaning Flag','cleaning_flag','Cleaning','cleaning');
-  var mfSheet   = mfRaw ? normFlag(mfRaw) : false;
-  var cfSheet   = cfRaw ? normFlag(cfRaw) : false;
-  var staff     = g('Mentioned Staff','mentioned_staff','Staff Mentioned','Staff','staff');
-  var action    = g('Suggested Action','suggested_action','Action','action');
-
-  var auto = autoAnalyze(text, rating);
-  if (!sentSheet) sentSheet = auto.sentiment;
-  if (!catSheet)  catSheet  = auto.category;
-  if (!sevSheet)  sevSheet  = auto.severity;
-  if (!mfSheet && auto.maintFlag) mfSheet = true;
-  if (!cfSheet && auto.cleanFlag) cfSheet = true;
-  if (!action)    action    = auto.action;
-
-  return {
-    id: 'R' + idx + '_' + (booking || room).replace(/\s/g,'').slice(0,6),
-    platform: platform,
-    date: normDate(dateRaw),
-    booking: booking,
-    room: room,
-    roomType: roomType,
-    text: text,
-    rating: Math.max(1, Math.min(5, rating)),
-    sentiment: sentSheet,
-    category: catSheet || auto.category,
-    subcategory: auto.subcategory,
-    severity: sevSheet,
-    department: auto.department,
-    maintFlag: mfSheet,
-    cleanFlag: cfSheet,
-    staffMentioned: staff,
-    action: action
-  };
-}
-
-// ── PROCESS CSV TEXT ──────────────────────────────────────────────────
-function processCSVText(csvText, fileName) {
-  console.log('[Process] Parsing CSV, length:', csvText.length);
-  var parsed = parseCSV(csvText);
-  if (!parsed.rows.length) throw new Error('No data rows found. Check that the file has content.');
-  var built = parsed.rows.map(function(r, i){ return buildReview(r, i); }).filter(Boolean);
-  if (!built.length) throw new Error('No valid reviews found. Check column names match expected format.');
-  console.log('[Process] Built', built.length, 'valid reviews from', parsed.rows.length, 'rows');
-  State.reviews = built;
-  State.source  = 'uploaded';
-  State.uploadedAt = new Date().toISOString();
-  State.fileName = fileName || 'uploaded.csv';
-  // Persist to localStorage (compressed to avoid quota issues on large datasets)
-  try {
-    LS.set(CACHE_KEY, { reviews: built, uploadedAt: State.uploadedAt, fileName: State.fileName });
-    LS.set(SOURCE_KEY, 'uploaded');
-  } catch(e) {
-    console.warn('[Process] Cache write failed (quota?):', e.message);
-  }
-  return built.length;
-}
-
-// ── ANALYTICS ─────────────────────────────────────────────────────────
-var A = {
-  summary: function(rv) {
-    var n = rv.length;
-    if (!n) return {total:0,avg:0,pos:0,alerts:0,posPct:0};
-    var pos = rv.filter(function(r){ return r.sentiment==='Positive'; }).length;
-    return {total:n, avg:+(rv.reduce(function(s,r){ return s+(r.rating||3); },0)/n).toFixed(2), pos:pos, alerts:rv.filter(function(r){ return r.maintFlag||r.cleanFlag; }).length, posPct:Math.round(pos/n*100)};
+// ── Date Utilities ──
+var DateU={
+  parse:function(s){
+    if(!s)return null;
+    s=String(s).trim();
+    var d;
+    if(/^\d{4}-\d{2}-\d{2}/.test(s)){d=new Date(s.slice(0,10));}
+    else if(/^\d{2}\/\d{2}\/\d{4}/.test(s)){var p=s.split('/');d=new Date(p[2]+'-'+p[1]+'-'+p[0]);}
+    else if(/^\d{1,2}\/\d{1,2}\/\d{4}/.test(s)){var p=s.split('/');d=new Date(p[2]+'-'+p[1].padStart(2,'0')+'-'+p[0].padStart(2,'0'));}
+    else{d=new Date(s);}
+    return isNaN(d.getTime())?null:d;
   },
-  byPlat: function(rv) {
-    var m = {};
-    rv.forEach(function(r){ if(!m[r.platform])m[r.platform]={s:0,n:0,pos:0,neg:0,neu:0}; m[r.platform].s+=(r.rating||3); m[r.platform].n++; m[r.platform][r.sentiment==='Positive'?'pos':r.sentiment==='Negative'?'neg':'neu']++; });
-    return Object.entries(m).map(function(e){ return Object.assign({p:e[0],avg:+(e[1].s/e[1].n).toFixed(2)},e[1]); }).sort(function(a,b){ return b.avg-a.avg; });
+  toKey:function(dateStr){
+    var d=this.parse(dateStr);
+    if(!d)return'Unknown';
+    return d.getFullYear()+'-'+(d.getMonth()+1).toString().padStart(2,'0');
   },
-  byCat: function(rv) {
-    var m = {};
-    rv.forEach(function(r){ m[r.category]=(m[r.category]||0)+1; });
-    return Object.entries(m).map(function(e){ return {k:e[0],v:e[1]}; }).sort(function(a,b){ return b.v-a.v; });
-  },
-  bySev: function(rv) {
-    var m = {High:0,Medium:0,Low:0};
-    rv.forEach(function(r){ m[r.severity]=(m[r.severity]||0)+1; });
-    return m;
-  },
-  byRoom: function(rv) {
-    var m = {};
-    rv.forEach(function(r){ if(!m[r.room])m[r.room]={type:r.roomType,rv:[],mt:0,cl:0}; m[r.room].rv.push(r); if(r.maintFlag)m[r.room].mt++; if(r.cleanFlag)m[r.room].cl++; });
-    return Object.entries(m).map(function(e){
-      var rm=e[0], d=e[1];
-      var pos=d.rv.filter(function(r){ return r.sentiment==='Positive'; }).length;
-      var neg=d.rv.filter(function(r){ return r.sentiment==='Negative'; }).length;
-      var avg=+(d.rv.reduce(function(s,r){ return s+(r.rating||3); },0)/d.rv.length).toFixed(2);
-      var iss=d.rv.filter(function(r){ return r.sentiment==='Negative'; }).map(function(r){ return r.subcategory; });
-      var top=iss.length?iss.sort(function(a,b){ return iss.filter(function(x){ return x===b; }).length-iss.filter(function(x){ return x===a; }).length; })[0]:'—';
-      return {rm:rm, type:d.type, rv:d.rv, pos:pos, neg:neg, avg:avg, mt:d.mt, cl:d.cl, top:top};
+  toLabel:function(key){
+    if(key==='Unknown')return'Unknown';
+    var p=key.split('-');
+    var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return months[parseInt(p[1])-1]+' '+p[0];
+  }
+};
+
+// ── Toast ──
+function toast(msg,dur){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},dur||3000);
+}
+
+// ── Chart registry ──
+var Charts={};
+function makeChart(id,config){
+  if(Charts[id])Charts[id].destroy();
+  var el=document.getElementById(id);
+  if(!el)return;
+  Charts[id]=new Chart(el,config);
+  return Charts[id];
+}
+
+// ── Helpers ──
+function getSentClass(s){return s==='Positive'?'badge-green':s==='Negative'?'badge-red':'badge-amber';}
+function getSevClass(n){return n>=5?'sev-5':n>=3?'sev-3':'sev-1';}
+function resClass(s){if(!s)return'status-open';var m={'Open':'status-open','In Progress':'status-inprogress','Monitoring':'status-monitoring','Resolved':'status-resolved','Escalated':'status-escalated'};return m[s]||'status-open';}
+function stars(r){var n=Math.round(r/2);var s='';for(var i=0;i<5;i++)s+=i<n?'★':'☆';return s;}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// ── Aggregations ──
+var Agg={
+  byMonth:function(reviews){
+    var map={};
+    reviews.forEach(function(r){
+      var k=DateU.toKey(r.date);
+      if(!map[k])map[k]={pos:0,neg:0,neu:0,total:0,ratingSum:0,sev:[]};
+      map[k].total++;
+      map[k].ratingSum+=parseFloat(r.rating)||0;
+      if(r.sentiment==='Positive')map[k].pos++;
+      else if(r.sentiment==='Negative')map[k].neg++;
+      else map[k].neu++;
+      if(r.severity)map[k].sev.push(parseInt(r.severity));
     });
+    var keys=Object.keys(map).filter(function(k){return k!=='Unknown';}).sort();
+    if(map['Unknown'])keys.push('Unknown');
+    return{keys:keys,map:map};
   },
-  byStaff: function(rv) {
-    var m = {};
-    rv.forEach(function(r){ if(!r.staffMentioned)return; String(r.staffMentioned).split(',').forEach(function(raw){ var n=raw.trim(); if(!n||n.length<2||n==='-'||n.toLowerCase()==='none')return; if(!m[n])m[n]={pos:0,neg:0}; m[n][r.sentiment==='Positive'?'pos':'neg']++; }); });
-    return Object.entries(m).map(function(e){ return {n:e[0],pos:e[1].pos,neg:e[1].neg,t:e[1].pos+e[1].neg}; }).sort(function(a,b){ return b.t-a.t; });
+  byRoom:function(reviews){
+    var map={};
+    reviews.forEach(function(r){
+      if(!r.room)return;
+      if(!map[r.room])map[r.room]={room:r.room,type:r.roomType||'',total:0,neg:0,pos:0,maint:0,clean:0,ratingSum:0,lastDate:'',complaints:[]};
+      var rm=map[r.room];
+      rm.total++;rm.ratingSum+=parseFloat(r.rating)||0;
+      if(r.sentiment==='Positive')rm.pos++;
+      if(r.sentiment==='Negative'){rm.neg++;rm.complaints.push(r.text);}
+      if(r.maintFlag===true||r.maintFlag==='Yes'||r.maintFlag==='true')rm.maint++;
+      if(r.cleanFlag===true||r.cleanFlag==='Yes'||r.cleanFlag==='true')rm.clean++;
+      if(!rm.lastDate||r.date>rm.lastDate)rm.lastDate=r.date;
+    });
+    return map;
   },
-  issues: function(rv) {
-    var m = {};
-    rv.filter(function(r){ return r.sentiment==='Negative'; }).forEach(function(r){ m[r.subcategory]=(m[r.subcategory]||0)+1; });
-    return Object.entries(m).map(function(e){ return {k:e[0],v:e[1]}; }).sort(function(a,b){ return b.v-a.v; });
+  byPlatform:function(reviews){
+    var map={};
+    reviews.forEach(function(r){
+      if(!map[r.platform])map[r.platform]={total:0,ratingSum:0,pos:0,neg:0};
+      map[r.platform].total++;
+      map[r.platform].ratingSum+=parseFloat(r.rating)||0;
+      if(r.sentiment==='Positive')map[r.platform].pos++;
+      if(r.sentiment==='Negative')map[r.platform].neg++;
+    });
+    return map;
   },
-  trend: function(rv) {
-    return C.MONTHS.map(function(_,i){ var s=rv.slice(i*3,(i+1)*3+2); return {pos:s.filter(function(r){ return r.sentiment==='Positive'; }).length, neg:s.filter(function(r){ return r.sentiment==='Negative'; }).length}; });
+  byStaff:function(reviews){
+    var map={};
+    reviews.forEach(function(r){
+      if(!r.staffMentioned)return;
+      var names=String(r.staffMentioned).split(',');
+      names.forEach(function(n){
+        n=n.trim();if(!n)return;
+        if(!map[n])map[n]={name:n,total:0,pos:0,neg:0,neu:0,reviews:[]};
+        map[n].total++;map[n].reviews.push(r);
+        if(r.sentiment==='Positive')map[n].pos++;
+        else if(r.sentiment==='Negative')map[n].neg++;
+        else map[n].neu++;
+      });
+    });
+    return map;
   }
 };
 
-// ── UI HELPERS ────────────────────────────────────────────────────────
-var U = {
-  $: function(id){ return document.getElementById(id); },
-  set: function(id, h){ var e=document.getElementById(id); if(e) e.innerHTML=h; },
-  plat: function(p){ var c=C.PLAT_CSS[p]||'pun'; return '<span class="plat '+c+'">'+p+'</span>'; },
-  stars: function(n){ n=Math.min(5,Math.max(1,Math.round(n||3))); return '★'.repeat(n)+'☆'.repeat(5-n); },
-  sent: function(s){ return '<span class="sent '+(s==='Positive'?'sp':s==='Negative'?'sn':'su')+'">'+( s||'—')+'</span>'; },
-  sev:  function(s){ return '<span class="sev '+(s==='High'?'sh':s==='Medium'?'sm':'sl')+'">'+(s||'—')+'</span>'; },
-  dept: function(d){ var m={Maintenance:'dept-mt',Housekeeping:'dept-hk','Front Office':'dept-fo','F&B':'dept-fb',Facilities:'dept-fc',Revenue:'dept-gm',General:'dept-gm'}; return '<span class="dept '+(m[d]||'dept-gm')+'">'+(d||'General')+'</span>'; },
-  date: function(d){ if(!d||d==='—')return'—'; var p=String(d).split('-'); return p.length===3?p[2]+'/'+p[1]+'/'+p[0]:d; },
-  avCol: function(n){ var h=0; for(var i=0;i<n.length;i++) h=(h*31+n.charCodeAt(i))%C.AV_COLS.length; return C.AV_COLS[h]; },
-  ini: function(n){ return (n||'?').trim().split(' ').map(function(w){ return w[0]||''; }).join('').slice(0,2).toUpperCase()||'?'; },
-  kpi: function(o){ return '<div class="kpi '+o.ac+'"><div class="klb">'+o.lb+'</div><div class="kv">'+o.val+'</div><div class="ks">'+o.sub+'</div><div class="kbg '+o.bc+'">'+o.bh+'</div></div>'; },
-  rentry: function(d,rank,col){ return '<div class="re"><div class="rrk">#'+rank+'</div><div class="rnm">Rm '+d.rm+'</div><div class="rty">'+d.type+'</div><div class="rtr"><div class="rfi" style="width:'+(d.avg/5*100).toFixed(0)+'%;background:'+col+'"></div></div><div class="rsc" style="color:'+col+'">'+d.avg.toFixed(1)+'</div><div class="rcn">'+d.rv.length+'&#215;</div></div>'; },
-  alertCard: function(r,css){ var issue=r.subcategory||r.category||'Issue'; return '<div class="alcard '+css+'"><div class="alhead"><div class="alroom">Rm '+r.room+'</div><div class="alisue">'+issue+'</div>'+U.sev(r.severity)+' '+U.plat(r.platform)+'</div><div class="albody"><div class="alfield"><div class="alfldlb">Date</div><div class="alfldv">'+U.date(r.date)+'</div></div><div class="alfield"><div class="alfldlb">Dept</div><div class="alfldv">'+U.dept(r.department)+'</div></div><div class="alfield"><div class="alfldlb">Room Type</div><div class="alfldv">'+(r.roomType||'—')+'</div></div><div class="alfield"><div class="alfldlb">Action</div><div class="alfldv" style="font-size:10px;color:var(--t3)">'+r.action+'</div></div></div></div>'; },
-  staffCard: function(d){ var col=U.avCol(d.n); return '<div class="se"><div class="sav" style="background:'+col+'22;color:'+col+'">'+U.ini(d.n)+'</div><div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--t1)">'+d.n+'</div><div style="font-size:10px;color:var(--t3)">'+d.pos+' positive &#183; '+d.neg+' complaints</div></div><div style="display:flex;gap:3px">'+(d.pos>0?'<span class="kbg bgg">+'+d.pos+'</span>':'')+(d.neg>0?'<span class="kbg bgr">-'+d.neg+'</span>':'')+'</div></div>'; },
-  empty: function(m){ return '<div class="es">'+m+'</div>'; },
-  toast: function(m, dur){
-    var t=U.$('toast'); t.innerHTML=m; t.classList.add('show');
-    clearTimeout(t._t); t._t=setTimeout(function(){ t.classList.remove('show'); }, dur||3000);
-  }
-};
+// ── Page navigation ──
+function showPage(p){
+  document.querySelectorAll('.page').forEach(function(x){x.classList.remove('active');});
+  document.querySelectorAll('.ntab').forEach(function(x){x.classList.remove('active');});
+  var pg=document.getElementById('page-'+p);
+  var tb=document.getElementById('tab-'+p);
+  if(pg)pg.classList.add('active');
+  if(tb)tb.classList.add('active');
+  if(p==='overview')renderOverview();
+  else if(p==='reviews')R.renderReviews();
+  else if(p==='rooms')renderRooms();
+  else if(p==='alerts')A.render();
+  else if(p==='analytics')renderAnalytics();
+  else if(p==='staff')renderStaff();
+  else if(p==='import')renderImport();
+}
 
-// ── CHART MANAGER ─────────────────────────────────────────────────────
-var CM = {
-  _r: {},
-  destroy: function(k){ if(this._r[k]){this._r[k].destroy();delete this._r[k];} },
-  _tc: function(){ return Sett.dark?'#6b718f':'#7b83a8'; },
-  _base: function(){ var tc=this._tc(),gc='rgba(128,128,128,.08)'; return {responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:gc},ticks:{color:tc,font:{size:10}}},y:{grid:{color:gc},ticks:{color:tc,font:{size:10}}}}}; },
-  _m: function(a,b){ var r=Object.assign({},a); for(var k in b){if(b[k]&&typeof b[k]==='object'&&!Array.isArray(b[k]))r[k]=this._m(a[k]||{},b[k]);else r[k]=b[k];} return r; },
-  make: function(key,type,data,ov){ this.destroy(key); var c=U.$(key); if(!c||!window.Chart)return; this._r[key]=new Chart(c,{type:type,data:data,options:this._m(this._base(),ov||{})}); },
-  line: function(k,l,d,ov){ this.make(k,'line',{labels:l,datasets:d},ov); },
-  bar:  function(k,l,d,ov){ this.make(k,'bar',{labels:l,datasets:d},ov); },
-  sbar: function(k,l,d){ this.make(k,'bar',{labels:l,datasets:d},{scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true}}}); },
-  donut:function(k,l,d,c,cut){ this.make(k,'doughnut',{labels:l,datasets:[{data:d,backgroundColor:c,borderWidth:0,hoverOffset:4}]},{cutout:cut||'65%',scales:{x:{display:false},y:{display:false}}}); }
-};
+// ── OVERVIEW ──
+function renderOverview(){
+  var rv=State.reviews;
+  var total=rv.length;
+  var pos=rv.filter(function(r){return r.sentiment==='Positive';}).length;
+  var neg=rv.filter(function(r){return r.sentiment==='Negative';}).length;
+  var maintN=rv.filter(function(r){return r.maintFlag===true||r.maintFlag==='Yes'||r.maintFlag==='true';}).length;
+  var cleanN=rv.filter(function(r){return r.cleanFlag===true||r.cleanFlag==='Yes'||r.cleanFlag==='true';}).length;
+  var avgR=total?Math.round(rv.reduce(function(a,b){return a+(parseFloat(b.rating)||0);},0)/total*10)/10:0;
+  var open=rv.filter(function(r){return !r.resolutionStatus||r.resolutionStatus==='Open';}).length;
 
-// ── RENDERERS ─────────────────────────────────────────────────────────
-var R = {
-  all: function() {
-    var rv = State.reviews;
-    R.statusBar();
-    R.kpis(rv);
-    R.roomKpis(rv);
-    R.ota(rv);
-    R.rlist(rv);
-    R.charts(rv);
-    R.table(rv);
-    R.rooms(rv);
-    R.alerts(rv);
-    R.staff(rv);
-    R.analytics(rv);
-    R.datasetInfo();
-    U.set('tblSource', State.source==='uploaded' ? '&#9679; Uploaded: '+State.fileName : State.source==='cached' ? '&#9679; Cached dataset' : '&#9679; Sample data — upload CSV to load real reviews');
-  },
+  document.getElementById('kpiCards').innerHTML=
+    '<div class="stat"><div class="stat-label">Total Reviews</div><div class="stat-val">'+total+'</div><div class="stat-sub">Analysed entries</div><div class="stat-accent">✉</div></div>'+
+    '<div class="stat"><div class="stat-label">Avg Rating</div><div class="stat-val">'+avgR+'<span style="font-size:14px;color:var(--t3)">/10</span></div><div class="stat-sub"><span class="stars">'+stars(avgR)+'</span></div><div class="stat-accent">★</div></div>'+
+    '<div class="stat"><div class="stat-label">Positive Sentiment</div><div class="stat-val" style="color:var(--green)">'+Math.round(total?pos/total*100:0)+'%</div><div class="stat-sub">'+pos+' positive reviews</div><div class="stat-accent">↑</div></div>'+
+    '<div class="stat"><div class="stat-label">Negative Sentiment</div><div class="stat-val" style="color:var(--red)">'+Math.round(total?neg/total*100:0)+'%</div><div class="stat-sub">'+neg+' negative reviews</div><div class="stat-accent">↓</div></div>'+
+    '<div class="stat"><div class="stat-label">Maint. Flags</div><div class="stat-val" style="color:var(--amber)">'+maintN+'</div><div class="stat-sub">Rooms need attention</div><div class="stat-accent">🔧</div></div>'+
+    '<div class="stat"><div class="stat-label">Cleaning Flags</div><div class="stat-val" style="color:var(--teal)">'+cleanN+'</div><div class="stat-sub">Housekeeping alerts</div><div class="stat-accent">🧹</div></div>'+
+    '<div class="stat"><div class="stat-label">Open Issues</div><div class="stat-val" style="color:var(--red)">'+open+'</div><div class="stat-sub">Unresolved alerts</div><div class="stat-accent">⚠</div></div>'+
+    '<div class="stat"><div class="stat-label">Satisfaction Score</div><div class="stat-val" style="color:var(--blue)">'+Math.round(total?pos/total*100:0)+'</div><div class="stat-sub">Positive sentiment %</div><div class="stat-accent">◑</div></div>';
 
-  statusBar: function() {
-    var src = State.source, rv = State.reviews;
-    var cfg;
-    if (src === 'uploaded') {
-      cfg = {cls:'sb-live', icon:'&#10003;', text:'<strong>Live uploaded data</strong> &nbsp;&#183;&nbsp; '+rv.length+' reviews from '+State.fileName+' &nbsp;&#183;&nbsp; Uploaded '+new Date(State.uploadedAt).toLocaleString()};
-    } else if (src === 'cached') {
-      cfg = {cls:'sb-live', icon:'&#9679;', text:'<strong>Cached dataset</strong> &nbsp;&#183;&nbsp; '+rv.length+' reviews &nbsp;&#183;&nbsp; From previous upload of '+State.fileName};
-    } else {
-      cfg = {cls:'sb-sample', icon:'&#9432;', text:'<strong>Sample data mode</strong> &nbsp;&#183;&nbsp; Upload your Google Sheets CSV to load real data &nbsp;&#183;&nbsp; <a href="#" onclick="App.goTab(\'upload\',document.querySelectorAll(\'.ni\')[6]);return false;" style="color:var(--amber);font-weight:600">Go to Data Source &#8594;</a>'};
-    }
-    U.set('statusBar', '<div class="sbar '+(src==='sample'?'sb-sample':'sb-live')+'"><span style="flex-shrink:0">'+cfg.icon+'</span><span class="sb-label">'+cfg.text+'</span></div>');
-  },
+  document.getElementById('statsLabel').textContent=total+' reviews loaded';
 
-  kpis: function(rv) {
-    var s = A.summary(rv);
-    if (!s.total) { U.set('kpiStrip','<div style="grid-column:span 4;padding:20px;color:var(--t3);font-size:12px;text-align:center">No data — upload a CSV file from the Data Source tab</div>'); return; }
-    var ac = s.avg>=4.5?'bgg':s.avg>=3.5?'bga':'bgr';
-    U.set('kpiStrip', [
-      U.kpi({ac:'kpi kb',lb:'Total Reviews',val:s.total,sub:'All platforms',bc:'bgb',bh:'&#9679; '+(State.source==='uploaded'?'Uploaded':'Loaded')}),
-      U.kpi({ac:'kpi kg',lb:'Average Rating',val:s.avg.toFixed(1),sub:'Out of 5.0',bc:ac,bh:s.avg>=4.5?'Excellent':s.avg>=3.5?'Good':'Needs Attention'}),
-      U.kpi({ac:'kpi ka',lb:'Positive Sentiment',val:s.posPct+'%',sub:s.pos+' of '+s.total+' reviews',bc:'bgg',bh:'&#10003; On track'}),
-      U.kpi({ac:'kpi kr',lb:'Open Alerts',val:s.alerts,sub:'Maintenance + Housekeeping',bc:s.alerts>5?'bgr':'bga',bh:s.alerts+' rooms flagged'})
-    ].join(''));
-    U.$('alertPill').textContent = rv.filter(function(r){ return r.maintFlag||r.cleanFlag||r.severity==='High'; }).length;
-  },
+  // Sentiment trend chart - dynamic months from data
+  var mdata=Agg.byMonth(rv);
+  var mkeys=mdata.keys;
+  var mlabels=mkeys.map(DateU.toLabel.bind(DateU));
+  document.getElementById('sentTrendLabel').textContent=mlabels.length+' months';
+  makeChart('sentTrendChart',{type:'line',data:{labels:mlabels,datasets:[
+    {label:'Positive',data:mkeys.map(function(k){return mdata.map[k].pos;}),borderColor:'#35c985',backgroundColor:'rgba(53,201,133,.08)',tension:.4,fill:true,pointRadius:3},
+    {label:'Negative',data:mkeys.map(function(k){return mdata.map[k].neg;}),borderColor:'#e85566',backgroundColor:'rgba(232,85,102,.08)',tension:.4,fill:true,pointRadius:3},
+    {label:'Neutral',data:mkeys.map(function(k){return mdata.map[k].neu;}),borderColor:'#f0b020',backgroundColor:'rgba(240,176,32,.08)',tension:.4,fill:true,pointRadius:3}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5d6488',font:{size:10},maxRotation:45,autoSkip:false},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#5d6488',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'},beginAtZero:true}}}});
 
-  roomKpis: function(rv) {
-    var rooms = A.byRoom(rv);
-    U.set('roomKpis', [
-      U.kpi({ac:'kpi kb',lb:'Rooms Monitored',val:rooms.length,sub:'Unique rooms',bc:'bgb',bh:'Active'}),
-      U.kpi({ac:'kpi kr',lb:'With Complaints',val:rooms.filter(function(r){ return r.neg>0; }).length,sub:'Negative reviews',bc:'bgr',bh:'Review required'}),
-      U.kpi({ac:'kpi ka',lb:'Maintenance Req.',val:rooms.filter(function(r){ return r.mt>0; }).length,sub:'Flagged rooms',bc:'bga',bh:'Action needed'}),
-      U.kpi({ac:'kpi kb',lb:'Deep Clean Req.',val:rooms.filter(function(r){ return r.cl>0; }).length,sub:'Flagged rooms',bc:'bgb',bh:'Schedule now'})
-    ].join(''));
-  },
+  // Platform chart
+  var pdata=Agg.byPlatform(rv);
+  var plats=Object.keys(pdata);
+  makeChart('platformChart',{type:'bar',data:{labels:plats.map(function(p){return p.replace(' Reviews','').replace('.com','');}),datasets:[{label:'Avg Rating',data:plats.map(function(p){return pdata[p].total?Math.round(pdata[p].ratingSum/pdata[p].total*10)/10:0;}),backgroundColor:'rgba(79,126,240,.7)',borderColor:'#4f7ef0',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5d6488',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#5d6488',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'},min:0,max:10}}}});
 
-  ota: function(rv) {
-    var d = A.byPlat(rv);
-    if (!d.length) { U.set('otaBars',U.empty('No platform data')); return; }
-    U.set('otaBars', d.map(function(o){ var col=C.PLAT_COL[o.p]||'#888'; return '<div class="orow"><div class="olb"><span class="pdot" style="background:'+col+'"></span>'+o.p+'</div><div class="otr"><div class="ofi" style="width:'+(o.avg/5*100).toFixed(0)+'%;background:'+col+'"></div></div><div class="osc">'+o.avg.toFixed(1)+'</div><div class="ocn">'+o.n+' reviews</div></div>'; }).join(''));
-  },
+  // Category bars
+  var cats={'Room Comfort & Quality':0,'Cleanliness':0,'Staff':0,'Facilities':0,'Value for Money':0,'Other':0};
+  rv.forEach(function(r){if(cats[r.category]!==undefined)cats[r.category]++;else cats['Other']++;});
+  var catMax=Math.max.apply(null,Object.values(cats))||1;
+  var catColors={'Room Comfort & Quality':'#4f7ef0','Cleanliness':'#35c985','Staff':'#8e6de8','Facilities':'#f0b020','Value for Money':'#25bfbf','Other':'#5d6488'};
+  document.getElementById('catBars').innerHTML=Object.keys(cats).map(function(c){
+    return '<div class="bar-row"><div class="bar-label" title="'+c+'">'+c+'</div><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(cats[c]/catMax*100)+'%;background:'+catColors[c]+'"></div></div><div class="bar-val">'+cats[c]+'</div></div>';
+  }).join('');
 
-  rlist: function(rv) {
-    var rooms = A.byRoom(rv).sort(function(a,b){ return b.avg-a.avg; });
-    var empty = U.empty('No room data');
-    U.set('topRooms', rooms.length ? rooms.slice(0,6).map(function(d,i){ return U.rentry(d,i+1,'var(--green)'); }).join('') : empty);
-    U.set('worstRooms', rooms.length ? rooms.slice().reverse().slice(0,6).map(function(d,i){ return U.rentry(d,i+1,'var(--red)'); }).join('') : empty);
-  },
+  // Alert summary
+  var criticals=rv.filter(function(r){return r.severity>=5&&(!r.resolutionStatus||r.resolutionStatus==='Open'||r.resolutionStatus==='Escalated');});
+  document.getElementById('alertSummary').innerHTML=criticals.length?criticals.slice(0,4).map(function(r){
+    return '<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd)">'+
+      '<span class="sev sev-5">5</span>'+
+      '<div><div style="font-size:12px;color:var(--t1);margin-bottom:2px">Room '+esc(r.room)+' — '+esc(r.category)+'</div>'+
+      '<div style="font-size:11px;color:var(--t3)">'+esc(r.platform)+' • '+r.date+'</div></div>'+
+      '<div class="status '+resClass(r.resolutionStatus)+'" style="margin-left:auto;flex-shrink:0">'+esc(r.resolutionStatus||'Open')+'</div></div>';
+  }).join('')+'<div style="text-align:center;margin-top:8px"><button class="fbtn" onclick="showPage(\'alerts\')">View All Alerts →</button></div>':
+  '<div class="empty"><span>✓</span>No critical open alerts</div>';
 
-  charts: function(rv) {
-    if (!window.Chart) return;
-    var KEYS = ['cTrend','cCat','cPlat','cSev','cRoomType','cVol','cRatPlat','cStaff'];
-    if (!rv.length) { KEYS.forEach(function(k){ CM.destroy(k); }); return; }
-    var tr = A.trend(rv);
-    CM.line('cTrend', C.MONTHS, [
-      {label:'Pos',data:tr.map(function(t){ return t.pos; }),borderColor:'#3ecf8e',backgroundColor:'rgba(62,207,142,.08)',fill:true,tension:.4,borderWidth:2,pointBackgroundColor:'#3ecf8e',pointRadius:3},
-      {label:'Neg',data:tr.map(function(t){ return t.neg; }),borderColor:'#f05c6e',backgroundColor:'rgba(240,92,110,.06)',fill:true,tension:.4,borderWidth:2,pointBackgroundColor:'#f05c6e',pointRadius:3,borderDash:[5,3]}
-    ]);
-    U.set('trendLeg','<span class="li"><span class="ld" style="background:#3ecf8e"></span>Positive</span><span class="li"><span class="ld" style="background:#f05c6e;border-radius:0"></span>Negative</span>');
-    var cats = A.byCat(rv);
-    CM.donut('cCat', cats.map(function(d){ return d.k; }), cats.map(function(d){ return d.v; }), cats.map(function(d){ return C.CAT_COL[d.k]||'#888'; }), '68%');
-    U.set('catLeg', cats.map(function(d){ return '<span class="li"><span class="ld" style="background:'+C.CAT_COL[d.k]+'"></span>'+d.k.replace('&','&amp;')+'</span>'; }).join(''));
-    var plat = A.byPlat(rv), plab = plat.map(function(d){ return d.p.length>8?d.p.slice(0,7)+'…':d.p; });
-    CM.sbar('cPlat', plab, [
-      {label:'P',data:plat.map(function(d){ return d.pos; }),backgroundColor:'#3ecf8e',borderRadius:3,stack:'s'},
-      {label:'N',data:plat.map(function(d){ return d.neu; }),backgroundColor:'#f0b429',borderRadius:3,stack:'s'},
-      {label:'X',data:plat.map(function(d){ return d.neg; }),backgroundColor:'#f05c6e',borderRadius:3,stack:'s'}
-    ]);
-    var sev = A.bySev(rv);
-    CM.donut('cSev',['High','Medium','Low'],[sev.High,sev.Medium,sev.Low],['#f05c6e','#f0b429','#3ecf8e'],'62%');
-    U.set('sevLeg', [['High','#f05c6e'],['Medium','#f0b429'],['Low','#3ecf8e']].map(function(e){ return '<span class="li"><span class="ld" style="background:'+e[1]+';border-radius:50%"></span>'+e[0]+': '+(sev[e[0]]||0)+'</span>'; }).join(''));
-    var rooms = A.byRoom(rv), tm = {};
-    rooms.forEach(function(r){ if(!tm[r.type])tm[r.type]={p:0,n:0}; tm[r.type].p+=r.pos; tm[r.type].n+=r.neg; });
-    var tk = Object.keys(tm);
-    CM.sbar('cRoomType', tk.map(function(t){ return t.length>14?t.slice(0,13)+'…':t; }), [
-      {label:'P',data:tk.map(function(k){ return tm[k].p; }),backgroundColor:'#3ecf8e',borderRadius:3,stack:'s'},
-      {label:'N',data:tk.map(function(k){ return tm[k].n; }),backgroundColor:'#f05c6e',borderRadius:3,stack:'s'}
-    ]);
-    CM.bar('cVol', C.MONTHS, [{label:'Reviews',data:C.MONTHS.map(function(_,i){ return rv.slice(i*3,(i+1)*3+2).length; }),backgroundColor:'#5b8def',borderRadius:4,borderSkipped:false}]);
-    CM.bar('cRatPlat', plab, [{label:'Avg',data:plat.map(function(d){ return d.avg; }),backgroundColor:plat.map(function(d){ return C.PLAT_COL[d.p]||'#5b8def'; }),borderRadius:4,borderSkipped:false}], {scales:{y:{min:0,max:5}}});
-    var staff = A.byStaff(rv);
-    if (staff.length) {
-      CM.sbar('cStaff', staff.map(function(d){ return d.n; }), [
-        {label:'P',data:staff.map(function(d){ return d.pos; }),backgroundColor:'#3ecf8e',borderRadius:3,stack:'s'},
-        {label:'N',data:staff.map(function(d){ return d.neg; }),backgroundColor:'#f05c6e',borderRadius:3,stack:'s'}
-      ]);
-    } else { CM.destroy('cStaff'); }
-  },
+  // Complaint types
+  var subcats={};
+  rv.filter(function(r){return r.sentiment==='Negative';}).forEach(function(r){
+    var k=r.subcategory||r.category;
+    subcats[k]=(subcats[k]||0)+1;
+  });
+  var scArr=Object.entries(subcats).sort(function(a,b){return b[1]-a[1];}).slice(0,7);
+  var scMax=scArr.length?scArr[0][1]:1;
+  document.getElementById('complaintTypes').innerHTML=scArr.map(function(e){
+    return '<div class="bar-row"><div class="bar-label" title="'+e[0]+'">'+e[0]+'</div><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(e[1]/scMax*100)+'%;background:var(--red)"></div></div><div class="bar-val">'+e[1]+'</div></div>';
+  }).join('');
 
-  table: function(rv) {
-    var q=U.$('srch').value.toLowerCase(), fp=U.$('fPlat').value, fs=U.$('fSent').value, fc=U.$('fCat').value, fv=U.$('fSev').value;
-    var f = rv.filter(function(r){
-      if(fp && r.platform!==fp)return false;
-      if(fs && r.sentiment!==fs)return false;
-      if(fc && r.category!==fc)return false;
-      if(fv && r.severity!==fv)return false;
-      if(q && !(r.platform+' '+r.room+' '+r.text+' '+r.category+' '+(r.staffMentioned||'')).toLowerCase().includes(q))return false;
+  // Rating distribution
+  var dist=[0,0,0,0,0,0,0,0,0,0];
+  rv.forEach(function(r){var n=Math.round(parseFloat(r.rating)||0);if(n>=1&&n<=10)dist[n-1]++;});
+  makeChart('ratingDistChart',{type:'bar',data:{labels:['1','2','3','4','5','6','7','8','9','10'],datasets:[{data:dist,backgroundColor:dist.map(function(_,i){return i<3?'rgba(232,85,102,.7)':i<5?'rgba(240,176,32,.7)':'rgba(53,201,133,.7)';}),borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5d6488',font:{size:10}},grid:{display:false}},y:{ticks:{color:'#5d6488',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'},beginAtZero:true}}}});
+
+  // Ops health
+  var resolved=rv.filter(function(r){return r.resolutionStatus==='Resolved';}).length;
+  var esc2=rv.filter(function(r){return r.resolutionStatus==='Escalated';}).length;
+  var inprog=rv.filter(function(r){return r.resolutionStatus==='In Progress';}).length;
+  document.getElementById('opsHealth').innerHTML=
+    '<div style="display:flex;flex-direction:column;gap:8px">'+
+    '<div class="bar-row"><div class="bar-label">Resolved</div><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(total?resolved/total*100:0)+'%;background:var(--green)"></div></div><div class="bar-val">'+resolved+'</div></div>'+
+    '<div class="bar-row"><div class="bar-label">In Progress</div><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(total?inprog/total*100:0)+'%;background:var(--amber)"></div></div><div class="bar-val">'+inprog+'</div></div>'+
+    '<div class="bar-row"><div class="bar-label">Open</div><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(total?open/total*100:0)+'%;background:var(--red)"></div></div><div class="bar-val">'+open+'</div></div>'+
+    '<div class="bar-row"><div class="bar-label">Escalated</div><div class="bar-track"><div class="bar-fill" style="width:'+Math.round(total?esc2/total*100:0)+'%;background:var(--purple)"></div></div><div class="bar-val">'+esc2+'</div></div>'+
+    '</div>';
+}
+
+// ── REVIEWS ──
+var R={
+  getFiltered:function(){
+    var q=(document.getElementById('revSearch').value||'').toLowerCase().trim();
+    var sent=document.getElementById('revSentiment').value;
+    var sev=document.getElementById('revSeverity').value;
+    var cat=document.getElementById('revCategory').value;
+    var plat=document.getElementById('revPlatform').value;
+    var dFrom=document.getElementById('revDateFrom').value;
+    var dTo=document.getElementById('revDateTo').value;
+    return State.reviews.filter(function(r){
+      if(sent&&r.sentiment!==sent)return false;
+      if(sev){
+        if(sev==='1'&&parseInt(r.severity)>2)return false;
+        else if(sev!=='1'&&parseInt(r.severity)!==parseInt(sev))return false;
+      }
+      if(cat&&r.category!==cat)return false;
+      if(plat&&r.platform!==plat)return false;
+      if(dFrom&&r.date<dFrom)return false;
+      if(dTo&&r.date>dTo)return false;
+      if(q){
+        var haystack=(r.text+' '+(r.booking||'')+' '+(r.room||'')+' '+r.platform+' '+(r.staffMentioned||'')+' '+(r.subcategory||'')).toLowerCase();
+        if(haystack.indexOf(q)===-1)return false;
+      }
       return true;
     });
-    if (!f.length) { U.set('tblBody','<tr><td colspan="12" style="text-align:center;padding:30px;color:var(--t3)">'+(rv.length?'No reviews match filters.':'No data loaded.')+'</td></tr>'); U.set('tblFooter','No results'); return; }
-    U.set('tblBody', f.map(function(r){
-      return '<tr><td>'+U.plat(r.platform)+'</td><td style="white-space:nowrap;color:var(--t3)">'+U.date(r.date)+'</td><td style="color:var(--t4);font-size:10px">'+(r.booking||'—')+'</td><td><strong style="color:var(--t1)">'+r.room+'</strong></td><td style="font-size:10px;color:var(--t3)">'+(r.roomType||'—')+'</td><td><div class="te" title="'+r.text.replace(/"/g,'&quot;')+'">'+r.text+'</div></td><td><span class="stars">'+U.stars(r.rating)+'</span></td><td>'+U.sent(r.sentiment)+'</td><td><span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--t2)"><span class="cd" style="background:'+(C.CAT_COL[r.category]||'#888')+'"></span>'+r.category+'</span></td><td>'+U.sev(r.severity)+'</td><td><div class="fw">'+(r.maintFlag?'<span class="flag fa">&#128295;</span>':'')+(r.cleanFlag?'<span class="flag fc">&#128167;</span>':'')+'</div></td><td style="font-size:10px;color:var(--t3)">'+(r.staffMentioned||'—')+'</td></tr>';
-    }).join(''));
-    U.set('tblFooter', f.length+' of '+rv.length+' reviews');
   },
-
-  rooms: function(rv) {
-    var rooms = A.byRoom(rv);
-    if (!rooms.length) { U.set('hmap',U.empty('No room data')); U.set('roomTbl',''); return; }
-    var sorted = rooms.slice().sort(function(a,b){ return parseInt(a.rm)-parseInt(b.rm); });
-    var mx = Math.max.apply(null, sorted.map(function(d){ return d.neg; }).concat([1]));
-    U.set('hmap', sorted.map(function(d){ var r=d.neg/mx; var col=r===0?'#1a3a28':r<.25?'#2d5c3a':r<.5?'#f0b429':r<.75?'#e07030':'#f05c6e'; return '<div class="hc" style="background:'+col+';color:'+(r<.4?'#7fbf9f':'#fff')+'" title="Room '+d.rm+': '+d.neg+' complaints">'+d.rm+'</div>'; }).join(''));
-    U.set('roomTbl', rooms.slice().sort(function(a,b){ return b.neg-a.neg; }).map(function(d){
-      var st=d.mt>0&&d.cl>0?U.sev('High'):d.mt>0?'<span class="sev sm">Maint.</span>':d.cl>0?'<span class="sev" style="background:var(--bs);color:var(--blue)">Clean</span>':'<span class="sev sl">OK</span>';
-      return '<tr><td><strong style="color:var(--t1)">'+d.rm+'</strong></td><td style="font-size:11px">'+d.type+'</td><td>'+d.rv.length+'</td><td style="color:'+(d.avg>=4?'var(--green)':d.avg>=3?'var(--amber)':'var(--red)')+'">'+d.avg.toFixed(1)+'</td><td style="color:var(--green)">'+d.pos+'</td><td style="color:var(--red)">'+d.neg+'</td><td style="font-size:10px;color:var(--t3)">'+d.top+'</td><td>'+(d.mt>0?'<span style="color:var(--amber)">&#128295; '+d.mt+'</span>':'')+'</td><td>'+(d.cl>0?'<span style="color:var(--blue)">&#128167; '+d.cl+'</span>':'')+'</td><td>'+st+'</td></tr>';
-    }).join(''));
+  renderReviews:function(){
+    var filtered=this.getFiltered();
+    var total=filtered.length;
+    var start=RevPage.current*RevPage.perPage;
+    var page=filtered.slice(start,start+RevPage.perPage);
+    document.getElementById('revCount').textContent='Showing '+(total?start+1:0)+'–'+Math.min(start+RevPage.perPage,total)+' of '+total+' reviews';
+    var html='';
+    page.forEach(function(r){
+      var sevC=getSevClass(parseInt(r.severity)||1);
+      html+='<div class="rev-card">'+
+        '<div class="rev-hd">'+
+          '<div style="display:flex;align-items:center;gap:8px">'+
+            '<span class="sev '+sevC+'">'+(r.severity||'—')+'</span>'+
+            '<div>'+
+              '<div style="font-size:13px;font-weight:600;color:var(--t1)">Room '+esc(r.room||'?')+' &nbsp;<span style="font-size:11px;font-weight:400;color:var(--t3)">'+esc(r.roomType||'')+'</span></div>'+
+              '<div style="font-size:11px;color:var(--t3);margin-top:1px">'+esc(r.booking||'—')+' • '+r.date+'</div>'+
+            '</div>'+
+          '</div>'+
+          '<div style="text-align:right">'+
+            '<div class="stars" style="font-size:11px">'+stars(r.rating)+'</div>'+
+            '<div style="font-size:11px;font-weight:600;color:var(--t1)">'+r.rating+'/10</div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="rev-meta">'+
+          '<span class="badge '+getSentClass(r.sentiment)+'">'+esc(r.sentiment)+'</span>'+
+          '<span class="badge badge-blue">'+esc(r.platform)+'</span>'+
+          '<span class="badge badge-gray">'+esc(r.category)+'</span>'+
+          (r.subcategory?'<span class="badge badge-gray">'+esc(r.subcategory)+'</span>':'')+
+          (r.maintFlag===true||r.maintFlag==='Yes'||r.maintFlag==='true'?'<span class="badge badge-red">🔧 Maint</span>':'')+
+          (r.cleanFlag===true||r.cleanFlag==='Yes'||r.cleanFlag==='true'?'<span class="badge badge-amber">🧹 Clean</span>':'')+
+          (r.staffMentioned?'<span class="badge badge-purple">👤 '+esc(r.staffMentioned)+'</span>':'')+
+          '<div class="status '+resClass(r.resolutionStatus)+'" style="margin-left:auto">'+esc(r.resolutionStatus||'Open')+'</div>'+
+        '</div>'+
+        '<div class="rev-text collapsed" id="rt-'+r.id+'">'+esc(r.text)+'</div>'+
+        '<span class="expand-btn" onclick="R.toggleText(\''+r.id+'\',this)">Show more ▾</span>'+
+        (r.action?'<div style="margin-top:6px;font-size:11px;color:var(--teal);background:rgba(37,191,191,.08);border-radius:5px;padding:5px 8px">💡 '+esc(r.action)+'</div>':'')+
+        (r.resolutionNotes?'<div style="margin-top:4px;font-size:11px;color:var(--t3);padding:4px 8px;background:var(--bg4);border-radius:5px">📋 '+esc(r.resolutionNotes)+'</div>':'')+
+      '</div>';
+    });
+    document.getElementById('revList').innerHTML=html||'<div class="empty"><span>🔍</span>No reviews match your filters</div>';
+    // Pagination
+    var pages=Math.ceil(total/RevPage.perPage);
+    var phtml='';
+    if(pages>1){
+      phtml+='<button class="fbtn" onclick="R.goPage('+(RevPage.current-1)+')" '+(RevPage.current===0?'disabled':'')+'>← Prev</button>';
+      for(var i=0;i<pages&&i<8;i++)phtml+='<button class="fbtn" onclick="R.goPage('+i+')" style="'+(i===RevPage.current?'background:var(--blue);color:#fff;border-color:var(--blue)':'')+'">'+(i+1)+'</button>';
+      phtml+='<button class="fbtn" onclick="R.goPage('+(RevPage.current+1)+')" '+(RevPage.current>=pages-1?'disabled':'')+'>Next →</button>';
+    }
+    document.getElementById('revPagination').innerHTML=phtml;
   },
-
-  alerts: function(rv) {
-    var maint=rv.filter(function(r){ return r.maintFlag; }).sort(function(a,b){ return b.severity.localeCompare(a.severity); });
-    var clean=rv.filter(function(r){ return r.cleanFlag; }).sort(function(a,b){ return b.severity.localeCompare(a.severity); });
-    var crit=rv.filter(function(r){ return r.severity==='High'&&!r.maintFlag&&!r.cleanFlag; });
-    var fo=rv.filter(function(r){ return r.department==='Front Office'; });
-    function bld(arr,css){ return arr.length?arr.map(function(r){ return U.alertCard(r,css); }).join(''):U.empty('No alerts'); }
-    U.set('aMaint',bld(maint,'aim')); U.set('aClean',bld(clean,'aic'));
-    U.set('aCrit',bld(crit,'aicr')); U.set('aFO',bld(fo,'aifo'));
+  toggleText:function(id,btn){
+    var el=document.getElementById('rt-'+id);
+    if(el.classList.contains('collapsed')){el.classList.remove('collapsed');btn.textContent='Show less ▴';}
+    else{el.classList.add('collapsed');btn.textContent='Show more ▾';}
   },
-
-  staff: function(rv) {
-    var list=A.byStaff(rv), pos=list.filter(function(d){ return d.pos>d.neg; }), neg=list.filter(function(d){ return d.neg>=d.pos; });
-    U.set('staffPos',pos.length?pos.map(function(d){ return U.staffCard(d); }).join(''):U.empty('No positive mentions'));
-    U.set('staffNeg',neg.length?neg.map(function(d){ return U.staffCard(d); }).join(''):U.empty('No complaints'));
-    U.set('staffAll',list.length?list.map(function(d){ return U.staffCard(d); }).join(''):U.empty('No staff mentions'));
+  goPage:function(n){
+    var total=this.getFiltered().length;
+    var pages=Math.ceil(total/RevPage.perPage);
+    RevPage.current=Math.max(0,Math.min(n,pages-1));
+    this.renderReviews();
   },
-
-  analytics: function(rv) {
-    var iss=A.issues(rv), mx=iss.length?iss[0].v:1;
-    U.set('recurring', iss.length?iss.map(function(e){ return '<div class="prow"><div class="plrw"><span class="pnm">'+e.k+'</span><span class="pvl">'+e.v+'&#215;</span></div><div class="ptr2"><div class="pfi" style="width:'+(e.v/mx*100).toFixed(0)+'%"></div></div></div>'; }).join(''):U.empty('No issues'));
-    var cats=A.byCat(rv), tot=rv.length||1;
-    U.set('actionSum', cats.length?cats.map(function(e){ return '<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--bg3);border-radius:8px;margin-bottom:5px"><span class="cd" style="background:'+(C.CAT_COL[e.k]||'#888')+'"></span><span style="flex:1;font-size:11px;color:var(--t2)">'+e.k+'</span><span style="font-size:13px;font-weight:700;color:var(--t1)">'+e.v+'</span><span style="font-size:10px;color:var(--t3)">'+Math.round(e.v/tot*100)+'%</span></div>'; }).join(''):U.empty('No data'));
-  },
-
-  datasetInfo: function() {
-    var rv = State.reviews;
-    if (!rv.length) { U.set('datasetInfo', U.empty('No data loaded. Upload a CSV file to begin.')); return; }
-    var s = A.summary(rv);
-    U.set('datasetInfo', '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;font-size:12px">'
-      +'<div style="padding:10px;background:var(--bg3);border-radius:8px"><div style="color:var(--t3);font-size:10px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Reviews</div><div style="font-size:20px;font-weight:700;color:var(--t1)">'+rv.length+'</div></div>'
-      +'<div style="padding:10px;background:var(--bg3);border-radius:8px"><div style="color:var(--t3);font-size:10px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Source</div><div style="font-size:12px;font-weight:600;color:var(--t2)">'+(State.source==='uploaded'?'Uploaded CSV':State.source==='cached'?'Cached':'Sample')+'</div></div>'
-      +'<div style="padding:10px;background:var(--bg3);border-radius:8px"><div style="color:var(--t3);font-size:10px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">File</div><div style="font-size:12px;color:var(--t2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(State.fileName||'sample_data')+'</div></div>'
-      +'</div>');
+  clearFilters:function(){
+    ['revSearch','revDateFrom','revDateTo'].forEach(function(id){document.getElementById(id).value='';});
+    ['revSentiment','revSeverity','revCategory','revPlatform'].forEach(function(id){document.getElementById(id).value='';});
+    RevPage.current=0;
+    this.renderReviews();
   }
 };
 
-// ── FILE EXPORT ────────────────────────────────────────────────────────
-function exportCSV() {
-  var rv = State.reviews;
-  if (!rv.length) { U.toast('No data to export'); return; }
-  var hdr = ['Date','Platform','Booking Number','Room Number','Room Type','Review Text','Rating','Sentiment','Category','Severity','Maintenance Flag','Cleaning Flag','Mentioned Staff','Suggested Action'];
-  var rows = rv.map(function(r){ return [r.date,r.platform,r.booking,r.room,r.roomType,'"'+r.text.replace(/"/g,'""')+'"',r.rating,r.sentiment,r.category,r.severity,r.maintFlag?'Yes':'No',r.cleanFlag?'Yes':'No',r.staffMentioned||'','"'+(r.action||'').replace(/"/g,'""')+'"']; });
-  var csv = [hdr].concat(rows).map(function(r){ return r.join(','); }).join('\n');
-  var blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a'); a.href=url; a.download='sultan_reviews_'+new Date().toISOString().slice(0,10)+'.csv';
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  setTimeout(function(){ URL.revokeObjectURL(url); }, 15000);
-  U.toast('&#10003; CSV exported — '+rv.length+' reviews');
+// ── ROOMS ──
+function renderRooms(){
+  var rmap=Agg.byRoom(State.reviews);
+  var rooms=Object.values(rmap);
+  var avgRating=rooms.length?Math.round(rooms.reduce(function(a,b){return a+(b.ratingSum/b.total);},0)/rooms.length*10)/10:0;
+  var totalMaint=rooms.reduce(function(a,b){return a+b.maint;},0);
+  var totalClean=rooms.reduce(function(a,b){return a+b.clean;},0);
+  var criticalRooms=rooms.filter(function(r){return r.neg>=2||r.maint>=2||r.clean>=2;}).length;
+  document.getElementById('roomKpis').innerHTML=
+    '<div class="stat"><div class="stat-label">Rooms Tracked</div><div class="stat-val">'+rooms.length+'</div><div class="stat-sub">Unique rooms in data</div></div>'+
+    '<div class="stat"><div class="stat-label">Critical Rooms</div><div class="stat-val" style="color:var(--red)">'+criticalRooms+'</div><div class="stat-sub">Multiple complaints</div></div>'+
+    '<div class="stat"><div class="stat-label">Maint Issues</div><div class="stat-val" style="color:var(--amber)">'+totalMaint+'</div><div class="stat-sub">Flagged reviews</div></div>';
+  
+  var alertRooms=rooms.filter(function(r){return r.neg>0||r.maint>0||r.clean>0;}).sort(function(a,b){return(b.neg+b.maint*2+b.clean)-(a.neg+a.maint*2+a.clean);}).slice(0,10);
+  document.getElementById('roomAlertTbl').innerHTML=alertRooms.map(function(r){
+    var avgR=Math.round(r.ratingSum/r.total*10)/10;
+    return '<tr><td><strong style="color:var(--t1)">'+esc(r.room)+'</strong></td><td><span class="badge badge-gray">'+esc(r.type)+'</span></td>'+
+      '<td><span style="color:var(--red);font-weight:600">'+r.neg+'</span></td>'+
+      '<td>'+(r.maint?'<span class="badge badge-red">'+r.maint+'</span>':'<span style="color:var(--t4)">—</span>')+'</td>'+
+      '<td>'+(r.clean?'<span class="badge badge-amber">'+r.clean+'</span>':'<span style="color:var(--t4)">—</span>')+'</td>'+
+      '<td><span class="stars" style="font-size:10px">'+stars(avgR)+'</span> '+avgR+'</td>'+
+      '<td style="color:var(--t3)">'+r.lastDate+'</td></tr>';
+  }).join('');
+
+  var topRooms=rooms.filter(function(r){return r.pos>0;}).sort(function(a,b){return(b.ratingSum/b.total)-(a.ratingSum/a.total);}).slice(0,8);
+  document.getElementById('roomTopTbl').innerHTML=topRooms.map(function(r){
+    var avgR=Math.round(r.ratingSum/r.total*10)/10;
+    var posP=Math.round(r.pos/r.total*100);
+    return '<tr><td><strong style="color:var(--t1)">'+esc(r.room)+'</strong></td><td><span class="badge badge-gray">'+esc(r.type)+'</span></td>'+
+      '<td>'+r.total+'</td><td><span style="color:var(--green);font-weight:600">'+avgR+'</span></td>'+
+      '<td><span class="badge badge-green">'+posP+'%</span></td></tr>';
+  }).join('');
+
+  // Heatmap
+  var allRooms=Object.keys(rmap).sort();
+  var maxNeg=Math.max.apply(null,Object.values(rmap).map(function(r){return r.neg+r.maint;}));
+  document.getElementById('heatmapWrap').innerHTML='<div class="heatmap">'+allRooms.map(function(rm){
+    var r=rmap[rm];var score=(r.neg*2+r.maint)/(maxNeg||1);
+    var alpha=0.15+score*0.75;
+    var color=r.neg>0?('rgba(232,85,102,'+alpha+')'):(r.maint>0?'rgba(240,176,32,'+alpha+')':'rgba(53,201,133,0.25)');
+    return '<div class="hc" style="background:'+color+'" title="Room '+rm+': '+r.neg+' neg, '+r.maint+' maint">'+rm+'</div>';
+  }).join('')+'</div><div style="display:flex;gap:12px;margin-top:8px;font-size:10px;color:var(--t3)"><span>🟢 Good</span><span>🟡 Maint Issue</span><span>🔴 Complaints</span></div>';
 }
 
-// ── APP ────────────────────────────────────────────────────────────────
-var App = window.App = {
-  goTab: function(id, btn) {
-    document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
-    document.querySelectorAll('.ni').forEach(function(b){ b.classList.remove('active'); });
-    document.getElementById('tab-'+id).classList.add('active');
-    if (btn) btn.classList.add('active');
+// ── ALERTS ──
+var A={
+  currentFilter:'all',
+  filterType:function(el){
+    document.querySelectorAll('#alertTypeChips .chip').forEach(function(c){c.classList.remove('active');});
+    el.classList.add('active');
+    this.currentFilter=el.getAttribute('data-filter');
+    this.render();
   },
-
-  toggleTheme: function() {
-    Sett.dark = !Sett.dark; saveSett();
-    document.documentElement.setAttribute('data-theme', Sett.dark?'dark':'light');
-    U.$('themeBtn').innerHTML = Sett.dark ? '&#9728;' : '&#9790;';
-    if (window.Chart) R.charts(State.reviews);
+  getComplaint:function(r){
+    var text=r.text||'';
+    var lower=text.toLowerCase();
+    if(lower.indexOf('ac')>-1||lower.indexOf('air conditioning')>-1||lower.indexOf('rattl')>-1)return'Air conditioning noisy / faulty';
+    if(lower.indexOf('drip')>-1||lower.indexOf('dripping')>-1)return'AC unit dripping water';
+    if(lower.indexOf('mold')>-1||lower.indexOf('mould')>-1||lower.indexOf('damp smell')>-1)return'Mold / damp smell detected';
+    if(lower.indexOf('drain')>-1&&lower.indexOf('block')>-1)return'Blocked bathroom drain';
+    if(lower.indexOf('water pressure')>-1||lower.indexOf('weak')>-1&&lower.indexOf('shower')>-1)return'Weak water pressure in shower';
+    if(lower.indexOf('hot water')>-1&&(lower.indexOf('slow')>-1||lower.indexOf('long time')>-1))return'Slow hot water delivery';
+    if(lower.indexOf('dust')>-1)return'Excessive dust — deep clean required';
+    if(lower.indexOf('dirty')>-1&&lower.indexOf('tile')>-1)return'Dirty bathroom tiles / stains';
+    if(lower.indexOf('cockroach')>-1||lower.indexOf('pest')>-1||lower.indexOf('bug')>-1)return'Pest sighting (cockroach / insects)';
+    if(lower.indexOf('mattress')>-1||lower.indexOf('sag')>-1)return'Uncomfortable / sagging mattress';
+    if(lower.indexOf('pillow')>-1&&lower.indexOf('flat')>-1)return'Flat / unsupportive pillows';
+    if(lower.indexOf('elevator')>-1||lower.indexOf('lift')>-1)return'Elevator out of service / slow';
+    if(lower.indexOf('gym')>-1&&(lower.indexOf('broken')>-1||lower.indexOf('out of order')>-1))return'Gym equipment out of service';
+    if(lower.indexOf('tv')>-1&&lower.indexOf('remote')>-1)return'TV remote not functioning';
+    if(lower.indexOf('fan')>-1&&lower.indexOf('nois')>-1)return'Noisy bathroom extractor fan';
+    if(lower.indexOf('kettle')>-1||lower.indexOf('limescale')>-1)return'Limescale in kettle / appliances';
+    if(lower.indexOf('switch')>-1&&lower.indexOf('not working')>-1)return'Faulty electrical switch';
+    if(lower.indexOf('warm air')>-1)return'AC blowing warm air';
+    if(lower.indexOf('smell')>-1||lower.indexOf('musty')>-1)return'Musty / unpleasant room odour';
+    if(r.subcategory)return r.subcategory+' issue reported';
+    return'Operational complaint lodged';
   },
-
-  clearFilters: function() {
-    ['srch','fPlat','fSent','fCat','fSev'].forEach(function(id){ var e=U.$(id); if(e.tagName==='INPUT') e.value=''; else e.selectedIndex=0; });
-    R.table(State.reviews);
+  getRootCause:function(r){
+    var c=this.getComplaint(r);
+    if(c.indexOf('noisy')>-1&&c.indexOf('air cond')>-1)return'Loose FCU blower wheel or dirty fan coil';
+    if(c.indexOf('dripping')>-1)return'Blocked condensate drain pan';
+    if(c.indexOf('Mold')>-1||c.indexOf('damp')>-1)return'Persistent moisture — likely pipe leak or poor sealing';
+    if(c.indexOf('Blocked')>-1&&c.indexOf('drain')>-1)return'Hair / debris accumulation in drain trap';
+    if(c.indexOf('pressure')>-1||c.indexOf('Weak water')>-1)return'Pressure regulator failure or pipe scaling';
+    if(c.indexOf('Slow hot water')>-1)return'Insufficient water heater capacity or thermostat fault';
+    if(c.indexOf('dust')>-1)return'Housekeeping not following deep clean checklist';
+    if(c.indexOf('tile')>-1)return'Inadequate bathroom cleaning frequency';
+    if(c.indexOf('Pest')>-1)return'Gap in exterior wall sealing or drainage area';
+    if(c.indexOf('mattress')>-1)return'Mattress past service life (typically 5–7 years)';
+    if(c.indexOf('Gym')>-1)return'No scheduled preventive maintenance for gym equipment';
+    if(c.indexOf('TV remote')>-1)return'Battery or sensor failure — common in high-turnover rooms';
+    if(c.indexOf('fan')>-1)return'Worn bearing in extractor fan motor';
+    if(c.indexOf('warm air')>-1)return'Low refrigerant charge or thermostat malfunction';
+    if(c.indexOf('Musty')>-1||c.indexOf('odour')>-1)return'Inadequate ventilation or carpet/upholstery saturation';
+    return'Requires on-site investigation by relevant department';
   },
-
-  renderTable: function() { R.table(State.reviews); },
-
-  // ── Upload ──
-  triggerUpload: function() { U.$('fileInput').click(); },
-
-  handleUpload: function(input) {
-    var file = input.files[0]; input.value=''; if (!file) return;
-    if (!file.name.match(/\.(csv|xlsx|xls)$/i)) { U.toast('&#9888; Please upload a .csv file'); return; }
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      try {
-        var count = processCSVText(e.target.result, file.name);
-        R.all();
-        U.set('uploadStatus', '<div style="margin-top:10px;padding:10px 12px;background:var(--gs);border:1px solid var(--green);border-radius:8px;font-size:12px;color:var(--green)">&#10003; Successfully loaded <strong>'+count+' reviews</strong> from '+file.name+'</div>');
-        U.toast('&#10003; Loaded '+count+' reviews from '+file.name, 4000);
-      } catch(err) {
-        console.error('[Upload] Error:', err.message);
-        U.set('uploadStatus', '<div style="margin-top:10px;padding:10px 12px;background:var(--rs);border:1px solid var(--red);border-radius:8px;font-size:12px;color:var(--red)">&#9888; '+err.message+'</div>');
-        U.toast('&#9888; '+err.message, 5000);
-      }
-    };
-    reader.onerror = function() { U.toast('&#9888; Could not read file'); };
-    reader.readAsText(file, 'UTF-8');
-  },
-
-  // ── Drag & Drop ──
-  onDragOver: function(e) {
-    e.preventDefault(); e.stopPropagation();
-    U.$('dropZone').classList.add('drag');
-  },
-  onDragLeave: function(e) {
-    e.preventDefault();
-    U.$('dropZone').classList.remove('drag');
-  },
-  onDrop: function(e) {
-    e.preventDefault(); e.stopPropagation();
-    U.$('dropZone').classList.remove('drag');
-    var files = e.dataTransfer.files;
-    if (!files.length) return;
-    var file = files[0];
-    if (!file.name.match(/\.(csv|xlsx|xls)$/i)) { U.toast('&#9888; Please drop a .csv file'); return; }
-    var reader = new FileReader();
-    reader.onload = function(ev) {
-      try {
-        var count = processCSVText(ev.target.result, file.name);
-        R.all();
-        U.set('uploadStatus', '<div style="margin-top:10px;padding:10px 12px;background:var(--gs);border:1px solid var(--green);border-radius:8px;font-size:12px;color:var(--green)">&#10003; Successfully loaded <strong>'+count+' reviews</strong> from '+file.name+'</div>');
-        U.toast('&#10003; Loaded '+count+' reviews from '+file.name, 4000);
-      } catch(err) {
-        U.set('uploadStatus', '<div style="margin-top:10px;padding:10px 12px;background:var(--rs);border:1px solid var(--red);border-radius:8px;font-size:12px;color:var(--red)">&#9888; '+err.message+'</div>');
-        U.toast('&#9888; '+err.message, 5000);
-      }
-    };
-    reader.readAsText(file, 'UTF-8');
-  },
-
-  // ── Clear Data ──
-  clearData: function() {
-    if (!confirm('Clear all loaded data and return to sample mode?')) return;
-    LS.del(CACHE_KEY); LS.del(SOURCE_KEY);
-    State.reviews = SAMPLE.slice(); State.source = 'sample'; State.fileName = null; State.uploadedAt = null;
-    U.set('uploadStatus', '');
-    R.all();
-    U.toast('Data cleared — showing sample dataset');
-  },
-
-  exportCSV: exportCSV,
-
-  // ── Init ──
-  init: function() {
-    if (!Sett.dark) { document.documentElement.setAttribute('data-theme','light'); U.$('themeBtn').innerHTML='&#9790;'; }
-
-    // Load from cache or fall back to sample — always immediate, never blank
-    var cached = LS.get(CACHE_KEY, null);
-    if (cached && Array.isArray(cached.reviews) && cached.reviews.length) {
-      console.log('[Init] Restoring', cached.reviews.length, 'reviews from cache');
-      State.reviews    = cached.reviews;
-      State.source     = 'cached';
-      State.uploadedAt = cached.uploadedAt || null;
-      State.fileName   = cached.fileName || 'previous_upload.csv';
-    } else {
-      console.log('[Init] No cache found — loading sample data');
-      State.reviews = SAMPLE.slice();
-      State.source  = 'sample';
-    }
-
-    // Load Chart.js, then render
-    function loadLib(src, check, cb) {
-      if (window[check]) { cb(); return; }
-      var s = document.createElement('script');
-      s.src = src;
-      s.onload = cb;
-      s.onerror = function() { console.warn('[Init] Failed to load', check); cb(); };
-      document.head.appendChild(s);
-    }
-
-    loadLib('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js', 'Chart', function() {
-      console.log('[Init] Rendering dashboard with', State.reviews.length, 'reviews');
-      R.all();
+  render:function(){
+    var hideRes=document.getElementById('hideResolved').checked;
+    var filter=this.currentFilter;
+    var rv=State.reviews.filter(function(r){
+      var isAlert=r.maintFlag===true||r.maintFlag==='Yes'||r.maintFlag==='true'||r.cleanFlag===true||r.cleanFlag==='Yes'||r.cleanFlag==='true'||parseInt(r.severity)>=4;
+      if(!isAlert)return false;
+      if(hideRes&&r.resolutionStatus==='Resolved')return false;
+      var isMaint=r.maintFlag===true||r.maintFlag==='Yes'||r.maintFlag==='true';
+      var isHouse=r.cleanFlag===true||r.cleanFlag==='Yes'||r.cleanFlag==='true';
+      if(filter==='maintenance'&&!isMaint)return false;
+      if(filter==='housekeeping'&&!isHouse)return false;
+      if(filter==='open'&&r.resolutionStatus!=='Open'&&r.resolutionStatus)return false;
+      if(filter==='inprogress'&&r.resolutionStatus!=='In Progress')return false;
+      if(filter==='escalated'&&r.resolutionStatus!=='Escalated')return false;
+      return true;
     });
+
+    // KPIs
+    var open=rv.filter(function(r){return!r.resolutionStatus||r.resolutionStatus==='Open';}).length;
+    var esc2=rv.filter(function(r){return r.resolutionStatus==='Escalated';}).length;
+    var inprog=rv.filter(function(r){return r.resolutionStatus==='In Progress';}).length;
+    var resolved=State.reviews.filter(function(r){return r.resolutionStatus==='Resolved';}).length;
+    document.getElementById('alertKpis').innerHTML=
+      '<div class="stat"><div class="stat-label">Total Alerts</div><div class="stat-val">'+rv.length+'</div></div>'+
+      '<div class="stat"><div class="stat-label">Open</div><div class="stat-val" style="color:var(--red)">'+open+'</div></div>'+
+      '<div class="stat"><div class="stat-label">In Progress</div><div class="stat-val" style="color:var(--amber)">'+inprog+'</div></div>'+
+      '<div class="stat"><div class="stat-label">Escalated</div><div class="stat-val" style="color:var(--purple)">'+esc2+'</div></div>';
+
+    if(!rv.length){document.getElementById('alertList').innerHTML='<div class="empty"><span>✓</span>No alerts match current filters</div>';return;}
+
+    rv.sort(function(a,b){
+      var sev=(parseInt(b.severity)||0)-(parseInt(a.severity)||0);
+      if(sev!==0)return sev;
+      return b.date>a.date?1:-1;
+    });
+
+    var self=this;
+    document.getElementById('alertList').innerHTML=rv.map(function(r){
+      var isMaint=r.maintFlag===true||r.maintFlag==='Yes'||r.maintFlag==='true';
+      var isHouse=r.cleanFlag===true||r.cleanFlag==='Yes'||r.cleanFlag==='true';
+      var sev=parseInt(r.severity)||1;
+      var cardClass=sev>=5?'':'sev<4'?'low':'medium';
+      if(sev>=5)cardClass='';
+      else if(sev>=3)cardClass='medium';
+      else cardClass='low';
+      if(r.resolutionStatus==='Resolved')cardClass='resolved';
+      var iconType=isMaint?'maint':'house';
+      if(r.resolutionStatus==='Resolved')iconType='resolved';
+      var complaint=self.getComplaint(r);
+      var rootCause=self.getRootCause(r);
+      var resSteps=['Open','In Progress','Monitoring','Resolved'];
+      var resIdx=resSteps.indexOf(r.resolutionStatus||'Open');
+      return '<div class="alert-card '+cardClass+'">'+
+        '<div class="alert-hd">'+
+          '<div class="alert-icon '+iconType+'">'+(isMaint?'🔧':'🧹')+'</div>'+
+          '<div class="alert-meta">'+
+            '<div class="alert-title">Room '+esc(r.room||'?')+' — '+esc(r.category)+(parseInt(r.severity)>=5?' 🚨':'')+
+              (r.id&&State.reviews.filter(function(x){return x.room===r.room&&x.category===r.category;}).length>1?' <span style="font-size:10px;color:var(--red);font-weight:600">⟳ RECURRING</span>':'')+
+            '</div>'+
+            '<div class="alert-room">'+esc(r.platform)+' · Booking: '+esc(r.booking||'—')+' · '+r.date+(r.assignedDept?' · '+esc(r.assignedDept):'')+(r.assignedStaff?' → '+esc(r.assignedStaff):'')+'</div>'+
+          '</div>'+
+          '<div class="status '+resClass(r.resolutionStatus||'Open')+'" style="flex-shrink:0">'+esc(r.resolutionStatus||'Open')+'</div>'+
+        '</div>'+
+        '<div class="alert-grid">'+
+          '<div class="alert-field"><div class="alert-field-label">Complaint</div><div class="alert-field-val">'+esc(complaint)+'</div></div>'+
+          '<div class="alert-field"><div class="alert-field-label">Root Cause</div><div class="alert-field-val" style="color:var(--amber)">'+esc(rootCause)+'</div></div>'+
+          '<div class="alert-field" style="grid-column:span 2"><div class="alert-field-label">AI Suggested Action</div><div class="alert-field-val" style="color:var(--teal)">'+esc(r.action||'Review and assign to relevant department')+'</div></div>'+
+          (r.resolvedDate?'<div class="alert-field"><div class="alert-field-label">Resolved Date</div><div class="alert-field-val" style="color:var(--green)">'+esc(r.resolvedDate)+'</div></div>':'')+
+          (r.resolutionNotes?'<div class="alert-field" style="grid-column:span 2"><div class="alert-field-label">Resolution Notes</div><div class="alert-field-val" style="color:var(--t3)">'+esc(r.resolutionNotes)+'</div></div>':'')+
+        '</div>'+
+        '<div style="margin-top:10px">'+
+          '<div style="font-size:10px;color:var(--t3);margin-bottom:4px">ORIGINAL REVIEW</div>'+
+          '<div style="font-size:11px;color:var(--t2);line-height:1.5;background:var(--bg3);padding:8px;border-radius:var(--r)">'+esc(r.text)+'</div>'+
+        '</div>'+
+        '<div style="margin-top:8px">'+
+          '<div style="font-size:10px;color:var(--t3);margin-bottom:4px">RESOLUTION LIFECYCLE</div>'+
+          '<div class="res-track">'+resSteps.map(function(s,i){return'<div class="res-step'+(i<resIdx?' done':i===resIdx?' current':'')+'" title="'+s+'"></div>';}).join('<div style="width:4px"></div>')+'</div>'+
+          '<div style="display:flex;justify-content:space-between;font-size:9px;color:var(--t4);margin-top:3px">'+resSteps.map(function(s){return'<span>'+s+'</span>';}).join('')+'</div>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+  }
+};
+
+// ── ANALYTICS ──
+function renderAnalytics(){
+  var rv=State.reviews;
+  var mdata=Agg.byMonth(rv);
+  var mkeys=mdata.keys;
+  var mlabels=mkeys.map(DateU.toLabel.bind(DateU));
+
+  makeChart('volRatingChart',{type:'bar',data:{labels:mlabels,datasets:[
+    {type:'bar',label:'Review Volume',data:mkeys.map(function(k){return mdata.map[k].total;}),backgroundColor:'rgba(79,126,240,.5)',yAxisID:'y'},
+    {type:'line',label:'Avg Rating',data:mkeys.map(function(k){var m=mdata.map[k];return m.total?Math.round(m.ratingSum/m.total*10)/10:null;}),borderColor:'#35c985',pointRadius:4,tension:.4,yAxisID:'y2'}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5d6488',font:{size:10},maxRotation:45,autoSkip:false},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#5d6488',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'},beginAtZero:true},y2:{position:'right',min:0,max:10,ticks:{color:'#35c985',font:{size:10}},grid:{display:false}}}}});
+
+  makeChart('severityTrendChart',{type:'line',data:{labels:mlabels,datasets:[
+    {label:'Critical (5)',data:mkeys.map(function(k){return mdata.map[k].sev.filter(function(s){return s>=5;}).length;}),borderColor:'#e85566',backgroundColor:'rgba(232,85,102,.08)',tension:.4,fill:true,pointRadius:3},
+    {label:'High (4)',data:mkeys.map(function(k){return mdata.map[k].sev.filter(function(s){return s===4;}).length;}),borderColor:'#f0b020',backgroundColor:'rgba(240,176,32,.08)',tension:.4,fill:true,pointRadius:3},
+    {label:'Medium (3)',data:mkeys.map(function(k){return mdata.map[k].sev.filter(function(s){return s===3;}).length;}),borderColor:'#4f7ef0',backgroundColor:'rgba(79,126,240,.08)',tension:.4,fill:true,pointRadius:3}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5d6488',font:{size:10},maxRotation:45,autoSkip:false},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#5d6488',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'},beginAtZero:true}}}});
+
+  makeChart('posNegChart',{type:'bar',data:{labels:mlabels,datasets:[
+    {label:'Positive',data:mkeys.map(function(k){return mdata.map[k].pos;}),backgroundColor:'rgba(53,201,133,.7)'},
+    {label:'Negative',data:mkeys.map(function(k){return -mdata.map[k].neg;}),backgroundColor:'rgba(232,85,102,.7)'}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5d6488',font:{size:10},maxRotation:45,autoSkip:false},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#5d6488',font:{size:10},callback:function(v){return Math.abs(v);}},grid:{color:'rgba(255,255,255,.04)'},stacked:false}}}});
+
+  // Platform sentiment heatmap
+  var pdata=Agg.byPlatform(rv);
+  var platforms=Object.keys(pdata);
+  var phHtml='<div style="overflow-x:auto"><table style="width:100%;font-size:11px"><thead><tr><th>Platform</th><th>Reviews</th><th>Avg Rating</th><th>Positive</th><th>Neutral</th><th>Negative</th><th>Sentiment Score</th></tr></thead><tbody>';
+  platforms.forEach(function(p){
+    var d=pdata[p];
+    var avg=d.total?Math.round(d.ratingSum/d.total*10)/10:0;
+    var posP=Math.round(d.pos/d.total*100);
+    var negP=Math.round(d.neg/d.total*100);
+    var neuP=100-posP-negP;
+    phHtml+='<tr>'+
+      '<td style="color:var(--t1);font-weight:500">'+esc(p)+'</td>'+
+      '<td>'+d.total+'</td>'+
+      '<td><span style="color:'+(avg>=7?'var(--green)':avg>=5?'var(--amber)':'var(--red)')+'">'+avg+'</span></td>'+
+      '<td><span class="badge badge-green">'+posP+'%</span></td>'+
+      '<td><span class="badge badge-amber">'+neuP+'%</span></td>'+
+      '<td><span class="badge badge-red">'+negP+'%</span></td>'+
+      '<td><div class="bar-track" style="height:8px"><div class="bar-fill" style="width:'+posP+'%;background:var(--green)"></div></div></td>'+
+    '</tr>';
+  });
+  phHtml+='</tbody></table></div>';
+  document.getElementById('platformSentHeatmap').innerHTML=phHtml;
+
+  // Recurring issues
+  var roomCats={};
+  rv.forEach(function(r){
+    var k=r.room+':'+r.category;
+    if(!roomCats[k])roomCats[k]={room:r.room,cat:r.category,count:0,severity:[]};
+    roomCats[k].count++;
+    if(r.severity)roomCats[k].severity.push(parseInt(r.severity));
+  });
+  var recurring=Object.values(roomCats).filter(function(x){return x.count>1;}).sort(function(a,b){return b.count-a.count;});
+  document.getElementById('recurringIssues').innerHTML=recurring.length?
+    '<div class="tbl-wrap"><table><thead><tr><th>Room</th><th>Issue</th><th>Occurrences</th><th>Max Severity</th></tr></thead><tbody>'+
+    recurring.slice(0,8).map(function(x){
+      var maxSev=Math.max.apply(null,x.severity||[1]);
+      return '<tr><td><strong style="color:var(--t1)">'+esc(x.room)+'</strong></td><td>'+esc(x.cat)+'</td>'+
+        '<td><span style="color:var(--red);font-weight:600">'+x.count+'x</span></td>'+
+        '<td><span class="sev '+getSevClass(maxSev)+'" style="width:auto;padding:2px 8px;border-radius:4px">'+maxSev+'</span></td></tr>';
+    }).join('')+'</tbody></table></div>':
+    '<div class="empty"><span>✓</span>No recurring issues detected</div>';
+}
+
+// ── STAFF ──
+function renderStaff(){
+  var sdata=Agg.byStaff(State.reviews);
+  var staff=Object.values(sdata).sort(function(a,b){return b.total-a.total;});
+  
+  document.getElementById('staffLeader').innerHTML=staff.length?staff.slice(0,8).map(function(s,i){
+    var posP=Math.round(s.pos/s.total*100);
+    return '<div class="staff-row">'+
+      '<div style="font-size:11px;color:var(--t3);width:16px">'+(i+1)+'</div>'+
+      '<div class="staff-avatar">'+s.name.charAt(0).toUpperCase()+'</div>'+
+      '<div class="staff-name">'+esc(s.name)+'</div>'+
+      '<span class="badge '+(posP>=70?'badge-green':posP>=50?'badge-amber':'badge-red')+'">'+posP+'% pos</span>'+
+      '<span style="font-size:11px;color:var(--t3)">'+s.total+' mentions</span>'+
+    '</div>';
+  }).join(''):
+  '<div class="empty"><span>👤</span>No staff mentions found</div>';
+
+  if(staff.length){
+    makeChart('staffChart',{type:'bar',data:{
+      labels:staff.slice(0,8).map(function(s){return s.name;}),
+      datasets:[
+        {label:'Positive',data:staff.slice(0,8).map(function(s){return s.pos;}),backgroundColor:'rgba(53,201,133,.7)'},
+        {label:'Neutral',data:staff.slice(0,8).map(function(s){return s.neu;}),backgroundColor:'rgba(240,176,32,.7)'},
+        {label:'Negative',data:staff.slice(0,8).map(function(s){return s.neg;}),backgroundColor:'rgba(232,85,102,.7)'}
+      ]
+    },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#5d6488',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'},stacked:true},y:{ticks:{color:'#5d6488',font:{size:10}},grid:{display:false},stacked:true}}}});
+  }
+
+  var srevs=State.reviews.filter(function(r){return r.staffMentioned;}).slice(0,8);
+  document.getElementById('staffReviews').innerHTML=srevs.map(function(r){
+    return '<div class="rev-card">'+
+      '<div class="rev-hd"><div style="display:flex;gap:6px;align-items:center"><span class="badge badge-purple">👤 '+esc(r.staffMentioned)+'</span><span class="badge '+getSentClass(r.sentiment)+'">'+esc(r.sentiment)+'</span></div>'+
+      '<div style="font-size:11px;color:var(--t3)">Room '+esc(r.room)+' • '+r.date+'</div></div>'+
+      '<div class="rev-text">'+esc(r.text)+'</div></div>';
+  }).join('');
+}
+
+// ── IMPORT ──
+function renderImport(){
+  var rv=State.reviews;
+  document.getElementById('dataInfo').innerHTML=
+    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:8px">'+
+    '<div class="stat"><div class="stat-label">Source</div><div class="stat-val" style="font-size:16px">'+esc(State.source)+'</div></div>'+
+    '<div class="stat"><div class="stat-label">Records</div><div class="stat-val">'+rv.length+'</div></div>'+
+    '<div class="stat"><div class="stat-label">File</div><div class="stat-val" style="font-size:14px">'+esc(State.fileName||'sample_data')+'</div></div>'+
+    '<div class="stat"><div class="stat-label">Loaded</div><div class="stat-val" style="font-size:14px">'+esc(State.uploadedAt||'—')+'</div></div>'+
+    '</div>';
+}
+
+// ── CSV PARSING ──
+function parseCSV(text){
+  var lines=text.split(/\r?\n/).filter(function(l){return l.trim();});
+  if(lines.length<2)throw new Error('CSV must have header + at least 1 data row');
+  var headers=parseCSVRow(lines[0]).map(function(h){return h.trim().toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,'');});
+  
+  // Map headers flexibly
+  function col(keys){
+    for(var i=0;i<keys.length;i++){
+      var idx=headers.indexOf(keys[i]);
+      if(idx>-1)return idx;
+    }
+    return-1;
+  }
+  
+  var cols={
+    platform:col(['platform','source','ota']),
+    date:col(['date','review_date','created_date','created_at']),
+    rating:col(['rating','score','guest_rating','overall_rating']),
+    booking:col(['booking','booking_number','booking_id','booking_no','reservation']),
+    room:col(['room','room_number','room_no','room_id']),
+    roomType:col(['room_type','roomtype','type']),
+    text:col(['review_text','review','text','comment','feedback','body']),
+    sentiment:col(['sentiment']),
+    category:col(['category','main_category']),
+    subcategory:col(['subcategory','sub_category']),
+    severity:col(['severity','severity_score']),
+    maintFlag:col(['maintenance','maintenance_flag','maint_flag','maint']),
+    cleanFlag:col(['cleaning','cleaning_flag','clean_flag','clean','housekeeping']),
+    staffMentioned:col(['mentioned_staff','staff_mentioned','staff','staff_mention']),
+    action:col(['suggested_action','action','suggested_operational_action','recommendation']),
+    resolutionStatus:col(['resolution_status','status','resolve_status']),
+    resolvedDate:col(['resolved_date','resolution_date','resolved_at']),
+    assignedDept:col(['assigned_department','department','dept']),
+    assignedStaff:col(['assigned_staff','assigned_to']),
+    resolutionNotes:col(['resolution_notes','notes','resolution_note'])
+  };
+
+  var reviews=[];
+  for(var i=1;i<lines.length;i++){
+    var row=parseCSVRow(lines[i]);
+    if(row.every(function(c){return!c.trim();}))continue;
+    function g(c,def){var idx=cols[c];return idx>-1&&row[idx]!==undefined?row[idx].trim():(def||'');}
+    var text=g('text');
+    if(!text)continue;
+    var r={
+      id:'csv_'+(Date.now()+'_'+i),
+      platform:g('platform','Unknown'),
+      date:g('date',''),
+      rating:parseFloat(g('rating',0))||0,
+      booking:g('booking'),
+      room:g('room'),
+      roomType:g('roomType'),
+      text:text,
+      sentiment:g('sentiment')||AI.sentiment(text,parseFloat(g('rating',5))||5),
+      category:g('category')||AI.category(text),
+      subcategory:g('subcategory')||AI.subcategory(text),
+      severity:parseInt(g('severity',0))||AI.severity(text,parseFloat(g('rating',5))||5),
+      maintFlag:g('maintFlag')?g('maintFlag').toLowerCase()==='yes'||g('maintFlag')==='true'||g('maintFlag')==='1':AI.maintFlag(text),
+      cleanFlag:g('cleanFlag')?g('cleanFlag').toLowerCase()==='yes'||g('cleanFlag')==='true'||g('cleanFlag')==='1':AI.cleanFlag(text),
+      staffMentioned:g('staffMentioned'),
+      action:g('action')||AI.action(text),
+      resolutionStatus:g('resolutionStatus')||'Open',
+      resolvedDate:g('resolvedDate'),
+      assignedDept:g('assignedDept'),
+      assignedStaff:g('assignedStaff'),
+      resolutionNotes:g('resolutionNotes'),
+      isSample:false
+    };
+    reviews.push(r);
+  }
+  if(!reviews.length)throw new Error('No valid review rows found. Check that the "Review Text" column has content.');
+  return reviews;
+}
+
+function parseCSVRow(line){
+  var result=[],cur='',inQ=false;
+  for(var i=0;i<line.length;i++){
+    var c=line[i];
+    if(c==='"'){if(inQ&&line[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}
+    else if(c===','&&!inQ){result.push(cur);cur='';}
+    else cur+=c;
+  }
+  result.push(cur);
+  return result;
+}
+
+// ── AI Auto-Analysis ──
+var AI={
+  sentiment:function(text,rating){
+    if(rating>=8)return'Positive';if(rating<=4)return'Negative';
+    var neg=['dirty','mold','broken','worst','terrible','awful','horrible','noisy','leak','cockroach','pest','disgusting','disappointed','unacceptable','complaint'];
+    var pos=['excellent','perfect','outstanding','amazing','wonderful','fantastic','great','loved','superb','immaculate'];
+    var t=text.toLowerCase();
+    var ns=neg.filter(function(w){return t.indexOf(w)>-1;}).length;
+    var ps=pos.filter(function(w){return t.indexOf(w)>-1;}).length;
+    if(ps>ns+1)return'Positive';if(ns>ps)return'Negative';return'Neutral';
+  },
+  category:function(text){
+    var t=text.toLowerCase();
+    if(t.indexOf('staff')+t.indexOf('service')+t.indexOf('reception')+t.indexOf('helpful')+t.indexOf('friendly')>-4){}
+    var checks=[
+      ['Staff',['staff','service','reception','helpful','friendly','butler','concierge','server','waiter','chef']],
+      ['Cleanliness',['clean','dirty','dust','mold','mould','pest','cockroach','smell','hygiene','stain','tile']],
+      ['Room Comfort & Quality',['room','bed','mattress','pillow','ac','air conditioning','noise','temperature','view','furniture']],
+      ['Facilities',['pool','gym','spa','elevator','lift','restaurant','wifi','internet','parking','bathroom','shower']],
+      ['Value for Money',['price','value','worth','expensive','cheap','overpriced','rate']]
+    ];
+    var t2=text.toLowerCase();
+    for(var i=0;i<checks.length;i++){
+      if(checks[i][1].some(function(w){return t2.indexOf(w)>-1;}))return checks[i][0];
+    }
+    return'Room Comfort & Quality';
+  },
+  subcategory:function(text){
+    var t=text.toLowerCase();
+    if(t.indexOf('ac')>-1||t.indexOf('air conditioning')>-1||t.indexOf('hvac')>-1)return'HVAC';
+    if(t.indexOf('mold')>-1||t.indexOf('mould')>-1)return'Mold/Damp';
+    if(t.indexOf('shower')>-1||t.indexOf('water pressure')>-1||t.indexOf('drain')>-1)return'Plumbing';
+    if(t.indexOf('mattress')>-1||t.indexOf('pillow')>-1||t.indexOf('bed')>-1)return'Bedding';
+    if(t.indexOf('elevator')>-1||t.indexOf('lift')>-1)return'Elevator';
+    if(t.indexOf('gym')>-1)return'Gym';
+    if(t.indexOf('pest')>-1||t.indexOf('cockroach')>-1)return'Pest Control';
+    return'General';
+  },
+  severity:function(text,rating){
+    var t=text.toLowerCase();
+    if(t.indexOf('cockroach')>-1||t.indexOf('mold')>-1||t.indexOf('mould')>-1||t.indexOf('sewage')>-1)return 5;
+    if(t.indexOf('blocked')>-1||t.indexOf('recurring')>-1||t.indexOf('third time')>-1)return 5;
+    if(rating<=3)return 5;if(rating<=5)return 4;if(rating<=6)return 3;if(rating<=7)return 2;return 1;
+  },
+  maintFlag:function(text){
+    var kw=['ac','air conditioning','leak','broken','light','switch','elevator','lift','plumbing','water','treadmill','equipment','faulty','repair','dripping','rattl'];
+    var t=text.toLowerCase();
+    return kw.some(function(w){return t.indexOf(w)>-1;});
+  },
+  cleanFlag:function(text){
+    var kw=['dirty','dust','mold','mould','clean','stain','smell','pest','cockroach','hygiene','grout','tile'];
+    var t=text.toLowerCase();
+    return kw.some(function(w){return t.indexOf(w)>-1;});
+  },
+  action:function(text){
+    var t=text.toLowerCase();
+    if(t.indexOf('cockroach')>-1||t.indexOf('pest')>-1)return'URGENT: Deploy pest control, inspect room and adjacent rooms, seal entry points';
+    if(t.indexOf('mold')>-1||t.indexOf('mould')>-1)return'Treat mold at source, inspect drainage and sealing, deep deodorize room';
+    if(t.indexOf('blocked')>-1&&t.indexOf('drain')>-1)return'Unblock drain trap, inspect drainage system, check for pipe root cause';
+    if(t.indexOf('ac')>-1||t.indexOf('air conditioning')>-1)return'Inspect FCU, clean filter, check refrigerant and drain pan';
+    if(t.indexOf('water pressure')>-1||t.indexOf('shower')>-1&&t.indexOf('weak')>-1)return'Inspect pressure regulator and shower valve, check pipe scaling';
+    if(t.indexOf('mattress')>-1)return'Replace mattress, inspect all bedding, schedule furniture audit';
+    if(t.indexOf('dust')>-1)return'Conduct deep clean per checklist, re-inspect by supervisor before reletting';
+    return'Review complaint, assign to relevant department, follow up within 24hrs';
+  }
+};
+
+// ── CSV Export ──
+function exportCSV(){
+  if(!State.reviews.length){alert('No data to export');return;}
+  var hdr=['ID','Platform','Date','Rating','Booking','Room','Room Type','Review Text','Sentiment','Category','Subcategory','Severity','Maintenance Flag','Cleaning Flag','Mentioned Staff','Suggested Action','Resolution Status','Resolved Date','Assigned Department','Assigned Staff','Resolution Notes'];
+  var rows=State.reviews.map(function(r){return[r.id,r.platform,r.date,r.rating,r.booking,r.room,r.roomType,'"'+(r.text||'').replace(/"/g,'""')+'"',r.sentiment,r.category,r.subcategory,r.severity,r.maintFlag?'Yes':'No',r.cleanFlag?'Yes':'No',r.staffMentioned,'"'+(r.action||'').replace(/"/g,'""')+'"',r.resolutionStatus,r.resolvedDate,r.assignedDept,r.assignedStaff,'"'+(r.resolutionNotes||'').replace(/"/g,'""')+'"'];});
+  var csv=[hdr].concat(rows).map(function(r){return r.join(',');}).join('\n');
+  var a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='hotel_reviews_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+  toast('✓ Exported '+State.reviews.length+' reviews');
+}
+
+// ── App ──
+var App={
+  toggleTheme:function(){
+    var html=document.documentElement;
+    var isDark=html.getAttribute('data-theme')==='dark';
+    html.setAttribute('data-theme',isDark?'light':'dark');
+    LS.set('hoi_theme',isDark?'light':'dark');
+  },
+  handleDrop:function(e){
+    e.preventDefault();document.getElementById('uploadZone').classList.remove('drag');
+    var file=e.dataTransfer.files[0];if(file)this.processFile(file);
+  },
+  handleFile:function(input){
+    var file=input.files[0];if(file)this.processFile(file);input.value='';
+  },
+  processFile:function(file){
+    if(!file.name.match(/\.(csv|txt)$/i)){toast('⚠ Please upload a .csv file');return;}
+    var self=this;
+    var reader=new FileReader();
+    reader.onload=function(e){
+      try{
+        var reviews=parseCSV(e.target.result);
+        State.reviews=reviews;State.source='csv';State.fileName=file.name;State.uploadedAt=new Date().toLocaleString();
+        LS.set(CACHE_KEY,{reviews:reviews,fileName:file.name,uploadedAt:State.uploadedAt});
+        document.getElementById('uploadStatus').innerHTML='<div style="padding:10px;background:var(--gs);border:1px solid var(--green);border-radius:var(--r);font-size:12px;color:var(--green)">✓ Loaded <strong>'+reviews.length+' reviews</strong> from '+esc(file.name)+'</div>';
+        document.getElementById('dataSourceLabel').textContent='CSV: '+file.name;
+        renderImport();
+        toast('✓ Loaded '+reviews.length+' reviews');
+      }catch(err){
+        document.getElementById('uploadStatus').innerHTML='<div style="padding:10px;background:var(--rs);border:1px solid var(--red);border-radius:var(--r);font-size:12px;color:var(--red)">⚠ '+esc(err.message)+'</div>';
+        toast('⚠ '+err.message);
+      }
+    };
+    reader.readAsText(file,'UTF-8');
+  },
+  clearData:function(){
+    if(!confirm('Clear uploaded data and return to sample mode?'))return;
+    LS.del(CACHE_KEY);
+    State.reviews=SAMPLE.slice();State.source='sample';State.fileName=null;State.uploadedAt=null;
+    document.getElementById('uploadStatus').innerHTML='';
+    document.getElementById('dataSourceLabel').textContent='Sample Data Mode';
+    renderImport();
+    toast('Data cleared — showing sample dataset');
+  },
+  exportCSV:exportCSV,
+  init:function(){
+    var savedTheme=LS.get('hoi_theme',null);
+    if(savedTheme)document.documentElement.setAttribute('data-theme',savedTheme);
+    var cached=LS.get(CACHE_KEY,null);
+    if(cached&&cached.reviews&&cached.reviews.length){
+      State.reviews=cached.reviews;State.source='csv';State.fileName=cached.fileName||null;State.uploadedAt=cached.uploadedAt||null;
+      document.getElementById('dataSourceLabel').textContent='CSV: '+(cached.fileName||'uploaded');
+    }else{
+      State.reviews=SAMPLE.slice();State.source='sample';
+    }
+    if(typeof Chart!=='undefined'){renderOverview();}
+    else{setTimeout(function(){if(typeof Chart!=='undefined')renderOverview();},600);}
   }
 };
 
