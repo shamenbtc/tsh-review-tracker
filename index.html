@@ -455,26 +455,57 @@ var LS={
 };
 
 // ── Date Utilities ──
+// Strict date parser: DD/MM/YYYY ONLY for slash format. Never falls back to JS Date heuristics.
 var DateU={
   parse:function(s){
     if(!s)return null;
     s=String(s).trim();
-    var d;
-    if(/^\d{4}-\d{2}-\d{2}/.test(s)){d=new Date(s.slice(0,10));}
-    else if(/^\d{2}\/\d{2}\/\d{4}/.test(s)){var p=s.split('/');d=new Date(p[2]+'-'+p[1]+'-'+p[0]);}
-    else if(/^\d{1,2}\/\d{1,2}\/\d{4}/.test(s)){var p=s.split('/');d=new Date(p[2]+'-'+p[1].padStart(2,'0')+'-'+p[0].padStart(2,'0'));}
-    else{d=new Date(s);}
-    return isNaN(d.getTime())?null:d;
+    if(!s||s.toLowerCase()==='unknown')return null;
+    var m;
+    // ISO format YYYY-MM-DD (used by sample data and HTML date inputs)
+    m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+    if(m){
+      var y=parseInt(m[1]),mo=parseInt(m[2]),da=parseInt(m[3]);
+      if(mo<1||mo>12||da<1||da>31)return null;
+      var d=new Date(y,mo-1,da);
+      return isNaN(d.getTime())?null:d;
+    }
+    // DD/MM/YYYY or D/M/YYYY (uploaded CSV format — STRICT)
+    m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+    if(m){
+      var day=parseInt(m[1]),mon=parseInt(m[2]),yr=parseInt(m[3]);
+      // Strict: first segment is day (1-31), second is month (1-12). Reject anything else.
+      if(mon<1||mon>12||day<1||day>31)return null;
+      var d=new Date(yr,mon-1,day);
+      return isNaN(d.getTime())?null:d;
+    }
+    // DD-MM-YYYY
+    m=s.match(/^(\d{1,2})-(\d{1,2})-(\d{4})/);
+    if(m){
+      var day=parseInt(m[1]),mon=parseInt(m[2]),yr=parseInt(m[3]);
+      if(mon<1||mon>12||day<1||day>31)return null;
+      var d=new Date(yr,mon-1,day);
+      return isNaN(d.getTime())?null:d;
+    }
+    // No fallback — reject anything unrecognized rather than fabricate
+    return null;
+  },
+  // Normalize ANY input to ISO YYYY-MM-DD; used at CSV import time so all
+  // downstream code receives a single canonical format.
+  toISO:function(s){
+    var d=this.parse(s);
+    if(!d)return'';
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
   },
   toKey:function(dateStr){
     var d=this.parse(dateStr);
-    if(!d)return'Unknown';
+    if(!d)return null;
     return d.getFullYear()+'-'+(d.getMonth()+1).toString().padStart(2,'0');
   },
   toLabel:function(key){
-    if(key==='Unknown')return'Unknown';
+    if(!key)return'Unknown';
     var p=key.split('-');
-    var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
     return months[parseInt(p[1])-1]+' '+p[0];
   }
 };
@@ -509,6 +540,7 @@ var Agg={
     var map={};
     reviews.forEach(function(r){
       var k=DateU.toKey(r.date);
+      if(!k)return; // Skip reviews without a valid parseable date — never fabricate months
       if(!map[k])map[k]={pos:0,neg:0,neu:0,total:0,ratingSum:0,sev:[]};
       map[k].total++;
       map[k].ratingSum+=parseFloat(r.rating)||0;
@@ -517,8 +549,8 @@ var Agg={
       else map[k].neu++;
       if(r.severity)map[k].sev.push(parseInt(r.severity));
     });
-    var keys=Object.keys(map).filter(function(k){return k!=='Unknown';}).sort();
-    if(map['Unknown'])keys.push('Unknown');
+    // Sort chronologically — keys are YYYY-MM so string sort works
+    var keys=Object.keys(map).sort();
     return{keys:keys,map:map};
   },
   byRoom:function(reviews){
@@ -728,7 +760,7 @@ var R={
           (r.subcategory?'<span class="badge badge-gray">'+esc(r.subcategory)+'</span>':'')+
           (r.maintFlag===true||r.maintFlag==='Yes'||r.maintFlag==='true'?'<span class="badge badge-red">🔧 Maint</span>':'')+
           (r.cleanFlag===true||r.cleanFlag==='Yes'||r.cleanFlag==='true'?'<span class="badge badge-amber">🧹 Clean</span>':'')+
-          (r.staffMentioned?'<span class="badge badge-purple">👤 '+esc(r.staffMentioned)+'</span>':'')+
+          (r.staffMentioned?'<span class="badge '+(r.sentiment==='Positive'?'badge-green':'badge-purple')+'">'+(r.sentiment==='Positive'?'⭐':'👤')+' '+esc(r.staffMentioned)+(r.sentiment==='Positive'?' · Recognition':'')+'</span>':'')+
           '<div class="status '+resClass(r.resolutionStatus)+'" style="margin-left:auto">'+esc(r.resolutionStatus||'Open')+'</div>'+
         '</div>'+
         '<div class="rev-text collapsed" id="rt-'+r.id+'">'+esc(r.text)+'</div>'+
@@ -868,7 +900,9 @@ var A={
     var hideRes=document.getElementById('hideResolved').checked;
     var filter=this.currentFilter;
     var rv=State.reviews.filter(function(r){
-      var isAlert=r.maintFlag===true||r.maintFlag==='Yes'||r.maintFlag==='true'||r.cleanFlag===true||r.cleanFlag==='Yes'||r.cleanFlag==='true'||parseInt(r.severity)>=4;
+      // HARD GUARD: positive reviews never become alerts, regardless of stale flags in CSV
+      if(r.sentiment==='Positive')return false;
+      var isAlert=r.maintFlag===true||r.maintFlag==='Yes'||r.maintFlag==='true'||r.cleanFlag===true||r.cleanFlag==='Yes'||r.cleanFlag==='true'||parseInt(r.severity)>=3;
       if(!isAlert)return false;
       if(hideRes&&r.resolutionStatus==='Resolved')return false;
       var isMaint=r.maintFlag===true||r.maintFlag==='Yes'||r.maintFlag==='true';
@@ -1108,24 +1142,35 @@ function parseCSV(text){
     function g(c,def){var idx=cols[c];return idx>-1&&row[idx]!==undefined?row[idx].trim():(def||'');}
     var text=g('text');
     if(!text)continue;
+    var rating=parseFloat(g('rating',0))||0;
+    // Pipeline: sentiment first, then everything downstream uses it
+    var sentiment=g('sentiment')||AI.sentiment(text,rating);
+    var category=g('category')||AI.category(text,sentiment);
+    var subcategory=g('subcategory')||AI.subcategory(text,category,sentiment);
+    var severity=parseInt(g('severity',0))||AI.severity(text,rating,sentiment);
+    // Explicit CSV value beats AI inference for flags
+    var maintRaw=g('maintFlag');
+    var cleanRaw=g('cleanFlag');
+    var maintFlag=maintRaw?(maintRaw.toLowerCase()==='yes'||maintRaw.toLowerCase()==='true'||maintRaw==='1'):AI.maintFlag(text,sentiment);
+    var cleanFlag=cleanRaw?(cleanRaw.toLowerCase()==='yes'||cleanRaw.toLowerCase()==='true'||cleanRaw==='1'):AI.cleanFlag(text,sentiment);
     var r={
       id:'csv_'+(Date.now()+'_'+i),
       platform:g('platform','Unknown'),
-      date:g('date',''),
-      rating:parseFloat(g('rating',0))||0,
+      date:DateU.toISO(g('date',''))||g('date',''),
+      rating:rating,
       booking:g('booking'),
       room:g('room'),
       roomType:g('roomType'),
       text:text,
-      sentiment:g('sentiment')||AI.sentiment(text,parseFloat(g('rating',5))||5),
-      category:g('category')||AI.category(text),
-      subcategory:g('subcategory')||AI.subcategory(text),
-      severity:parseInt(g('severity',0))||AI.severity(text,parseFloat(g('rating',5))||5),
-      maintFlag:g('maintFlag')?g('maintFlag').toLowerCase()==='yes'||g('maintFlag')==='true'||g('maintFlag')==='1':AI.maintFlag(text),
-      cleanFlag:g('cleanFlag')?g('cleanFlag').toLowerCase()==='yes'||g('cleanFlag')==='true'||g('cleanFlag')==='1':AI.cleanFlag(text),
+      sentiment:sentiment,
+      category:category,
+      subcategory:subcategory,
+      severity:severity,
+      maintFlag:maintFlag,
+      cleanFlag:cleanFlag,
       staffMentioned:g('staffMentioned'),
-      action:g('action')||AI.action(text),
-      resolutionStatus:g('resolutionStatus')||'Open',
+      action:g('action')||AI.action(text,sentiment,category,subcategory),
+      resolutionStatus:g('resolutionStatus')||(sentiment==='Positive'?'Resolved':'Open'),
       resolvedDate:g('resolvedDate'),
       assignedDept:g('assignedDept'),
       assignedStaff:g('assignedStaff'),
@@ -1152,68 +1197,195 @@ function parseCSVRow(line){
 
 // ── AI Auto-Analysis ──
 var AI={
+  // Lexicons
+  POS_WORDS:['excellent','perfect','outstanding','amazing','wonderful','fantastic','great','loved','superb','immaculate','attentive','spotless','exceptional','phenomenal','impressed','impressive','professional','courteous','helpful','friendly','warm','welcoming','recommend','recommended','enjoyed','enjoyable','beautiful','lovely','pleasant','accommodating','knowledgeable','polite','quick','prompt','efficient','smooth','seamless','memorable','delight','delighted','satisfied','grateful','appreciate','appreciated','thank','thanks','kudos','five star','5 star','5-star','best','top','well done','went above','went out of their way','anticipate','solved','sorted','handled','resolved','fixed','clean','tidy','comfortable','cosy','cozy','quiet','peaceful'],
+  NEG_WORDS:['dirty','filthy','mold','mould','broken','worst','terrible','awful','horrible','disgusting','disappointed','disappointing','unacceptable','complaint','complained','noisy','rattling','leak','leaking','leaked','dripping','cockroach','roach','pest','bug','rude','slow','unresponsive','smell','smelly','musty','damp','stain','stained','grimy','grime','blocked','clogged','sagging','sagged','flat','worn','outdated','out of order','out-of-order','faulty','fault','dust','dusty','limescale','grout','poor','bad','issue','issues','problem','problems','not working','not fixed','still','again','recurring','third time','second time','frustrating','frustrated','annoying','annoyed','uncomfortable','uncleaned','overpriced','expensive','rip-off','waste','refused','refuse','denied','ignored','wait','waited','waiting'],
+  // Negation words that flip sentiment when near positive words
+  NEGATORS:['not','no','never',"didn't","wasn't","weren't",'lack','lacking','without',"isn't","aren't"],
+  // Compliment patterns (strong positive indicators that override weak negatives)
+  PRAISE_PATTERNS:[
+    /\b(was|were|is|are)\s+(very\s+|extremely\s+|really\s+|so\s+|truly\s+)?(helpful|friendly|kind|polite|courteous|professional|attentive|wonderful|amazing|excellent|outstanding|fantastic|great|lovely|warm|welcoming|knowledgeable|efficient|accommodating)\b/i,
+    /\b(thank|thanks|kudos|shout[- ]?out|special mention)\b/i,
+    /\b(provided|gave|delivered|offered)\s+(excellent|great|amazing|outstanding|exceptional|wonderful|impressive)\s+(service|help|assistance|support|hospitality)\b/i,
+    /\b(handled|solved|resolved|fixed|sorted|managed)\s+(it|the issue|the problem|things|everything)\s+(professionally|quickly|efficiently|well|brilliantly|gracefully)\b/i,
+    /\b(would|will|definitely|certainly)\s+(return|recommend|come back|stay again)\b/i,
+    /\b(went\s+(above|out\s+of\s+(her|his|their)\s+way))\b/i
+  ],
+  // Complaint patterns (strong negative indicators)
+  COMPLAINT_PATTERNS:[
+    /\b(not|wasn't|weren't|didn't)\s+\w*\s*(clean|working|fixed|resolved|helpful|good|acceptable)\b/i,
+    /\b(very|extremely|really|so)\s+(disappointed|disappointing|frustrated|annoyed|upset|unhappy)\b/i,
+    /\b(would not|wouldn't|will not|won't|never)\s+(return|recommend|come back|stay)\b/i,
+    /\b(out of order|out-of-order|broken|faulty|not working|stopped working|doesn't work)\b/i,
+    /\b(third|3rd|second|2nd)\s+time\b/i,
+    /\b(refused|denied|ignored)\s+(to|us|me|our|my)\b/i
+  ],
+
+  // CORE: Returns 'Positive' | 'Negative' | 'Neutral' using context, not just keywords
   sentiment:function(text,rating){
-    if(rating>=8)return'Positive';if(rating<=4)return'Negative';
-    var neg=['dirty','mold','broken','worst','terrible','awful','horrible','noisy','leak','cockroach','pest','disgusting','disappointed','unacceptable','complaint'];
-    var pos=['excellent','perfect','outstanding','amazing','wonderful','fantastic','great','loved','superb','immaculate'];
+    if(!text)text='';
     var t=text.toLowerCase();
-    var ns=neg.filter(function(w){return t.indexOf(w)>-1;}).length;
-    var ps=pos.filter(function(w){return t.indexOf(w)>-1;}).length;
-    if(ps>ns+1)return'Positive';if(ns>ps)return'Negative';return'Neutral';
+    var r=parseFloat(rating);
+    var praiseHits=0,complaintHits=0;
+    this.PRAISE_PATTERNS.forEach(function(p){if(p.test(text))praiseHits++;});
+    this.COMPLAINT_PATTERNS.forEach(function(p){if(p.test(text))complaintHits++;});
+    // Word counts (with negation handling)
+    var words=t.split(/\s+/);
+    var posScore=0,negScore=0;
+    for(var i=0;i<words.length;i++){
+      var w=words[i].replace(/[^a-z0-9-]/g,'');
+      if(!w)continue;
+      var negated=false;
+      // Look back up to 3 words for a negator
+      for(var j=Math.max(0,i-3);j<i;j++){
+        var prev=words[j].replace(/[^a-z0-9']/g,'');
+        if(this.NEGATORS.indexOf(prev)>-1){negated=true;break;}
+      }
+      if(this.POS_WORDS.indexOf(w)>-1)negated?negScore++:posScore++;
+      else if(this.NEG_WORDS.indexOf(w)>-1)negated?posScore++:negScore++;
+    }
+    // Decision logic — rating is a tiebreaker, not the dominant signal
+    var totalScore=posScore+negScore+praiseHits*2+complaintHits*2;
+    var posFinal=posScore+praiseHits*2;
+    var negFinal=negScore+complaintHits*2;
+    // Rating-only override when rating is at extremes AND text supports it
+    if(!isNaN(r)){
+      if(r>=9&&negFinal<=1)return'Positive';
+      if(r<=3&&posFinal<=1)return'Negative';
+    }
+    // Text-driven decision
+    if(posFinal>=negFinal+2)return'Positive';
+    if(negFinal>=posFinal+1)return'Negative';
+    if(posFinal>0&&negFinal===0)return'Positive';
+    if(negFinal>0&&posFinal===0)return'Negative';
+    // Rating as fallback tiebreaker
+    if(!isNaN(r)){
+      if(r>=8)return'Positive';
+      if(r<=5)return'Negative';
+    }
+    return'Neutral';
   },
-  category:function(text){
+
+  category:function(text,sentiment){
+    if(!text)text='';
     var t=text.toLowerCase();
-    if(t.indexOf('staff')+t.indexOf('service')+t.indexOf('reception')+t.indexOf('helpful')+t.indexOf('friendly')>-4){}
+    // Staff is highest priority — if a staff member is praised or criticized, that's the primary category
+    if(/\b(staff|service|reception|receptionist|concierge|butler|waiter|waitress|server|housekeeping team|front desk|manager|chef|barman|bartender|valet|porter|bellboy|attendant|sharmendran|jasmine|farah|tang|arfa)\b/i.test(text)
+       &&(/\b(helpful|friendly|kind|polite|courteous|professional|attentive|excellent|great|amazing|outstanding|warm|wonderful|rude|slow|unresponsive|unhelpful|unprofessional)\b/i.test(text)
+          ||/\bthank|thanks|appreciate/i.test(text))){
+      return'Staff';
+    }
     var checks=[
-      ['Staff',['staff','service','reception','helpful','friendly','butler','concierge','server','waiter','chef']],
-      ['Cleanliness',['clean','dirty','dust','mold','mould','pest','cockroach','smell','hygiene','stain','tile']],
-      ['Room Comfort & Quality',['room','bed','mattress','pillow','ac','air conditioning','noise','temperature','view','furniture']],
-      ['Facilities',['pool','gym','spa','elevator','lift','restaurant','wifi','internet','parking','bathroom','shower']],
-      ['Value for Money',['price','value','worth','expensive','cheap','overpriced','rate']]
+      ['Cleanliness',['mold','mould','pest','cockroach','roach','dust','dirty','filthy','stain','tile','grout','grime','musty','hygiene','smell','odour','odor','damp']],
+      ['Room Comfort & Quality',['bed','mattress','pillow','linen','sheet','duvet','ac','air conditioning','hvac','aircon','temperature','noise','noisy','view','furniture','sofa','wardrobe','curtain','rattl']],
+      ['Facilities',['pool','gym','spa','elevator','lift','restaurant','wifi','internet','parking','breakfast','buffet','treadmill','equipment']],
+      ['Value for Money',['price','value','worth','expensive','cheap','overpriced','rate','cost','money','rip-off']],
+      ['Staff',['staff','service','reception','butler','concierge','waiter','helpful','friendly','attentive','rude','professional']]
     ];
-    var t2=text.toLowerCase();
     for(var i=0;i<checks.length;i++){
-      if(checks[i][1].some(function(w){return t2.indexOf(w)>-1;}))return checks[i][0];
+      if(checks[i][1].some(function(w){return t.indexOf(w)>-1;}))return checks[i][0];
     }
     return'Room Comfort & Quality';
   },
-  subcategory:function(text){
+
+  subcategory:function(text,category,sentiment){
+    if(!text)text='';
     var t=text.toLowerCase();
-    if(t.indexOf('ac')>-1||t.indexOf('air conditioning')>-1||t.indexOf('hvac')>-1)return'HVAC';
-    if(t.indexOf('mold')>-1||t.indexOf('mould')>-1)return'Mold/Damp';
-    if(t.indexOf('shower')>-1||t.indexOf('water pressure')>-1||t.indexOf('drain')>-1)return'Plumbing';
-    if(t.indexOf('mattress')>-1||t.indexOf('pillow')>-1||t.indexOf('bed')>-1)return'Bedding';
+    if(category==='Staff'){
+      if(sentiment==='Positive')return'Staff Recognition';
+      if(sentiment==='Negative')return'Staff Performance';
+      return'Staff Interaction';
+    }
+    // Pest/crisis checks first — these dominate
+    if(t.indexOf('pest')>-1||t.indexOf('cockroach')>-1||t.indexOf('roach')>-1||t.indexOf('bedbug')>-1)return'Pest Control';
+    if(t.indexOf('mold')>-1||t.indexOf('mould')>-1||t.indexOf('damp')>-1)return'Mold/Damp';
+    if(t.indexOf('ac')>-1||t.indexOf('air conditioning')>-1||t.indexOf('aircon')>-1||t.indexOf('hvac')>-1)return'HVAC';
+    if(t.indexOf('shower')>-1||t.indexOf('water pressure')>-1||t.indexOf('drain')>-1||t.indexOf('plumbing')>-1)return'Plumbing';
+    if(t.indexOf('mattress')>-1||t.indexOf('pillow')>-1||(t.indexOf('bed')>-1&&t.indexOf('bedding')===-1))return'Bedding';
     if(t.indexOf('elevator')>-1||t.indexOf('lift')>-1)return'Elevator';
-    if(t.indexOf('gym')>-1)return'Gym';
-    if(t.indexOf('pest')>-1||t.indexOf('cockroach')>-1)return'Pest Control';
+    if(t.indexOf('gym')>-1||t.indexOf('treadmill')>-1)return'Gym';
+    if(t.indexOf('dust')>-1||t.indexOf('grimy')>-1||t.indexOf('grime')>-1)return'Deep Cleaning';
+    if(t.indexOf('tile')>-1||t.indexOf('grout')>-1||t.indexOf('bathroom')>-1)return'Bathroom';
+    if(t.indexOf('wifi')>-1||t.indexOf('internet')>-1||t.indexOf('tv')>-1)return'In-room Technology';
     return'General';
   },
-  severity:function(text,rating){
+
+  // Severity is operational seriousness. Positive reviews are ALWAYS severity 1.
+  severity:function(text,rating,sentiment){
+    if(sentiment==='Positive')return 1;
+    if(!text)text='';
     var t=text.toLowerCase();
-    if(t.indexOf('cockroach')>-1||t.indexOf('mold')>-1||t.indexOf('mould')>-1||t.indexOf('sewage')>-1)return 5;
-    if(t.indexOf('blocked')>-1||t.indexOf('recurring')>-1||t.indexOf('third time')>-1)return 5;
-    if(rating<=3)return 5;if(rating<=5)return 4;if(rating<=6)return 3;if(rating<=7)return 2;return 1;
+    var r=parseFloat(rating);
+    // Critical operational issues — only matter if sentiment is negative
+    if(sentiment==='Negative'){
+      if(/\b(cockroach|roach|pest|bedbug|sewage|mold|mould)\b/i.test(t))return 5;
+      if(/\b(blocked\s+drain|flooding|leaking\s+everywhere|recurring|third time|3rd time|second time)\b/i.test(t))return 5;
+      if(!isNaN(r)&&r<=3)return 5;
+      if(!isNaN(r)&&r<=5)return 4;
+      return 3;
+    }
+    // Neutral with operational mention
+    if(sentiment==='Neutral'){
+      if(/\b(broken|out of order|not working|faulty|leak|rattl|dripping)\b/i.test(t))return 3;
+      return 2;
+    }
+    return 1;
   },
-  maintFlag:function(text){
-    var kw=['ac','air conditioning','leak','broken','light','switch','elevator','lift','plumbing','water','treadmill','equipment','faulty','repair','dripping','rattl'];
+
+  // Maintenance flag ONLY when negative/neutral AND actual physical defect mentioned
+  maintFlag:function(text,sentiment){
+    if(sentiment==='Positive')return false;
+    if(!text)return false;
     var t=text.toLowerCase();
-    return kw.some(function(w){return t.indexOf(w)>-1;});
+    // Require a defect verb/noun near the physical item — not just the item alone
+    var defectPattern=/\b(broken|faulty|fault|not working|stopped working|out of order|out-of-order|leak|leaking|leaked|dripping|rattl|noisy|nois\w+|warm air|cold air|weak|low pressure|blocked|clogged|slow|flickering|loose|stuck|cracked|chipped|peeling)\b/i;
+    var itemPattern=/\b(ac|air conditioning|aircon|hvac|fcu|tv|remote|elevator|lift|shower|tap|faucet|drain|toilet|light|lamp|switch|socket|outlet|fan|kettle|fridge|treadmill|equipment|plumbing|pipe|water heater|boiler|door|window|lock|safe|curtain)\b/i;
+    return defectPattern.test(t)&&itemPattern.test(t);
   },
-  cleanFlag:function(text){
-    var kw=['dirty','dust','mold','mould','clean','stain','smell','pest','cockroach','hygiene','grout','tile'];
+
+  // Cleaning flag ONLY when negative/neutral AND actual cleanliness failure mentioned
+  cleanFlag:function(text,sentiment){
+    if(sentiment==='Positive')return false;
+    if(!text)return false;
     var t=text.toLowerCase();
-    return kw.some(function(w){return t.indexOf(w)>-1;});
+    var dirtyPattern=/\b(dirty|filthy|stain|stained|dust|dusty|grimy|grime|musty|smelly|smell\w*|moldy|mouldy|mold|mould|hair|crumb|sticky|greasy|spot)\b/i;
+    var areaPattern=/\b(room|bathroom|tile|floor|carpet|sheet|linen|towel|bed|mattress|pillow|curtain|kettle|cup|glass|toilet|mirror|sink|shower)\b/i;
+    // Pest/hygiene crises are ALWAYS cleaning flags
+    if(/\b(cockroach|roach|pest|bedbug|bug|insect|rodent)\b/i.test(t))return true;
+    return dirtyPattern.test(t)&&(areaPattern.test(t)||t.length<200);
   },
-  action:function(text){
+
+  // Action generator — context-aware, never generic when sentiment is negative
+  action:function(text,sentiment,category,subcategory){
+    if(sentiment==='Positive'){
+      if(category==='Staff')return'Log positive feedback. Share with named staff and department head for recognition programme.';
+      return'Share positive feedback with relevant department. Document for monthly recognition.';
+    }
+    if(sentiment==='Neutral')return'Acknowledge feedback. Monitor for recurrence. No immediate action required unless trend develops.';
+    if(!text)text='';
     var t=text.toLowerCase();
-    if(t.indexOf('cockroach')>-1||t.indexOf('pest')>-1)return'URGENT: Deploy pest control, inspect room and adjacent rooms, seal entry points';
-    if(t.indexOf('mold')>-1||t.indexOf('mould')>-1)return'Treat mold at source, inspect drainage and sealing, deep deodorize room';
-    if(t.indexOf('blocked')>-1&&t.indexOf('drain')>-1)return'Unblock drain trap, inspect drainage system, check for pipe root cause';
-    if(t.indexOf('ac')>-1||t.indexOf('air conditioning')>-1)return'Inspect FCU, clean filter, check refrigerant and drain pan';
-    if(t.indexOf('water pressure')>-1||t.indexOf('shower')>-1&&t.indexOf('weak')>-1)return'Inspect pressure regulator and shower valve, check pipe scaling';
-    if(t.indexOf('mattress')>-1)return'Replace mattress, inspect all bedding, schedule furniture audit';
-    if(t.indexOf('dust')>-1)return'Conduct deep clean per checklist, re-inspect by supervisor before reletting';
-    return'Review complaint, assign to relevant department, follow up within 24hrs';
+    if(/\b(cockroach|roach|pest|bedbug|bug)\b/i.test(t))return'URGENT: Deploy pest control, treat affected room and adjacent rooms, conduct floor inspection, seal entry points, file incident report per SOP.';
+    if(/\b(mold|mould|damp\s+smell|musty)\b/i.test(t))return'Treat mold at source, inspect drain pan and wall sealing for moisture ingress, deep deodorize, replace soft furnishings if needed.';
+    if(/\b(blocked|clogged)\s+drain\b/i.test(t)||/\bdrain.{0,10}block/i.test(t))return'Unblock drain trap, inspect downstream plumbing, scope for root cause (hair, debris, pipe damage).';
+    if(/\b(ac|air conditioning|aircon|fcu)\b/i.test(t)){
+      if(/\b(drip|dripping|water)\b/i.test(t))return'Inspect FCU drain pan and condensate line for blockage. Check for refrigerant leak. Inspect wall behind unit for moisture damage.';
+      if(/\b(noisy|rattl|loud)\b/i.test(t))return'Inspect FCU blower wheel and motor bearings. Clean filter. Tighten housing screws. Replace blower if bearing worn.';
+      if(/\bwarm air\b/i.test(t))return'Check refrigerant charge, inspect thermostat calibration, verify compressor operation.';
+      return'Inspect FCU: clean filter, check refrigerant level, inspect drain pan, verify thermostat.';
+    }
+    if(/\b(water pressure|weak\s+(shower|water))\b/i.test(t))return'Inspect pressure regulator, descale shower head and aerators, check for pipe scaling in supply line.';
+    if(/\bhot water\b/i.test(t)&&/\b(slow|long time|cold)\b/i.test(t))return'Inspect water heater capacity, check mixing valve and thermostat settings, verify recirculation pump.';
+    if(/\b(mattress|sagging|sag\b)\b/i.test(t))return'Replace mattress and bedding. Conduct furniture audit for the floor. Schedule replacement cycle review.';
+    if(/\b(pillow)\b/i.test(t)&&/\b(flat|hard|uncomfortable)\b/i.test(t))return'Replace pillows. Review bedding standard across room type.';
+    if(/\b(dust|grime|grimy)\b/i.test(t))return'Conduct deep clean per full checklist: vacuum under all furniture, wipe high surfaces, supervisor inspection before re-letting.';
+    if(/\b(tile|grout|bathroom)\b/i.test(t)&&/\b(dirty|stain|grime)\b/i.test(t))return'Deep clean bathroom: scrub tiles and grout, descale fixtures, treat any visible mold, replace grout if damaged.';
+    if(/\b(elevator|lift)\b/i.test(t))return'Escalate to elevator maintenance contractor. Communicate ETA to guests. Inspect remaining elevators for preventive maintenance.';
+    if(/\b(gym|treadmill|equipment)\b/i.test(t))return'Service or replace faulty equipment. Establish preventive maintenance schedule and daily inspection log.';
+    if(/\b(tv|remote)\b/i.test(t))return'Replace remote batteries or unit. Reprogram pairing. Audit similar units across rooms.';
+    if(/\b(light|switch|socket|outlet)\b/i.test(t))return'Electrician to inspect and replace faulty fixture. Test all sockets in room for safety.';
+    if(/\b(noise|noisy)\b/i.test(t)&&/\bfan\b/i.test(t))return'Service bathroom extractor fan — likely worn bearing. Replace if motor noise persists after lubrication.';
+    if(/\b(kettle|limescale)\b/i.test(t))return'Replace kettle. Descale all in-room appliances. Audit similar items hotel-wide.';
+    return'Investigate complaint with relevant department. Assign owner. Follow up within 24 hours and document resolution.';
   }
 };
 
