@@ -2,7 +2,10 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,viewport-fit=cover">
+<meta name="theme-color" content="#0d0f18">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>TSH — Operation Intelligence</title>
 <style>
 :root{--bg0:#07080c;--bg1:#0d0f18;--bg2:#121520;--bg3:#181c2a;--bg4:#1e2335;--bg5:#252c40;--bd:#1e2436;--bd2:#252e45;--bd3:#303850;--t1:#eef0ff;--t2:#a8b0d2;--t3:#7079a0;--t4:#404868;--blue:#2c5fd6;--blue2:#1f4cb8;--blue-bright:#4f7ef0;--green:#2ab574;--red:#dc4458;--amber:#e8a318;--purple:#7d5cdb;--teal:#1faaaa;--pink:#cf4d8f;--bs:rgba(44,95,214,.18);--gs:rgba(42,181,116,.15);--rs:rgba(220,68,88,.15);--as:rgba(232,163,24,.15);--ps:rgba(125,92,219,.15);--r:8px;--rl:12px;--fn:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif}
@@ -10,7 +13,7 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
 html,body{height:100%;font-family:var(--fn);background:var(--bg0);color:var(--t1);font-size:15px;line-height:1.55;overflow:hidden}
 ::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bd3);border-radius:10px}
-.shell{display:flex;flex-direction:column;height:100vh}
+.shell{display:flex;flex-direction:column;height:100vh;height:100dvh;padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);padding-bottom:env(safe-area-inset-bottom)}
 /* Topbar */
 .topbar{display:flex;align-items:center;padding:0 16px;height:50px;background:var(--bg1);border-bottom:1px solid var(--bd);gap:10px;flex-shrink:0;z-index:100}
 .brand{display:flex;align-items:center;gap:9px;flex-shrink:0}
@@ -18,6 +21,12 @@ html,body{height:100%;font-family:var(--fn);background:var(--bg0);color:var(--t1
 .bname{font-size:14px;font-weight:700;color:var(--t1)}
 .bsub{font-size:12px;color:var(--t3)}
 .bdiv{width:1px;height:18px;background:var(--bd2);flex-shrink:0}
+.user-chip{display:flex;align-items:center;gap:8px;padding:4px 10px 4px 4px;background:linear-gradient(135deg,var(--bs),transparent);border:1px solid var(--bd2);border-radius:30px;flex-shrink:0}
+.user-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;letter-spacing:-.3px;flex-shrink:0}
+.user-meta{display:flex;flex-direction:column;line-height:1.15}
+.user-name{font-size:13px;font-weight:600;color:var(--t1);white-space:nowrap}
+.user-dept{font-size:11px;color:var(--t3);white-space:nowrap;font-weight:500}
+@media (max-width:780px){.user-meta{display:none}.user-chip{padding:4px}}
 .tr{margin-left:auto;display:flex;align-items:center;gap:6px}
 .tbtn{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:var(--r);border:1px solid var(--bd2);background:var(--bg3);color:var(--t2);font-size:12px;cursor:pointer;transition:all .15s}
 .tbtn:hover{background:var(--bg4);color:var(--t1);border-color:var(--bd3)}
@@ -29,7 +38,7 @@ html,body{height:100%;font-family:var(--fn);background:var(--bg0);color:var(--t1
 .ntab.active{color:var(--blue);background:var(--bs);font-weight:600}
 /* Main */
 .main{flex:1;overflow:hidden;display:flex;flex-direction:column}
-.page{display:none;flex:1;overflow-y:auto;padding:16px;gap:14px;flex-direction:column}
+.page{display:none;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px;gap:14px;flex-direction:column}
 .page.active{display:flex}
 /* Cards */
 .card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rl);padding:14px}
@@ -199,6 +208,140 @@ tr:hover td{background:var(--bg3)}
 .res-step{flex:1;height:3px;border-radius:2px;background:var(--bg4)}
 .res-step.done{background:var(--green)}
 .res-step.current{background:var(--amber)}
+
+/* ────────── MOBILE & TABLET RESPONSIVE ────────── */
+/* Tablet & smaller laptops: 1024px and below */
+@media (max-width:1024px){
+  .grid-4{grid-template-columns:repeat(2,1fr)}
+  .grid-3{grid-template-columns:repeat(2,1fr)}
+  .topbar{padding:0 12px;gap:8px}
+  .bname{font-size:13px}
+  #statsLabel{display:none}
+}
+
+/* Tablet portrait: 820px and below */
+@media (max-width:820px){
+  .grid-2{grid-template-columns:1fr}
+  .grid-3{grid-template-columns:repeat(2,1fr)}
+  .nav{padding:0 10px}
+  .ntab{padding:6px 10px;font-size:12px}
+  .page{padding:12px;gap:12px}
+  .card{padding:12px}
+}
+
+/* Mobile landscape & large phone: 640px and below */
+@media (max-width:640px){
+  html,body{font-size:13px}
+  .topbar{height:auto;min-height:48px;padding:8px 10px;gap:6px;flex-wrap:wrap}
+  .brand{flex:1;min-width:0}
+  .bmark{width:28px;height:28px;font-size:11px;border-radius:6px}
+  .bname{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bsub{font-size:10.5px}
+  .bdiv{display:none}
+  .user-chip{padding:3px;border-radius:50%}
+  .user-meta{display:none}
+  .user-avatar{width:26px;height:26px;font-size:12px}
+  .tr{margin-left:auto;gap:4px}
+  .tbtn{padding:6px 8px;font-size:11px;min-height:32px}
+  .tbtn span{display:none}
+  .nav{padding:0 8px;height:38px}
+  .ntab{padding:6px 8px;font-size:12px;min-width:auto}
+  .page{padding:10px;gap:10px}
+  .card{padding:11px;border-radius:10px}
+  .card-hd{margin-bottom:10px;flex-wrap:wrap;gap:6px}
+  .card-title{font-size:11.5px}
+  .card-subtitle{font-size:11px;margin-bottom:8px}
+  .grid-3,.grid-4{grid-template-columns:repeat(2,1fr);gap:8px}
+  .grid-2{gap:10px}
+  /* KPI cards smaller on mobile */
+  .stat{padding:10px 11px}
+  .stat-label{font-size:10px}
+  .stat-val{font-size:20px}
+  .stat-sub{font-size:10.5px}
+  .stat-accent{font-size:16px;right:8px;top:8px}
+  /* Tables: horizontal scroll instead of cramped */
+  .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table{font-size:11.5px;min-width:480px}
+  th{padding:7px 8px;font-size:9.5px}
+  td{padding:7px 8px}
+  /* Heatmap: 5 columns on mobile instead of 10 */
+  .heatmap{grid-template-columns:repeat(5,1fr);gap:4px}
+  .hc{font-size:11px;border-radius:4px}
+  .hc-pop{width:240px;font-size:11.5px}
+  /* Heatmap popups: re-anchor so first 5 cells use left-anchor and last 5 right-anchor */
+  .hc:nth-child(10n) .hc-pop,.hc:nth-child(10n-1) .hc-pop{right:auto;left:50%;transform:translateX(-50%)}
+  .hc:nth-child(10n) .hc-pop::after,.hc:nth-child(10n-1) .hc-pop::after{right:auto;left:50%;transform:translateX(-50%)}
+  .hc:nth-child(5n) .hc-pop{left:auto;right:0;transform:none}
+  .hc:nth-child(5n) .hc-pop::after{left:auto;right:20px;transform:none}
+  .hc:nth-child(5n+1) .hc-pop{left:0;right:auto;transform:none}
+  .hc:nth-child(5n+1) .hc-pop::after{left:20px;right:auto;transform:none}
+  .hc:nth-child(-n+5) .hc-pop{bottom:auto;top:calc(100% + 8px)}
+  .hc:nth-child(-n+5) .hc-pop::after{top:auto;bottom:100%;border-top-color:transparent;border-bottom-color:var(--bg5)}
+  /* Reviews filter bar: stack cleanly */
+  .filter-bar{flex-direction:column;align-items:stretch;gap:6px}
+  .finput,.fselect,.fbtn{width:100%;font-size:13px;padding:9px 11px;min-height:38px}
+  /* Review cards */
+  .rev-card{padding:11px}
+  .rev-hd{flex-wrap:wrap}
+  .rev-meta{gap:4px}
+  .badge{font-size:10px;padding:2px 6px}
+  .rev-text{font-size:12px}
+  /* Alert cards */
+  .alert-card{padding:11px}
+  .alert-hd{gap:8px;flex-wrap:wrap}
+  .alert-icon{width:30px;height:30px;font-size:13px}
+  .alert-title{font-size:12.5px}
+  .alert-room{font-size:11px}
+  .alert-grid{grid-template-columns:1fr;gap:8px}
+  .alert-field{padding:7px 9px}
+  .alert-field-label{font-size:9.5px}
+  .alert-field-val{font-size:11.5px}
+  /* Stack info tooltips below instead of above on small screens */
+  .info[data-tip]:hover::after{width:200px;font-size:11px;left:auto;right:0;transform:none}
+  .info[data-tip]:hover::before{left:auto;right:5px;transform:none}
+  /* Upload zone */
+  .upload-zone{padding:20px 14px}
+  .upload-zone h3{font-size:13px}
+  .upload-zone p{font-size:11px}
+  /* Modal */
+  .modal{padding:14px;max-height:90vh;width:94%}
+  /* Chart heights more reasonable on mobile */
+  .chart-wrap{min-height:180px}
+}
+
+/* Small phone: 380px and below */
+@media (max-width:380px){
+  .grid-3,.grid-4{grid-template-columns:1fr}
+  .stat-val{font-size:18px}
+  .nav{gap:0}
+  .ntab{padding:6px 6px;font-size:11px}
+  .ntab .nlabel{display:none}
+  .bname{font-size:12px}
+  .bsub{font-size:10px}
+}
+
+/* Ensure buttons/inputs are tap-target friendly */
+@media (pointer:coarse){
+  .tbtn,.fbtn,.ntab,.abtn,.expand-btn,.fselect,.finput,.chip{min-height:36px}
+  .info{width:18px;height:18px;font-size:11px}
+  .modal-close{width:32px;height:32px}
+  /* Disable hover-only popups on touch devices in favor of tap */
+  .hc-pop{transition:opacity .2s}
+  /* On touch: info tooltips trigger via focus (tap) since hover doesn't apply */
+  .info{cursor:pointer}
+  .info:focus{outline:none;background:var(--blue);color:#fff;border-color:var(--blue)}
+  .info[data-tip]:focus::after,.info[data-tip].active::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--bg5);color:var(--t1);font-size:11px;font-family:var(--fn);font-style:normal;font-weight:400;padding:8px 10px;border-radius:6px;border:1px solid var(--bd3);width:220px;white-space:normal;text-align:left;line-height:1.5;z-index:1000;box-shadow:0 4px 12px rgba(0,0,0,.3);pointer-events:none}
+  .info[data-tip]:focus::before,.info[data-tip].active::before{content:'';position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--bg5);z-index:1000;pointer-events:none}
+  /* Heatmap cells: tap to show popup */
+  .hc.active .hc-pop{opacity:1;visibility:visible}
+  .hc.active{transform:scale(1.15);z-index:10;border-color:var(--t1);box-shadow:0 4px 16px rgba(0,0,0,.4)}
+}
+
+/* Landscape phone: keep topbar slim */
+@media (max-height:480px) and (orientation:landscape){
+  .topbar{height:42px;min-height:42px}
+  .nav{height:34px}
+}
 </style>
 </head>
 <body>
@@ -214,20 +357,28 @@ tr:hover td{background:var(--bg3)}
   <div class="bdiv"></div>
   <div class="bsub" id="statsLabel" style="font-size:11px;color:var(--t3)">Loading...</div>
   <div class="tr">
-    <button class="tbtn" onclick="App.toggleTheme()">☀ Theme</button>
-    <button class="tbtn" onclick="App.refreshLiveData()" title="Re-sync from Google Sheets">↻ Refresh Live</button>
-    <button class="tbtn" onclick="App.exportCSV()">⬇ Export</button>
-    <button class="tbtn" style="background:var(--bs);color:var(--blue);border-color:transparent" onclick="showPage('import')">⬆ Manual Upload</button>
+    <div class="user-chip" title="Logged in user">
+      <div class="user-avatar">S</div>
+      <div class="user-meta">
+        <div class="user-name">Sharmendran</div>
+        <div class="user-dept">Front Office</div>
+      </div>
+    </div>
+    <div class="bdiv"></div>
+    <button class="tbtn" onclick="App.toggleTheme()" title="Toggle theme">☀<span> Theme</span></button>
+    <button class="tbtn" onclick="App.refreshLiveData()" title="Re-sync from Google Sheets">↻<span> Refresh</span></button>
+    <button class="tbtn" onclick="App.exportCSV()" title="Download CSV">⬇<span> Export</span></button>
+    <button class="tbtn" style="background:var(--bs);color:var(--blue);border-color:transparent" onclick="showPage('import')" title="Manual upload">⬆<span> Upload</span></button>
   </div>
 </div>
 <div class="nav">
-  <button class="ntab active" onclick="showPage('overview')" id="tab-overview">⊞ Overview</button>
-  <button class="ntab" onclick="showPage('reviews')" id="tab-reviews">✉ Reviews</button>
-  <button class="ntab" onclick="showPage('rooms')" id="tab-rooms">▦ Rooms</button>
-  <button class="ntab" onclick="showPage('alerts')" id="tab-alerts">🔔 Alerts</button>
-  <button class="ntab" onclick="showPage('analytics')" id="tab-analytics">📊 Analytics</button>
-  <button class="ntab" onclick="showPage('staff')" id="tab-staff">👤 Staff</button>
-  <button class="ntab" onclick="showPage('import')" id="tab-import">+ Import</button>
+  <button class="ntab active" onclick="showPage('overview')" id="tab-overview">⊞<span class="nlabel"> Overview</span></button>
+  <button class="ntab" onclick="showPage('reviews')" id="tab-reviews">✉<span class="nlabel"> Reviews</span></button>
+  <button class="ntab" onclick="showPage('rooms')" id="tab-rooms">▦<span class="nlabel"> Rooms</span></button>
+  <button class="ntab" onclick="showPage('alerts')" id="tab-alerts">🔔<span class="nlabel"> Alerts</span></button>
+  <button class="ntab" onclick="showPage('analytics')" id="tab-analytics">📊<span class="nlabel"> Analytics</span></button>
+  <button class="ntab" onclick="showPage('staff')" id="tab-staff">👤<span class="nlabel"> Staff</span></button>
+  <button class="ntab" onclick="showPage('import')" id="tab-import">+<span class="nlabel"> Import</span></button>
 </div>
 <div class="main">
 
@@ -297,7 +448,7 @@ tr:hover td{background:var(--bg3)}
 <!-- REVIEWS PAGE -->
 <div class="page" id="page-reviews">
   <div class="card" style="padding:12px">
-    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+    <div class="filter-bar" style="margin-bottom:8px">
       <input class="finput" id="revSearch" placeholder="🔍 Search: keyword, booking, room, platform, staff..." oninput="R.renderReviews()" style="min-width:240px;max-width:400px">
       <select class="fselect" id="revSentiment" onchange="R.renderReviews()">
         <option value="">All Sentiment</option>
@@ -2020,6 +2171,51 @@ var App={
 };
 
 App.init();
+
+// ── TOUCH/MOBILE INTERACTIONS ──
+// On touch devices: tap info icons to show tooltip, tap heatmap cells to show popup,
+// tap elsewhere to dismiss. Uses event delegation so it covers dynamically-rendered content.
+(function setupTouchInteractions(){
+  function isTouchDevice(){
+    return ('ontouchstart' in window)||(navigator.maxTouchPoints>0);
+  }
+  // Make all info icons keyboard/touch accessible
+  function makeInfoFocusable(){
+    document.querySelectorAll('.info').forEach(function(el){
+      if(!el.hasAttribute('tabindex'))el.setAttribute('tabindex','0');
+    });
+  }
+  // Run after each render
+  var origRenderOverview=window.renderOverview;
+  makeInfoFocusable();
+  // Re-add after dynamic content changes via MutationObserver (light-touch)
+  var obs=new MutationObserver(function(){makeInfoFocusable();});
+  obs.observe(document.body,{childList:true,subtree:true});
+
+  if(!isTouchDevice())return;
+
+  // Tap-to-toggle for heatmap cells and info icons
+  document.body.addEventListener('click',function(e){
+    var hc=e.target.closest('.hc');
+    var info=e.target.closest('.info');
+    // Close all other heatmap popups
+    document.querySelectorAll('.hc.active').forEach(function(el){
+      if(el!==hc)el.classList.remove('active');
+    });
+    // Close all other info popups (via .active class)
+    document.querySelectorAll('.info.active').forEach(function(el){
+      if(el!==info)el.classList.remove('active');
+    });
+    if(hc){
+      e.stopPropagation();
+      hc.classList.toggle('active');
+    }
+    if(info){
+      e.stopPropagation();
+      info.classList.toggle('active');
+    }
+  },true);
+})();
 
 // Expose to window so inline onclick= handlers can call them
 window.showPage = showPage;
