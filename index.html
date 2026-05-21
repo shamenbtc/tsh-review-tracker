@@ -1,59 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,viewport-fit=cover">
-<meta name="theme-color" content="#f7f9fd">
+<meta name="theme-color" content="#0d0f18">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Operational Intelligence — by Sharmendran</title>
+<title>Operation Intelligence — by Sharmendran</title>
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAD8AAABACAYAAACtK6/LAAASxUlEQVR42u1beXAX133/vPd297f729+lW0hIMiAkbozAgMHcMQhz+QJiT+smk2aSdCaTtGmnnU6Sxm6SNpfd1LnT1E0anMQ38ZXaxrEBGcRlTgGS0IV+OkH63cfuvvf6x0+SxSEQ4nCa5s3szG9+s7vvfb73tcCf1i1fBAAtKvLmAGAf1iHoh7QvAyCI43yjJMcoGDjHLT+L8iFwXAFgFxd6HqQQn5AEDoBPD4BnAPit5MCtJLQAIG4rDjzCHfu/pCRCSjE/O2DkhqPW/wwAVwDIPxb9HhLp8vLCvLIi33/k+qkszHHJx7/5qFhQVel4dciSQk/NpNLcubeSMexW6DYAOakk8EgkFHomlUotLy+vFNVr16GmZg+ZMWMGzcoO8LNtZ8vi8djHC3K97qISf21vbyI98Ly8mTp4M8XcqSgtmBBPhv89kUitL7ttAubPX8gdx2G7d+9Ed0833IYbixYtRlFxMT927Cg7fuwIKCGnfF7f5xrP9r0xIDXyZhCB3EzgE0oD62OR2FO6y8hdsWoVNww33Ve7lzQ3N0HXXdA0FZwLxGMJZOfkYOGdi2RWVhbf+c7vlWDwLHwB31da2iOPDpegP3SxZwD4xPFZD0XD0eeLisa7N917n3Pq1Cllx5tvkFg8CtPjBgGFlBksuu6CZaVRd7yOhEL9dNXddwtN00XzmTMr83K8BeGY9crNUAF2U4CX5MyLxiKvlpSUYvWaavniC8+zpqYz8Pk8YIxBigsxSClBCIHh1hEOhXD48GGyaNFikpOT5zQ21i8ozPXHQtF0zY0mALsJakRcqnjeNM3SDRvu5c8+82sWi0Xg8ZjgXFzxYSklFEWBqio4ePAQWbJ0CeWOI4IdweW3jSv45blQrH+YDfjQIzwy7GIAxKSy/AXpVHrB0qXLxd69e5RwKATDMMD56GKXQVUwTR2vvPJbcsf8BVLXXXokHv74sH2G7/uhgZcXXQiH+1bk5+dJt2mKurrj8Hg9owY+nACqqiLUH0awvZ1MmTJVRuPJ5SBEArAv3vPDCG8pAHXz5s2ysLCQNDe/x+bOXe9899tfnVBaWkY6OzvhOGOPVIUQ0DQFTU1nyLRp0wmjh4ue+s+f6S0tr4m+vijJzl4gt23bRhobG52xhsRkrEatON9YSAj5TSqdFpbFKSEAo0RGozKnunqJJxKJ4PjxozAM95Aoj4UApmniriXL8NyzLziqio4hWynheDyGAkJ+GOxO/Ouge70lnGeq5k4nU6VTKqdi4qTJcGwLlFGk0zbKyyfj9ddeBmPXlzdRSpFIJJCTnYONmzYogCwlACQIGCXYu7cGkUgk95aLvaooImqnxeSKShEMBmlHRxCapoEA5GTdcdLffx6qqo6Z68PXyy+/BI/HBwkhKGWIx+NYsXyVk5ubr/R0n7dvJXgCgEoJSgmhiUQCwbNtNNjRAU3LgKWUQlFuTLZMCEEkEkF/f/+AMFDEYhY6OzsoIKn8IBUmNxM8HdjAAQDGlBghBIwxaC4XXC4NmqYNcXokjlOacTCccwghQAgZIpQQYgjw8OcZU4buoZTCtm1oqgZCCAiQGjB4fNgZ+Y0EP1RkmDhxop84kUnJZGKJlRawLAtSyguukThICEE4HANjgN/vh+ZywbFthMNh2LaAx2OAUgrLsi4gJCAx+HNwDy44SafT4ByVZUXeOwOmv+1IQ3vw4vNeL3gGgBcV6SWqVP8+cq7lXiFFcVZWNsYVFWDcuCLaUH/6qobLsmykkmlUV1ejonIK0mkLUnJomg5CgDON9di1axdsK42SklIEg+1QFOWyxJQS0FwuNr6kDOFweGsymdzaEmwPF+a6dhqG8a3ms6FdA1IgrsfVZdxaoXstEfh5IpnMq6iciunTpktCmUwkEtSyUthXuweO44AQclngqZQFr9eHb3/n31Bffwq/enobenq6wLkDShlycnJx+5wqbNiwCSW3TcLvXtuOx7/9BHJzfXAc5xIJsm0HxcXjMWXqNDCqSNN0oz/URw7s34dQqB9ej+efWjoij11NAsjVgI8f514jHPkqdwS7Z/0GmzGm7N9XS7q6OmHbGZE3DOOywAkh4FyAMRU73qnB669ux+f/9osoyNagqurQfY7jIBxOo7JyAvbuP4ZvffOf8fWvfgP5+ZeC/4AAFizLBqMMhtvE5MkVck5VlTh44ACOHn2f+by+f2npCP/jlfw/u4Jxk6X5/olCircchxtbP/owb21tVl5/7XcklYpD01RoWsbIjUg9xhDqj+PJ7z2JRXctxYP3rYPf67pEnCmlCAQ8qG/sBHgcpmni7bffhcfjGjKCl75bgcvlgqqqEMLB2bNtpK7uBF2+YgVxu02nqalxWWF+oDEUSR0ZKRukV5QIJp5KJhL+DRs3OfWnT7HdO/cgO9s3ZIyEECMejhCCVCqJ8ooybH34L9DafAZSCDDGLvuMZVnweynee283+vv7oSi4Yoxw4f4EHo8HlBL88r9/QSZXVLCKiikiEon8YNrEcaUDuk9HA54B4GVFvk8l4rGlt8+pchzHUd6r2YucAR0cTeCS0XUHM2fOBmUaSm8rx+zb56CnJwpN08AYu0BVpJRwuVS0tbXi7R1vwjS1EQk7UihMKYVh6HjpxRfoosVLpNtt+Pqj/U8OcJ1cDTwFIPPzzQLbsb+uG24xY+ZstuOtN+H1GZfVvytnZ4Du0iGlhKZp+PHPfomly+5ET08I4XAUnHMwxoYIQSlDLBZDU9OZMUWHg/WASCSCY0ePsMV3LXNSidTGSSU5mwYMH7sSeAZA6Ap9PJlIZs27Y4FsbDhNYrEYGGPXDJwxoLunC4QAUti4bcJkvP7G7/HUz3+O1WuqYRhu9PVFEQplCKEomWDmQh9/7cmQ1+vB++8fRHZ2Ds0vyJexRPS70/LyPBdjZsN0XANgFxWYWyDFY4Zh8PnzF7Adb70JXdfHdBhFYTjXew5btmyFN5ALbifAGMP0mVXYvPXP8MADmzFr1iwoCkVnZwd6e0OgVN6QnMC2bQjOycyZs0Tdibos5tUKQpHU9mGxjRzOTl6Ur9/JKH2utzehbNi4jjbUnyaDCcvYwCvo748gHO7Hug33D4S1NgR3AMnhz8rDzNlVuO+Bj+L++zdj/PhinD51Et3dvXC79esigKZp6AgGMWfuXBqPxZzOYNe8wnxvLBy1dg9afgaAFmXp431e9W8ooT/iXHruf+BepFJJUlNTA9M0r8nwXKyDhuHCgf0HkExEsWz53VBUHZRRCO6AOxYEt0HAEcjOx4KFi/HglofQdKYeR48euy4CZNSOorm5FRs3bqKWneY93T3V2X6j0qMrTdGEfZ4CAFOkBkKyQWBAQpqmB7Zt35B0VAgBn8+DJ77zOKrvvgsvPPs0IuEwmOqG6jKhutyZQMdKwEnHkZdfgF9sew53LbkL0WgclI21xiqHgiGmKAOGF5BALogwAFwYlo3Pc1eDku3neuPszx/ZSuvqjpNTp07CMIzrJgRjGUvu2BITyydg6dIVWPmR1Vi4cBEKxpVkCOWkIASHopk4ULsL1atXwnDrkGOQPEopotEYtmzZiiNHDvO6utMsK8f7tbZg9IsXh7cEgArAKs73fBLgP9F1g6+9Zz175je/ui7re/GBBoOfRMIBpUBBQT4W3rkIn/jLT2PZyjUQPA1CKBwrjcWLqtDS3ARdN65J9TJ7pDBpUjmmT5/BX3zheRbICjzb3B7agg+6wJwOq8JaANRgT+ynjKkv9/X1sZ7ubj579u2Ix+NDefhY9H64CnDOoWkuZGf7EAh4EYuFsf2ll7D+nmp89Sv/AMpUSMGh6joCgaxrrvwOghdCYE7VPFFbu4domtptQ3x6WKbHL+fnOQBiSeuzhm7Eamv3YOq0GVLX9TEbPUVRLkl6pJTg3BkIchRkZfmQleXF17/2Dbyz43egig4rlRoT0TOVnjhmzZqNWCwqOjo6qNs0v9DeHum7OM29+M0CAOvqSrUqmvZYLBpl9fUn+fIVqxAOJ66pNEUIhWWlsfae9TBNc0QOSinhOA4Yo6CUonbvHggh0NbagrbWVmiaa9SEz2SRHIaho2ruHbxm17uKS9ffbm4PbRvwbM7VYnsOgLV1hJ8wPebB/bW1it8f4HPnzkZfX2TUBKCUIJ3mmFI5FTk5ueCcXzbtvaBfBwF/wA9KKZ555mn098UuSH2vxnEAiEaT2HTv/fLA/n0IRyKpgNfzmQGbNqqsbrAT4gghP+bS9dT27S+Sqrl3iKqq2Th/PgLOOSilQ9dIXLAsoKh4PO5/YDN6Qw4UVRkyehd7Atu2obkIHnjwIZxpqMMPv/89+AMjt7kyuQAdel8ikUAymcJHH9oquzq7nOPHjjC/3/+FU83n6keq6rArtKFYJG53B7yuBinFlhPHT5AlS5Y5k8onkPPnzpNIJIx0Og3Lsi7LnUzNPY011avxmc/+HVobj2H//sPg/MKanxACyWQS0aiDH/zoxyguLsV9G6vR3983opfJ+G8byUQStmODEIry8gq5bv0G0dzUJGpqdqoer/dHrR2RrwxYdz6WMpYCwBk/znxYOuKnqbTlnjX7dlRUVArbdhCNRmgyEceRI+9fItaMMYRCMTz62GPIzi1AdlYW6k4cw+5dO9HZ1YF4LAohBFRVQ3FxCR7cvAWqpuHRL38RkWgYpmlctqtLCIFjO8grKEDF5EqomksEAgGZSMTZgf370NXVAa/X+93WjsjncZWhhtHUuhkAXlJgTieUfCkWi1czRv15eflQVRdWrvoIdrz1Brq6Oi/hlJQSfr8f7e1doBSorKzE+JISZGfnwuv1DqiGhVQqibq64zh86AR8/sHqjLhi8LL2nnVwHI6TdccQj8fR3x+yXS51n2Ga32o5G9qOUYyzjLbQP1QInDx5fDFPR6ckk6ml0Uj6y9VrV8vGhvoRE6CMX8/8n0wmYdsclABMoSCEgnMOx5ZQNTqUR1wpoMq4shhWrrybNzU1sNOnWn6bFdB+4s7Kbmpo6Do5zJZd1UWM1ncNNQQaMrXxYOXEwrBt9XxZ0zRJKSWDxmfw4IOcUxRlyGjpug7DuLB6M1jPHwyArlTzHwRPKQVjTBqGAVUl7wfPWa/iXNdQN+lGNy0wjJIKAGk7tn/QYMXjMcRiaWiaNQRI1/VLOi+Xa2pcLWwmBEilUkOEyXBeIJVKDci0dA9IJhuIUkcdEo6loSYBcELAhYDUdZecO2+BLCnpgqqpAEAc28bp0yfhOFf27aMJWhyHo6KiEoFAFoQQklKKZDKJyilTZfe7HZJ80Kq65o3GPJnhOA4xdBc5sH8f6zt/jjBGCaQkiUQCs2bPQUHBONi2dV3gMzU5hkWLlwwWTgnnDnG5XOTQoX1qd3cXcXtdY54rGnMr1bK4zRgN9fb2imB7kAAglFIZjQnTMAzN4/VedQDpqoaGc/j8fvR0d6Gmpla4XCQihZQD0bPjdrsVAha/leA5ABT1xmo7i7zlOWq29BX6kEidV9x6jnO67fQTyUT8kYLCIkcIqVys99cm8g5ysnOEbdtUVUnzoqqlC8/19gouBGE0JttCYSJlNDkojLeM8wcBGx3R8x2IDvu3G4W5ekNrS4ucOWsODGPsZahMK5qjoqJS1tefkpSi85V3d567kXOIN3IUTQFATNPcHY5ESDDYTucvWIhwOH7NgwqD4yhlZSXwen2ysbGBeEzPbkAOFl0IbsA42o0cRXMAkDOt53ebpvvoezW76IQJk/iUKZMRCkWgKKOzS4wxpNNpaJoLa6rvkTvefpNQyhxG8dSgp8FlRuDGVFrDjV0UAPd5XSch5ccaTtfLtevWw3Ys0tJ8FpqmZMZPR0hWKKWIRmLIys7B5i1bsWvXTjt49qxqGMbXWjqjzw2L1W/IuhlT15nWdqHnr7hjf59SFRs2buLRaIS9+847iMWi8HjcIIQOjaUMpqQAwbw75mP69BnirTffEB0dZxW32/x1W2f04WEh6x/s7O2gKiiRmFWb5XM3S8HXHDly2OX3+Z2ly5YTj8dLgsEg0unUwLS1hWQyhSlTpuHu1WsgBZxXX/kti0bD1O12P9nWGf3ksGLEDZ26vukfGxTnuWdTlX0/EYstNnQT8+6Yz0vLytj7hw7h4KEjKCstwrJlK5BMJUXt3j3o7u6kbre7Q1GUL7R2RH497Iz/Zz42uDgbpGXF3s85tvOlRCKZ5fcH+KpVH2FMcUFTGWpqdvHm5mZm6C5oLtdPkw7/Uk9PvBu3+Gurm7EGx8NQWuCaUFrkfaE4z5B+A/zv/vpTsnJigZPthSwr8p0ozTdX3WSV/NDWkLMvyTc/X1LokVkeYhXnG7Kk0LMtLw+eYfcR/BEuOkiEcQXuT5QVeWVxgfvpP1Zuj2RnFAAoznc/U1iol+GDjwj+XywCgObkGEW49Z+0/mkBwP8CKDsJxNcvFd4AAAAASUVORK5CYII=">
 <style>
-/* ───── THEME TOKENS ─────
-   Default is LIGHT MODE (applied via :root).
-   Dark mode is opt-in via data-theme="dark" — uses softer warm-grey backgrounds (not near-black)
-   to reduce eye strain while preserving the modern dashboard look. */
-:root{
-  /* Light theme — clean, professional, high contrast */
-  --bg0:#eef1f7;--bg1:#f7f9fd;--bg2:#ffffff;--bg3:#f4f6fb;--bg4:#eaeef6;--bg5:#dfe4ee;
-  --bd:#dde2ec;--bd2:#cdd4e2;--bd3:#b8c0d2;
-  --t1:#0f1424;--t2:#37416a;--t3:#6b7390;--t4:#9ea5b8;
-  --blue:#2c5fd6;--blue2:#1f4cb8;--blue-bright:#4f7ef0;
-  --green:#1d9a5f;--red:#cc3a4e;--amber:#c98510;--purple:#6b50c4;--teal:#0e8c8c;--pink:#bf3f7e;
-  --bs:rgba(44,95,214,.10);--gs:rgba(29,154,95,.10);--rs:rgba(204,58,78,.10);--as:rgba(201,133,16,.10);--ps:rgba(107,80,196,.10);
-  --r:8px;--rl:12px;
-  --fn:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif
-}
-/* Dark mode — softer warm greys instead of near-black; preserves modern feel + readable contrast */
-[data-theme="dark"]{
-  --bg0:#1c1f2a;        /* main app background — soft dark grey, not near-black */
-  --bg1:#23262f;        /* topbar, nav */
-  --bg2:#282b35;        /* card background */
-  --bg3:#2f323d;        /* nested elements (badges, table headers) */
-  --bg4:#373a45;        /* hover / raised */
-  --bg5:#42454f;        /* tooltip / popover */
-  --bd:#383b46;         /* card borders */
-  --bd2:#454853;        /* input borders */
-  --bd3:#535661;        /* hover borders */
-  --t1:#f4f6fb;         /* primary text — high contrast */
-  --t2:#c2c8d8;         /* secondary text */
-  --t3:#8e94a8;         /* muted */
-  --t4:#5c627a;         /* very muted */
-  --blue:#5e8aef;
-  --blue2:#3c6cd4;
-  --blue-bright:#6f95f0;
-  --green:#3dc485;
-  --red:#ee5c70;
-  --amber:#f0b840;
-  --purple:#9a7fea;
-  --teal:#2dc4c4;
-  --pink:#e26ba0;
-  --bs:rgba(94,138,239,.18);
-  --gs:rgba(61,196,133,.15);
-  --rs:rgba(238,92,112,.15);
-  --as:rgba(240,184,64,.15);
-  --ps:rgba(154,127,234,.15)
-}
+:root{--bg0:#07080c;--bg1:#0d0f18;--bg2:#121520;--bg3:#181c2a;--bg4:#1e2335;--bg5:#252c40;--bd:#1e2436;--bd2:#252e45;--bd3:#303850;--t1:#eef0ff;--t2:#a8b0d2;--t3:#7079a0;--t4:#404868;--blue:#2c5fd6;--blue2:#1f4cb8;--blue-bright:#4f7ef0;--green:#2ab574;--red:#dc4458;--amber:#e8a318;--purple:#7d5cdb;--teal:#1faaaa;--pink:#cf4d8f;--bs:rgba(44,95,214,.18);--gs:rgba(42,181,116,.15);--rs:rgba(220,68,88,.15);--as:rgba(232,163,24,.15);--ps:rgba(125,92,219,.15);--r:8px;--rl:12px;--fn:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif}
+[data-theme="light"]{--bg0:#e5e8f0;--bg1:#edf0f8;--bg2:#f8f9ff;--bg3:#f2f4fc;--bg4:#e8ebf5;--bg5:#dde2ef;--bd:#dce1f0;--bd2:#d0d6e8;--bd3:#c4ccdc;--t1:#0d1020;--t2:#3a4268;--t3:#7078a0;--t4:#a0a8c0;--blue:#3564cc;--blue2:#264fa8;--blue-bright:#4f7ef0;--bs:rgba(50,100,210,.10);--gs:rgba(30,160,100,.10);--rs:rgba(200,50,70,.10);--as:rgba(200,130,0,.10);--ps:rgba(110,80,200,.10)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
 html,body{height:100%;font-family:var(--fn);background:var(--bg0);color:var(--t1);font-size:15px;line-height:1.55;overflow:hidden}
 ::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bd3);border-radius:10px}
@@ -482,28 +439,28 @@ tr:hover td{background:var(--bg3)}
 <div class="page" id="page-reviews">
   <div class="card" style="padding:12px">
     <div class="filter-bar" style="margin-bottom:8px">
-      <input class="finput" id="revSearch" placeholder="🔍 Search: keyword, booking, room, platform, staff..." oninput="R.onFilterChange()" style="min-width:240px;max-width:400px">
-      <select class="fselect" id="revSentiment" onchange="R.onFilterChange()">
+      <input class="finput" id="revSearch" placeholder="🔍 Search: keyword, booking, room, platform, staff..." oninput="R.renderReviews()" style="min-width:240px;max-width:400px">
+      <select class="fselect" id="revSentiment" onchange="R.renderReviews()">
         <option value="">All Sentiment</option>
         <option>Positive</option><option>Neutral</option><option>Negative</option>
       </select>
-      <select class="fselect" id="revSeverity" onchange="R.onFilterChange()">
+      <select class="fselect" id="revSeverity" onchange="R.renderReviews()">
         <option value="">All Severity</option>
         <option value="5">Critical (5)</option><option value="4">High (4)</option>
         <option value="3">Medium (3)</option><option value="1">Low (1-2)</option>
       </select>
-      <select class="fselect" id="revCategory" onchange="R.onFilterChange()">
+      <select class="fselect" id="revCategory" onchange="R.renderReviews()">
         <option value="">All Categories</option>
         <option>Room Comfort & Quality</option><option>Cleanliness</option>
         <option>Staff</option><option>Facilities</option><option>Value for Money</option>
       </select>
-      <select class="fselect" id="revPlatform" onchange="R.onFilterChange()">
+      <select class="fselect" id="revPlatform" onchange="R.renderReviews()">
         <option value="">All Platforms</option>
         <option>Google Reviews</option><option>Tripadvisor</option><option>Agoda</option>
         <option>Booking.com</option><option>Expedia</option><option>Trip.com</option><option>Traveloka</option>
       </select>
-      <input type="date" class="fselect" id="revDateFrom" onchange="R.onFilterChange()" title="Check-in date from">
-      <input type="date" class="fselect" id="revDateTo" onchange="R.onFilterChange()" title="Check-in date to">
+      <input type="date" class="fselect" id="revDateFrom" onchange="R.renderReviews()" title="Check-in date from">
+      <input type="date" class="fselect" id="revDateTo" onchange="R.renderReviews()" title="Check-in date to">
       <button class="fbtn" onclick="R.clearFilters()">✕ Clear</button>
     </div>
     <div style="font-size:11px;color:var(--t3)" id="revCount">Showing all reviews</div>
@@ -696,7 +653,7 @@ var SAMPLE = [
   {id:'r020',platform:'Traveloka',date:'2026-04-22',rating:3,booking:'BK-10040',room:'204',roomType:'Superior Room',text:'The room air conditioner was set to cool but was actually blowing warm air. Called engineering who came quickly and said they fixed it but it started doing the same thing again after an hour. Had an uncomfortable night.',sentiment:'Neutral',category:'Room Comfort & Quality',subcategory:'HVAC',severity:4,maintFlag:true,cleanFlag:false,staffMentioned:'',action:'Replace AC thermostat and inspect refrigerant levels for Room 204. Follow up same day to confirm fix is permanent.',resolutionStatus:'In Progress',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'Thermostat replaced. Refrigerant topped up. Monitoring.',isSample:true}
 ];
 
-var CACHE_KEY='hoi_reviews_v10', SRC_KEY='hoi_source_v10';
+var CACHE_KEY='hoi_reviews_v9', SRC_KEY='hoi_source_v9';
 var State={reviews:[],source:'sample',fileName:null,uploadedAt:null,alertFilter:'all'};
 var RevPage={current:0,perPage:10};
 
@@ -807,19 +764,6 @@ function toast(msg,dur){
 
 // ── Chart registry ──
 var Charts={};
-// Resolve theme-appropriate chart colors. Chart.js doesn't understand CSS variables,
-// so we read computed theme tokens at render time and convert to literal hex/rgba.
-function chartColors(){
-  var isDark=(document.documentElement.getAttribute('data-theme')||'light')==='dark';
-  return {
-    tick: isDark?'#a8b0d2':'#37416a',         // axis tick labels
-    tickMuted: isDark?'#8e94a8':'#6b7390',
-    grid: isDark?'rgba(255,255,255,.06)':'rgba(15,20,36,.07)',
-    tooltipBg: isDark?'rgba(40,43,53,.97)':'rgba(255,255,255,.98)',
-    tooltipText: isDark?'#f4f6fb':'#0f1424',
-    tooltipBorder: isDark?'#454853':'#cdd4e2'
-  };
-}
 function makeChart(id,config){
   if(typeof Chart==='undefined'){
     // Chart.js not loaded yet — retry shortly
@@ -893,11 +837,8 @@ var Agg={
       if(r.maintFlag===true||r.maintFlag==='Yes'||r.maintFlag==='true')rm.maint++;
       if(r.cleanFlag===true||r.cleanFlag==='Yes'||r.cleanFlag==='true')rm.clean++;
       if(!rm.lastDate||stayDate>rm.lastDate)rm.lastDate=stayDate;
-      // Capture issues: all non-positive reviews, PLUS positive reviews that still contain
-      // operational complaints (mixed sentiment — e.g. "lovely staff but dirty windows")
-      var hasFlag=(r.maintFlag===true||r.maintFlag==='Yes'||r.maintFlag==='true'||r.cleanFlag===true||r.cleanFlag==='Yes'||r.cleanFlag==='true');
-      var isIssue=r.sentiment!=='Positive'||hasFlag||parseInt(r.severity)>=3;
-      if(isIssue){
+      // Capture all non-positive reviews as issues for tooltip display
+      if(r.sentiment!=='Positive'){
         rm.issues.push({
           date:stayDate,
           category:r.category,
@@ -1027,13 +968,13 @@ function renderOverview(){
       {label:'Positive',data:posData,borderColor:'#2ab574',backgroundColor:'rgba(42,181,116,.12)',tension:.35,fill:true,pointRadius:5,pointHoverRadius:7,pointBackgroundColor:'#2ab574',borderWidth:3},
       {label:'Negative',data:negData,borderColor:'#dc4458',backgroundColor:'rgba(220,68,88,.12)',tension:.35,fill:true,pointRadius:5,pointHoverRadius:7,pointBackgroundColor:'#dc4458',borderWidth:3},
       {label:'Neutral',data:neuData,borderColor:'#e8a318',backgroundColor:'rgba(232,163,24,.06)',tension:.35,fill:true,pointRadius:4,pointHoverRadius:6,pointBackgroundColor:'#e8a318',borderWidth:2.5,borderDash:[5,4]}
-    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:chartColors().tooltipBg,titleColor:chartColors().tooltipText,bodyColor:chartColors().tooltipText,borderColor:chartColors().tooltipBorder,borderWidth:1,titleFont:{size:13},bodyFont:{size:12},padding:10,boxPadding:5}},scales:{x:{ticks:{color:chartColors().tick,font:{size:14,weight:'500'},maxRotation:45,autoSkip:false},grid:{color:chartColors().grid}},y:{ticks:{color:chartColors().tick,font:{size:14},stepSize:1},grid:{color:chartColors().grid},beginAtZero:true,suggestedMax:maxVal+1}}}});
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(20,23,35,.95)',titleFont:{size:13},bodyFont:{size:12},padding:10,boxPadding:5}},scales:{x:{ticks:{color:'#a8b0d2',font:{size:14,weight:'500'},maxRotation:45,autoSkip:false},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#a8b0d2',font:{size:14},stepSize:1},grid:{color:'rgba(255,255,255,.04)'},beginAtZero:true,suggestedMax:maxVal+1}}}});
   }
 
   // ── PLATFORM CHART ──
   var pdata=Agg.byPlatform(rv);
   var plats=Object.keys(pdata);
-  makeChart('platformChart',{type:'bar',data:{labels:plats.map(function(p){return p.replace(' Reviews','').replace('.com','');}),datasets:[{label:'Avg Rating',data:plats.map(function(p){return pdata[p].total?Math.round(pdata[p].ratingSum/pdata[p].total*10)/10:0;}),backgroundColor:'rgba(44,95,214,.7)',borderColor:'#2c5fd6',borderWidth:1,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:chartColors().tooltipBg,titleColor:chartColors().tooltipText,bodyColor:chartColors().tooltipText,borderColor:chartColors().tooltipBorder,borderWidth:1,callbacks:{label:function(ctx){return'Avg rating: '+ctx.parsed.y+'/5';}}}},scales:{x:{ticks:{color:chartColors().tick,font:{size:14}},grid:{display:false}},y:{ticks:{color:chartColors().tick,font:{size:14},stepSize:1},grid:{color:chartColors().grid},min:0,max:5}}}});
+  makeChart('platformChart',{type:'bar',data:{labels:plats.map(function(p){return p.replace(' Reviews','').replace('.com','');}),datasets:[{label:'Avg Rating',data:plats.map(function(p){return pdata[p].total?Math.round(pdata[p].ratingSum/pdata[p].total*10)/10:0;}),backgroundColor:'rgba(44,95,214,.7)',borderColor:'#2c5fd6',borderWidth:1,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(20,23,35,.95)',callbacks:{label:function(ctx){return'Avg rating: '+ctx.parsed.y+'/5';}}}},scales:{x:{ticks:{color:'#7079a0',font:{size:14}},grid:{display:false}},y:{ticks:{color:'#7079a0',font:{size:14},stepSize:1},grid:{color:'rgba(255,255,255,.04)'},min:0,max:5}}}});
 
   // ── MONTHLY TABULATION (stay month, with reviewed-month tally) ──
   var tabEl=document.getElementById('monthlyTable');
@@ -1108,25 +1049,19 @@ function renderOverview(){
   makeChart('catSentChart',{type:'bar',data:{labels:catNames.map(function(c){return c.length>18?c.replace(' & ','/').slice(0,18)+'…':c;}),datasets:[
     {label:'Positive',data:catNames.map(function(c){return catSent[c].pos;}),backgroundColor:'rgba(42,181,116,.75)',borderColor:'#2ab574',borderWidth:1,borderRadius:4,barPercentage:.7},
     {label:'Negative',data:catNames.map(function(c){return catSent[c].neg;}),backgroundColor:'rgba(220,68,88,.75)',borderColor:'#dc4458',borderWidth:1,borderRadius:4,barPercentage:.7}
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:chartColors().tooltipBg,titleColor:chartColors().tooltipText,bodyColor:chartColors().tooltipText,borderColor:chartColors().tooltipBorder,borderWidth:1,callbacks:{label:function(ctx){return ctx.dataset.label+': '+ctx.parsed.y+' mentions';}}}},scales:{x:{ticks:{color:chartColors().tick,font:{size:14}},grid:{display:false}},y:{ticks:{color:chartColors().tick,font:{size:14},stepSize:1},grid:{color:chartColors().grid},beginAtZero:true}}}});
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(20,23,35,.95)',callbacks:{label:function(ctx){return ctx.dataset.label+': '+ctx.parsed.y+' mentions';}}}},scales:{x:{ticks:{color:'#7079a0',font:{size:14}},grid:{display:false}},y:{ticks:{color:'#7079a0',font:{size:14},stepSize:1},grid:{color:'rgba(255,255,255,.04)'},beginAtZero:true}}}});
 
   // ── ALERT SUMMARY ──
-  // ── ALERT SUMMARY ──
-  // Show severity 4 AND 5 alerts (high + critical), with concise operational complaint
-  // summaries instead of generic categories. Includes mixed-sentiment positive reviews
-  // that contain embedded complaints (severity 3+).
+  // First try severity >=4 (high/critical). If none, fall back to severity >=3 (medium+).
+  // Excludes positive reviews and resolved items.
   var isOpenAlert=function(r,minSev){
-    var sev=parseInt(r.severity)||0;
-    if(sev<minSev)return false;
-    var status=r.resolutionStatus||'Open';
-    return status==='Open'||status==='In Progress'||status==='Escalated'||status==='Monitoring';
+    return parseInt(r.severity)>=minSev&&r.sentiment!=='Positive'&&(!r.resolutionStatus||r.resolutionStatus==='Open'||r.resolutionStatus==='In Progress'||r.resolutionStatus==='Escalated');
   };
-  // Include sev 4+ regardless of sentiment so mixed-sentiment alerts surface
   var criticals=rv.filter(function(r){return isOpenAlert(r,4);});
-  var alertLabel='Severity 4–5 open alerts';
+  var alertLabel='Critical issues';
   if(!criticals.length){
     criticals=rv.filter(function(r){return isOpenAlert(r,3);});
-    alertLabel='Severity 3+ open alerts';
+    alertLabel='Open alerts (medium+)';
   }
   // Sort by severity DESC, then by date DESC
   criticals.sort(function(a,b){
@@ -1135,23 +1070,15 @@ function renderOverview(){
     return (b.checkInDate||b.date||'')>(a.checkInDate||a.date||'')?1:-1;
   });
   document.getElementById('alertSummary').innerHTML=criticals.length?
-    '<div style="font-size:11px;color:var(--t3);margin-bottom:8px">'+alertLabel+' · showing '+Math.min(5,criticals.length)+' of '+criticals.length+'</div>'+
-    criticals.slice(0,5).map(function(r){
-      var complaintText=AI.complaintSummary(r.text)||esc(r.subcategory||r.category||'Issue reported');
-      var sevN=parseInt(r.severity)||3;
-      return '<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--bd)">'+
-        '<span class="sev '+getSevClass(sevN)+'" style="flex-shrink:0">'+sevN+'</span>'+
-        '<div style="flex:1;min-width:0">'+
-          '<div style="font-size:13px;color:var(--t1);margin-bottom:3px;font-weight:600">'+
-            '<span style="color:var(--blue)">Room '+esc(r.room||'?')+'</span>'+
-            ' &nbsp;<span style="color:var(--t2);font-weight:500">'+esc(complaintText)+'</span>'+
-          '</div>'+
-          '<div style="font-size:11px;color:var(--t3)">'+esc(r.platform)+' • Check-in '+esc(r.checkInDate||r.date||'')+(r.sentiment==='Positive'?' • <span style="color:var(--amber);font-weight:600">mixed sentiment</span>':'')+'</div>'+
-        '</div>'+
-        '<div class="status '+resClass(r.resolutionStatus)+'" style="flex-shrink:0">'+esc(r.resolutionStatus||'Open')+'</div>'+
-      '</div>';
+    '<div style="font-size:11px;color:var(--t3);margin-bottom:6px">'+alertLabel+' · showing '+Math.min(4,criticals.length)+' of '+criticals.length+'</div>'+
+    criticals.slice(0,4).map(function(r){
+      return '<div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd)">'+
+        '<span class="sev '+getSevClass(parseInt(r.severity)||3)+'">'+(r.severity||'!')+'</span>'+
+        '<div style="flex:1;min-width:0"><div style="font-size:13px;color:var(--t1);margin-bottom:2px">Room '+esc(r.room||'?')+' — '+esc(r.category)+'</div>'+
+        '<div style="font-size:12px;color:var(--t3)">'+esc(r.platform)+' • '+esc(r.checkInDate||r.date||'')+'</div></div>'+
+        '<div class="status '+resClass(r.resolutionStatus)+'" style="flex-shrink:0">'+esc(r.resolutionStatus||'Open')+'</div></div>';
     }).join('')+
-    '<div style="text-align:center;margin-top:10px"><button class="fbtn" onclick="showPage(\'alerts\')">View All Alerts →</button></div>':
+    '<div style="text-align:center;margin-top:8px"><button class="fbtn" onclick="showPage(\'alerts\')">View All Alerts →</button></div>':
   '<div class="empty" style="padding:20px"><span>✓</span>No open alerts</div>';
 
   // ── COMPLAINT TYPES ──
@@ -1176,7 +1103,7 @@ function renderOverview(){
     dist[idx]++;
   });
   var distLabels=['0.5','1','1.5','2','2.5','3','3.5','4','4.5','5'];
-  makeChart('ratingDistChart',{type:'bar',data:{labels:distLabels,datasets:[{label:'Reviews',data:dist,backgroundColor:dist.map(function(_,i){return i<4?'rgba(220,68,88,.75)':i<6?'rgba(232,163,24,.75)':'rgba(42,181,116,.75)';}),borderColor:dist.map(function(_,i){return i<4?'#dc4458':i<6?'#e8a318':'#2ab574';}),borderWidth:1,borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:chartColors().tooltipBg,titleColor:chartColors().tooltipText,bodyColor:chartColors().tooltipText,borderColor:chartColors().tooltipBorder,borderWidth:1,callbacks:{title:function(ctx){return'Up to '+ctx[0].label+'/5';},label:function(ctx){return ctx.parsed.y+' review'+(ctx.parsed.y===1?'':'s');}}}},scales:{x:{title:{display:true,text:'Rating (1 = lowest, 5 = highest)',color:chartColors().tick,font:{size:14}},ticks:{color:chartColors().tick,font:{size:14}},grid:{display:false}},y:{title:{display:true,text:'Number of reviews',color:chartColors().tick,font:{size:14}},ticks:{color:chartColors().tick,font:{size:14},stepSize:1},grid:{color:chartColors().grid},beginAtZero:true}}}});
+  makeChart('ratingDistChart',{type:'bar',data:{labels:distLabels,datasets:[{label:'Reviews',data:dist,backgroundColor:dist.map(function(_,i){return i<4?'rgba(220,68,88,.75)':i<6?'rgba(232,163,24,.75)':'rgba(42,181,116,.75)';}),borderColor:dist.map(function(_,i){return i<4?'#dc4458':i<6?'#e8a318':'#2ab574';}),borderWidth:1,borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(20,23,35,.95)',callbacks:{title:function(ctx){return'Up to '+ctx[0].label+'/5';},label:function(ctx){return ctx.parsed.y+' review'+(ctx.parsed.y===1?'':'s');}}}},scales:{x:{title:{display:true,text:'Rating (1 = lowest, 5 = highest)',color:'#7079a0',font:{size:14}},ticks:{color:'#7079a0',font:{size:14}},grid:{display:false}},y:{title:{display:true,text:'Number of reviews',color:'#7079a0',font:{size:14}},ticks:{color:'#7079a0',font:{size:14},stepSize:1},grid:{color:'rgba(255,255,255,.04)'},beginAtZero:true}}}});
 
   // ── OPS HEALTH ──
   var resolved=rv.filter(function(r){return r.resolutionStatus==='Resolved';}).length;
@@ -1219,22 +1146,12 @@ var R={
       return true;
     });
   },
-  // CRITICAL: this is called by every filter input. Must reset to page 0 BEFORE rendering
-  // because filtered result count changes — the previous page index may be out of bounds.
-  onFilterChange:function(){
-    RevPage.current=0;
-    this.renderReviews();
-  },
   renderReviews:function(){
     var filtered=this.getFiltered();
     var total=filtered.length;
-    // Pagination safety: if current page is past the last filtered page, clamp back
-    var maxPage=Math.max(0,Math.ceil(total/RevPage.perPage)-1);
-    if(RevPage.current>maxPage)RevPage.current=maxPage;
-    if(RevPage.current<0)RevPage.current=0;
     var start=RevPage.current*RevPage.perPage;
     var page=filtered.slice(start,start+RevPage.perPage);
-    document.getElementById('revCount').textContent='Showing '+(total?start+1:0)+'–'+Math.min(start+RevPage.perPage,total)+' of '+total+' review'+(total===1?'':'s');
+    document.getElementById('revCount').textContent='Showing '+(total?start+1:0)+'–'+Math.min(start+RevPage.perPage,total)+' of '+total+' reviews';
     var html='';
     page.forEach(function(r){
       var sevC=getSevClass(parseInt(r.severity)||1);
@@ -1269,17 +1186,13 @@ var R={
       '</div>';
     });
     document.getElementById('revList').innerHTML=html||'<div class="empty"><span>🔍</span>No reviews match your filters</div>';
-    // Pagination — recalculated after every filter change
+    // Pagination
     var pages=Math.ceil(total/RevPage.perPage);
     var phtml='';
     if(pages>1){
       phtml+='<button class="fbtn" onclick="R.goPage('+(RevPage.current-1)+')" '+(RevPage.current===0?'disabled':'')+'>← Prev</button>';
-      // Smart window: show up to 7 page buttons centered on current
-      var start2=Math.max(0,Math.min(RevPage.current-3,pages-7));
-      var end2=Math.min(pages,start2+7);
-      for(var i=start2;i<end2;i++)phtml+='<button class="fbtn" onclick="R.goPage('+i+')" style="'+(i===RevPage.current?'background:var(--blue);color:#fff;border-color:var(--blue)':'')+'">'+(i+1)+'</button>';
+      for(var i=0;i<pages&&i<8;i++)phtml+='<button class="fbtn" onclick="R.goPage('+i+')" style="'+(i===RevPage.current?'background:var(--blue);color:#fff;border-color:var(--blue)':'')+'">'+(i+1)+'</button>';
       phtml+='<button class="fbtn" onclick="R.goPage('+(RevPage.current+1)+')" '+(RevPage.current>=pages-1?'disabled':'')+'>Next →</button>';
-      phtml+='<span style="font-size:12px;color:var(--t3);margin-left:8px;align-self:center">Page '+(RevPage.current+1)+' of '+pages+'</span>';
     }
     document.getElementById('revPagination').innerHTML=phtml;
   },
@@ -1445,16 +1358,9 @@ var A={
     var hideRes=document.getElementById('hideResolved').checked;
     var filter=this.currentFilter;
     var rv=State.reviews.filter(function(r){
-      // Mixed-sentiment intelligence: a review IS an alert if any of:
-      //   - severity >= 3 (medium or higher)
-      //   - explicit maintenance or cleaning flag set
-      // Overall sentiment is NO LONGER a hard gate — a Positive review with
-      // an embedded complaint (e.g. "lovely staff but windows are dirty")
-      // still surfaces here so management can act on it.
-      var hasFlag=r.maintFlag===true||r.maintFlag==='Yes'||r.maintFlag==='true'||r.cleanFlag===true||r.cleanFlag==='Yes'||r.cleanFlag==='true';
-      var isAlert=hasFlag||parseInt(r.severity)>=3;
-      // BUT: pure positive reviews with NO flags AND severity < 3 are not alerts
-      if(r.sentiment==='Positive'&&!hasFlag&&parseInt(r.severity)<3)return false;
+      // HARD GUARD: positive reviews never become alerts, regardless of stale flags in CSV
+      if(r.sentiment==='Positive')return false;
+      var isAlert=r.maintFlag===true||r.maintFlag==='Yes'||r.maintFlag==='true'||r.cleanFlag===true||r.cleanFlag==='Yes'||r.cleanFlag==='true'||parseInt(r.severity)>=3;
       if(!isAlert)return false;
       if(hideRes&&r.resolutionStatus==='Resolved')return false;
       var isMaint=r.maintFlag===true||r.maintFlag==='Yes'||r.maintFlag==='true';
@@ -1574,18 +1480,18 @@ function renderAnalytics(){
   makeChart('volRatingChart',{type:'bar',data:{labels:mlabels,datasets:[
     {type:'bar',label:'Review Volume',data:mkeys.map(function(k){return mdata.map[k].total;}),backgroundColor:'rgba(44,95,214,.5)',yAxisID:'y'},
     {type:'line',label:'Avg Rating',data:mkeys.map(function(k){var m=mdata.map[k];return m.total?Math.round(m.ratingSum/m.total*10)/10:null;}),borderColor:'#2ab574',pointRadius:4,tension:.4,yAxisID:'y2'}
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:chartColors().tick,font:{size:14},maxRotation:45,autoSkip:false},grid:{color:chartColors().grid}},y:{ticks:{color:chartColors().tick,font:{size:14}},grid:{color:chartColors().grid},beginAtZero:true},y2:{position:'right',min:0,max:5,ticks:{color:'#2ab574',font:{size:14},stepSize:1},grid:{display:false}}}}});
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#7079a0',font:{size:14},maxRotation:45,autoSkip:false},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#7079a0',font:{size:14}},grid:{color:'rgba(255,255,255,.04)'},beginAtZero:true},y2:{position:'right',min:0,max:5,ticks:{color:'#2ab574',font:{size:14},stepSize:1},grid:{display:false}}}}});
 
   makeChart('severityTrendChart',{type:'line',data:{labels:mlabels,datasets:[
     {label:'Critical (5)',data:mkeys.map(function(k){return mdata.map[k].sev.filter(function(s){return s>=5;}).length;}),borderColor:'#dc4458',backgroundColor:'rgba(220,68,88,.08)',tension:.4,fill:true,pointRadius:3},
     {label:'High (4)',data:mkeys.map(function(k){return mdata.map[k].sev.filter(function(s){return s===4;}).length;}),borderColor:'#e8a318',backgroundColor:'rgba(232,163,24,.08)',tension:.4,fill:true,pointRadius:3},
     {label:'Medium (3)',data:mkeys.map(function(k){return mdata.map[k].sev.filter(function(s){return s===3;}).length;}),borderColor:'#2c5fd6',backgroundColor:'rgba(44,95,214,.08)',tension:.4,fill:true,pointRadius:3}
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:chartColors().tick,font:{size:14},maxRotation:45,autoSkip:false},grid:{color:chartColors().grid}},y:{ticks:{color:chartColors().tick,font:{size:14}},grid:{color:chartColors().grid},beginAtZero:true}}}});
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#7079a0',font:{size:14},maxRotation:45,autoSkip:false},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#7079a0',font:{size:14}},grid:{color:'rgba(255,255,255,.04)'},beginAtZero:true}}}});
 
   makeChart('posNegChart',{type:'bar',data:{labels:mlabels,datasets:[
     {label:'Positive',data:mkeys.map(function(k){return mdata.map[k].pos;}),backgroundColor:'rgba(42,181,116,.7)'},
     {label:'Negative',data:mkeys.map(function(k){return -mdata.map[k].neg;}),backgroundColor:'rgba(220,68,88,.7)'}
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:chartColors().tick,font:{size:14},maxRotation:45,autoSkip:false},grid:{color:chartColors().grid}},y:{ticks:{color:chartColors().tick,font:{size:14},callback:function(v){return Math.abs(v);}},grid:{color:chartColors().grid},stacked:false}}}});
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#7079a0',font:{size:14},maxRotation:45,autoSkip:false},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#7079a0',font:{size:14},callback:function(v){return Math.abs(v);}},grid:{color:'rgba(255,255,255,.04)'},stacked:false}}}});
 
   // Platform sentiment heatmap
   var pdata=Agg.byPlatform(rv);
@@ -1655,7 +1561,7 @@ function renderStaff(){
         {label:'Neutral',data:staff.slice(0,8).map(function(s){return s.neu;}),backgroundColor:'rgba(232,163,24,.7)'},
         {label:'Negative',data:staff.slice(0,8).map(function(s){return s.neg;}),backgroundColor:'rgba(220,68,88,.7)'}
       ]
-    },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{color:chartColors().tick,font:{size:14}},grid:{color:chartColors().grid},stacked:true},y:{ticks:{color:chartColors().tick,font:{size:14}},grid:{display:false},stacked:true}}}});
+    },options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#7079a0',font:{size:14}},grid:{color:'rgba(255,255,255,.04)'},stacked:true},y:{ticks:{color:'#7079a0',font:{size:14}},grid:{display:false},stacked:true}}}});
   }
 
   var srevs=State.reviews.filter(function(r){return r.staffMentioned;}).slice(0,8);
@@ -1822,22 +1728,15 @@ function parseCSV(text){
       staffMentioned:g('staffMentioned'),
       action:g('action')||AI.action(text,sentiment,category,subcategory),
       // Resolution status: ALWAYS trust the CSV value if non-empty.
-      // Default rules when CSV cell is blank:
-      //   - Severity >= 3 OR maint/clean flag set → Open (needs attention)
-      //   - Positive sentiment with no operational issue → Resolved
-      //   - Otherwise → Open
+      // Only fall back to sentiment default when the cell is genuinely blank.
+      // Never let AI sentiment override an explicitly set operational status.
       resolutionStatus:(function(){
         var VALID=['Open','In Progress','Monitoring','Resolved','Escalated'];
         var raw=g('resolutionStatus','').trim();
-        if(raw){
-          var lc=raw.toLowerCase();
-          var match=VALID.filter(function(s){return s.toLowerCase()===lc;})[0];
-          return match||raw;
-        }
-        // No CSV value: derive from severity/flags, NOT just sentiment
-        var hasOpsIssue=parseInt(severity)>=3||maintFlag||cleanFlag;
-        if(hasOpsIssue)return'Open';
-        return sentiment==='Positive'?'Resolved':'Open';
+        if(!raw)return sentiment==='Positive'?'Resolved':'Open';
+        var lc=raw.toLowerCase();
+        var match=VALID.filter(function(s){return s.toLowerCase()===lc;})[0];
+        return match||raw; // return matched canonical form, or raw if unrecognised
       })(),
       resolvedDate:g('resolvedDate'),
       assignedDept:g('assignedDept'),
@@ -1984,114 +1883,59 @@ var AI={
   },
 
   // Severity is operational seriousness. Positive reviews are ALWAYS severity 1.
-  // ── OPERATIONAL ISSUE DETECTION ──
-  // CRITICAL DESIGN: these checks are INDEPENDENT of overall guest sentiment.
-  // A review can be overall Positive AND still contain an operational complaint
-  // (e.g. "lovely staff and clean room BUT the windows are dirty"). The dashboard
-  // must capture both — sentiment for guest-experience metrics, flags for ops alerts.
-
-  // Detects whether the text contains an explicit operational complaint, regardless of sentiment.
-  // Uses negation-aware phrase detection: "windows are dirty" → true; "windows are clean" → false.
-  detectOperationalComplaint:function(text){
-    if(!text)return null;
-    var t=text.toLowerCase();
-    // Look for "but/however/although + complaint phrase" — strong mixed-sentiment marker
-    // Also catches bare complaint phrases.
-    // Returns the matched complaint segment for downstream use.
-    var contrastMarkers=['but','however','although','though','except','only',"didn't like",'unfortunately','expected','expect','disappoint'];
-    var hasContrast=contrastMarkers.some(function(w){return t.indexOf(w)>-1;});
-
-    // Explicit physical-defect or hygiene-failure phrases
-    var complaintPhrases=[
-      /\b(is|are|was|were|looks?|looked|feels?|felt|smells?|smelled)\s+(very\s+|really\s+|quite\s+|so\s+|too\s+|a bit\s+|kinda\s+|kind of\s+)?(dirty|filthy|grimy|stained|musty|smelly|damp|moldy|mouldy|broken|noisy|faulty|cracked|chipped|worn|outdated|sticky|greasy|dusty)/i,
-      /\b(needs?\s+to\s+be|should\s+(be\s+)?(cleaned|fixed|replaced|repaired)|requires?\s+(cleaning|repair|fixing|replacement))/i,
-      /\b(could|should|would)\s+(have\s+)?(be|been)\s+(cleaner|fixed|repaired|better)/i,
-      /\b(dirty|filthy|grimy|stained|musty|smelly|damp|moldy|mouldy|cockroach|roach|pest|bedbug)\b/i,
-      /\b(broken|faulty|fault|not working|stopped working|out of order|out-of-order|leaking|dripping|rattl\w+|noisy|warm air|cold air|weak\s+(water|pressure|airflow)|low pressure|blocked|clogged)\b/i,
-      /\bdoesn'?t\s+(fulfill|fulfil|meet|match|live up)/i,
-      /\b(disappointed|disappointing|let down|unhappy|unacceptable)\b/i
-    ];
-    var matched=null;
-    complaintPhrases.forEach(function(re){
-      if(!matched){
-        var m=t.match(re);
-        if(m)matched=m[0];
-      }
-    });
-    return matched?{phrase:matched,withContrast:hasContrast,text:text}:null;
-  },
-
   severity:function(text,rating,sentiment){
+    if(sentiment==='Positive')return 1;
     if(!text)text='';
     var t=text.toLowerCase();
     var r=parseFloat(rating);
-    var hasComplaint=this.detectOperationalComplaint(text);
-    // Crisis-level issues — always severity 5 regardless of overall sentiment
-    if(/\b(cockroach|roach|pest|bedbug|sewage|mold|mould)\b/i.test(t))return 5;
-    if(/\b(blocked\s+drain|flooding|leaking\s+everywhere|recurring|third time|3rd time|second time)\b/i.test(t))return 5;
+    // Critical operational issues — only matter if sentiment is negative (0-5 scale)
     if(sentiment==='Negative'){
+      if(/\b(cockroach|roach|pest|bedbug|sewage|mold|mould)\b/i.test(t))return 5;
+      if(/\b(blocked\s+drain|flooding|leaking\s+everywhere|recurring|third time|3rd time|second time)\b/i.test(t))return 5;
       if(!isNaN(r)&&r<=1.5)return 5;
       if(!isNaN(r)&&r<=2.5)return 4;
-      return hasComplaint?4:3;
-    }
-    if(sentiment==='Neutral'){
-      if(/\b(broken|out of order|not working|faulty|leak|rattl|dripping)\b/i.test(t))return 4;
-      return hasComplaint?3:2;
-    }
-    // POSITIVE sentiment but contains an operational complaint
-    // (e.g. "lovely staff but windows are dirty") — flag as severity 3 (medium)
-    // so it appears in alerts but doesn't drown out genuine crises.
-    if(sentiment==='Positive'&&hasComplaint){
-      // Strong defect (broken/leak/mold etc) inside positive review → severity 4
-      if(/\b(broken|faulty|leak|mold|mould|pest|cockroach)\b/i.test(t))return 4;
       return 3;
+    }
+    // Neutral with operational mention
+    if(sentiment==='Neutral'){
+      if(/\b(broken|out of order|not working|faulty|leak|rattl|dripping)\b/i.test(t))return 3;
+      return 2;
     }
     return 1;
   },
 
-  // Maintenance flag — set whenever a physical defect is mentioned, regardless of overall sentiment.
-  // Mixed-sentiment reviews ("lovely room, but AC was rattling") get flagged correctly.
+  // Maintenance flag ONLY when negative/neutral AND actual physical defect mentioned
   maintFlag:function(text,sentiment){
+    if(sentiment==='Positive')return false;
     if(!text)return false;
     var t=text.toLowerCase();
-    var defectPattern=/\b(broken|faulty|fault|not working|stopped working|out of order|out-of-order|leak|leaking|leaked|dripping|rattl|noisy|warm air|cold air|weak\s+(airflow|water|pressure)|low pressure|blocked|clogged|slow|flickering|loose|stuck|cracked|chipped|peeling)\b/i;
-    var itemPattern=/\b(ac|air conditioning|aircon|hvac|fcu|tv|remote|elevator|lift|shower|tap|faucet|drain|toilet|light|lamp|switch|socket|outlet|fan|kettle|fridge|treadmill|equipment|plumbing|pipe|water heater|boiler|door|window|windows|lock|safe|curtain|building|exterior)\b/i;
-    // Both a defect word and an item word must be present (within the same review)
+    // Require a defect verb/noun near the physical item — not just the item alone
+    var defectPattern=/\b(broken|faulty|fault|not working|stopped working|out of order|out-of-order|leak|leaking|leaked|dripping|rattl|noisy|nois\w+|warm air|cold air|weak|low pressure|blocked|clogged|slow|flickering|loose|stuck|cracked|chipped|peeling)\b/i;
+    var itemPattern=/\b(ac|air conditioning|aircon|hvac|fcu|tv|remote|elevator|lift|shower|tap|faucet|drain|toilet|light|lamp|switch|socket|outlet|fan|kettle|fridge|treadmill|equipment|plumbing|pipe|water heater|boiler|door|window|lock|safe|curtain)\b/i;
     return defectPattern.test(t)&&itemPattern.test(t);
   },
 
-  // Cleaning flag — set whenever a cleanliness failure is mentioned, regardless of overall sentiment.
+  // Cleaning flag ONLY when negative/neutral AND actual cleanliness failure mentioned
   cleanFlag:function(text,sentiment){
+    if(sentiment==='Positive')return false;
     if(!text)return false;
     var t=text.toLowerCase();
     var dirtyPattern=/\b(dirty|filthy|stain|stained|dust|dusty|grimy|grime|musty|smelly|smell\w*|moldy|mouldy|mold|mould|hair|crumb|sticky|greasy|spot)\b/i;
-    var areaPattern=/\b(room|bathroom|tile|floor|carpet|sheet|linen|towel|bed|mattress|pillow|curtain|kettle|cup|glass|toilet|mirror|sink|shower|window|windows|building|exterior|metal|metals|wall|walls)\b/i;
+    var areaPattern=/\b(room|bathroom|tile|floor|carpet|sheet|linen|towel|bed|mattress|pillow|curtain|kettle|cup|glass|toilet|mirror|sink|shower)\b/i;
     // Pest/hygiene crises are ALWAYS cleaning flags
     if(/\b(cockroach|roach|pest|bedbug|bug|insect|rodent)\b/i.test(t))return true;
-    // Must NOT trigger on positive context like "rooms are clean" — check for negation around the area
-    // Simple guard: require dirty word AND area word both present
-    if(!dirtyPattern.test(t)||!areaPattern.test(t))return false;
-    // Guard against "rooms are clean" giving false positive: only flag if a CLEAR dirty word
-    // (one of: dirty, filthy, stain, dust, mold, smell, grime, musty) appears
-    var strongDirty=/\b(dirty|filthy|stain|stained|dust|dusty|moldy|mouldy|mold|mould|musty|smelly|grime|grimy|sticky|greasy)\b/i;
-    return strongDirty.test(t);
+    return dirtyPattern.test(t)&&(areaPattern.test(t)||t.length<200);
   },
 
-  // Action generator — context-aware. For mixed-sentiment reviews, generates an action
-  // for the operational complaint rather than the generic "log positive feedback".
+  // Action generator — context-aware, never generic when sentiment is negative
   action:function(text,sentiment,category,subcategory){
-    if(!text)text='';
-    var t=text.toLowerCase();
-    var hasComplaint=this.detectOperationalComplaint(text);
-
-    // Mixed-sentiment override: Positive review BUT contains complaint → action targets the complaint
-    if(sentiment==='Positive'&&!hasComplaint){
+    if(sentiment==='Positive'){
       if(category==='Staff')return'Log positive feedback. Share with named staff and department head for recognition programme.';
       return'Share positive feedback with relevant department. Document for monthly recognition.';
     }
-    if(sentiment==='Neutral'&&!hasComplaint)return'Acknowledge feedback. Monitor for recurrence. No immediate action required unless trend develops.';
-
-    // Specific operational actions — apply regardless of overall sentiment
+    if(sentiment==='Neutral')return'Acknowledge feedback. Monitor for recurrence. No immediate action required unless trend develops.';
+    if(!text)text='';
+    var t=text.toLowerCase();
     if(/\b(cockroach|roach|pest|bedbug|bug)\b/i.test(t))return'URGENT: Deploy pest control, treat affected room and adjacent rooms, conduct floor inspection, seal entry points, file incident report per SOP.';
     if(/\b(mold|mould|damp\s+smell|musty)\b/i.test(t))return'Treat mold at source, inspect drain pan and wall sealing for moisture ingress, deep deodorize, replace soft furnishings if needed.';
     if(/\b(blocked|clogged)\s+drain\b/i.test(t)||/\bdrain.{0,10}block/i.test(t))return'Unblock drain trap, inspect downstream plumbing, scope for root cause (hair, debris, pipe damage).';
@@ -2099,11 +1943,8 @@ var AI={
       if(/\b(drip|dripping|water)\b/i.test(t))return'Inspect FCU drain pan and condensate line for blockage. Check for refrigerant leak. Inspect wall behind unit for moisture damage.';
       if(/\b(noisy|rattl|loud)\b/i.test(t))return'Inspect FCU blower wheel and motor bearings. Clean filter. Tighten housing screws. Replace blower if bearing worn.';
       if(/\bwarm air\b/i.test(t))return'Check refrigerant charge, inspect thermostat calibration, verify compressor operation.';
-      if(/\bweak\s+airflow/i.test(t))return'Inspect FCU airflow: clean filter, check blower speed, verify ductwork integrity.';
       return'Inspect FCU: clean filter, check refrigerant level, inspect drain pan, verify thermostat.';
     }
-    if(/\b(window|windows)\b/i.test(t)&&/\b(dirty|stain|grime|grimy|musty|metal|metals|build|building|exterior)\b/i.test(t))return'Schedule external facade and window cleaning. Inspect window frames and metals for corrosion or staining. Add to monthly external cleaning roster.';
-    if(/\b(building|exterior|facade|outside)\b/i.test(t)&&/\b(dirty|grimy|condition|clean)\b/i.test(t))return'Conduct exterior building cleaning audit. Schedule pressure washing of facade and window cleaning. Inspect for visible weathering.';
     if(/\b(water pressure|weak\s+(shower|water))\b/i.test(t))return'Inspect pressure regulator, descale shower head and aerators, check for pipe scaling in supply line.';
     if(/\bhot water\b/i.test(t)&&/\b(slow|long time|cold)\b/i.test(t))return'Inspect water heater capacity, check mixing valve and thermostat settings, verify recirculation pump.';
     if(/\b(mattress|sagging|sag\b)\b/i.test(t))return'Replace mattress and bedding. Conduct furniture audit for the floor. Schedule replacement cycle review.';
@@ -2117,55 +1958,7 @@ var AI={
     if(/\b(noise|noisy)\b/i.test(t)&&/\bfan\b/i.test(t))return'Service bathroom extractor fan — likely worn bearing. Replace if motor noise persists after lubrication.';
     if(/\b(kettle|limescale)\b/i.test(t))return'Replace kettle. Descale all in-room appliances. Audit similar items hotel-wide.';
     return'Investigate complaint with relevant department. Assign owner. Follow up within 24 hours and document resolution.';
-  },
-
-  // Generates a CONCISE 4-8 word operational complaint summary for alert cards.
-  // Used by the Recent Alerts Summary on the Overview page.
-  complaintSummary:function(text){
-    if(!text)return null;
-    var t=text.toLowerCase();
-    // Highly specific phrases first — these are operational complaint patterns we recognize
-    var patterns=[
-      [/\b(mold|mould)\s*(smell|smelly|odor|odour)?.{0,20}(damp|wet|carpet|wall|bathroom)?/i,'Mold smell and damp area'],
-      [/\b(cockroach|roach|bedbug|pest|insect)/i,'Pest sighting in room'],
-      [/\b(blocked|clogged)\s*(drain|toilet|sink)/i,'Blocked drain / plumbing issue'],
-      [/\bac.{0,30}(noisy|rattling|loud)/i,'AC noisy / rattling'],
-      [/\b(ac|air conditioning|aircon).{0,30}(drip|dripping|leak)/i,'AC unit leaking water'],
-      [/\b(ac|air conditioning|aircon).{0,30}(warm air|not cool|not cold)/i,'AC blowing warm air'],
-      [/\bweak\s*(water\s*)?(pressure|airflow)/i,'Weak water pressure / airflow'],
-      [/\b(slow|cold)\s*hot water/i,'Slow / cold hot water'],
-      [/\b(mattress|bed).{0,20}(sag|saggy|uncomfortable|hard|lumpy)/i,'Uncomfortable mattress / bedding'],
-      [/\b(pillow).{0,20}(flat|hard|uncomfortable)/i,'Flat / hard pillows'],
-      [/\b(window|windows).{0,30}(dirty|grimy|stain|metal|metals)/i,'Dirty windows and exterior metals'],
-      [/\b(building|exterior|facade|outside).{0,30}(dirty|grimy|condition|need.{0,10}clean)/i,'Building exterior needs cleaning'],
-      [/\b(dust|dusty)/i,'Excessive dust in room'],
-      [/\b(tile|grout|bathroom).{0,30}(dirty|stain|grimy|mold)/i,'Dirty bathroom tiles / grout'],
-      [/\b(carpet|floor).{0,20}(damp|wet|stain|dirty)/i,'Damp / dirty carpet or floor'],
-      [/\b(elevator|lift).{0,30}(broken|slow|out of order|stuck)/i,'Elevator out of service'],
-      [/\b(tv|television|remote).{0,20}(not working|broken|faulty)/i,'TV / remote not working'],
-      [/\b(light|lamp|switch).{0,20}(not working|flicker|broken|faulty)/i,'Faulty light / electrical'],
-      [/\b(fan).{0,20}(noisy|loud)/i,'Noisy extractor fan'],
-      [/\b(noise|noisy)\s*(at night|street|neighbour)/i,'External noise issue'],
-      [/\b(smell|odour|odor)\s+(in|from)?/i,'Unpleasant smell in room'],
-      [/\b(rude|unhelpful|slow|unresponsive)\s*(staff|service|reception)/i,'Poor staff service'],
-      [/\b(check[-\s]?in|check[-\s]?out).{0,20}(slow|long|wait)/i,'Slow check-in / check-out'],
-      [/\b(wifi|internet).{0,20}(slow|not working|weak)/i,'Slow / unreliable WiFi'],
-      [/\b(breakfast|food).{0,20}(cold|stale|limited|poor)/i,'Breakfast / food quality issue'],
-      [/\b(small|tiny|cramped)\s*(room|bathroom)/i,'Room feels small / cramped'],
-      [/\b(noisy|noise)\s*(ac|aircon|air conditioning)/i,'Noisy air conditioning']
-    ];
-    for(var i=0;i<patterns.length;i++){
-      if(patterns[i][0].test(t))return patterns[i][1];
-    }
-    // Fallback: extract a snippet around a complaint word
-    var complaint=this.detectOperationalComplaint(text);
-    if(complaint){
-      // Return a clipped phrase
-      var phrase=complaint.phrase;
-      return phrase.charAt(0).toUpperCase()+phrase.slice(1).replace(/\s+/g,' ').slice(0,60);
-    }
-    return null;
-  },
+  }
 };
 
 // ── CSV Export ──
@@ -2183,12 +1976,8 @@ var App={
   toggleTheme:function(){
     var html=document.documentElement;
     var isDark=html.getAttribute('data-theme')==='dark';
-    var newTheme=isDark?'light':'dark';
-    html.setAttribute('data-theme',newTheme);
-    LS.set('hoi_theme',newTheme);
-    // Update browser chrome (Android URL bar / iOS status bar) to match theme
-    var meta=document.querySelector('meta[name="theme-color"]');
-    if(meta)meta.setAttribute('content',newTheme==='dark'?'#1c1f2a':'#f7f9fd');
+    html.setAttribute('data-theme',isDark?'light':'dark');
+    LS.set('hoi_theme',isDark?'light':'dark');
     // Re-render the currently visible page so charts pick up new theme
     var active=document.querySelector('.page.active');
     if(active){
@@ -2327,10 +2116,6 @@ var App={
   init:function(){
     var savedTheme=LS.get('hoi_theme',null);
     if(savedTheme)document.documentElement.setAttribute('data-theme',savedTheme);
-    // Sync browser chrome to current theme
-    var activeTheme=document.documentElement.getAttribute('data-theme')||'light';
-    var themeMeta=document.querySelector('meta[name="theme-color"]');
-    if(themeMeta)themeMeta.setAttribute('content',activeTheme==='dark'?'#1c1f2a':'#f7f9fd');
 
     var self=this;
     var cached=LS.get(CACHE_KEY,null);
