@@ -697,7 +697,7 @@ var SAMPLE = [
   {id:'r020',platform:'Traveloka',date:'2026-04-22',rating:3,booking:'BK-10040',room:'204',roomType:'Superior Room',text:'The room air conditioner was set to cool but was actually blowing warm air. Called engineering who came quickly and said they fixed it but it started doing the same thing again after an hour. Had an uncomfortable night.',sentiment:'Neutral',category:'Room Comfort & Quality',subcategory:'HVAC',severity:4,maintFlag:true,cleanFlag:false,staffMentioned:'',action:'Replace AC thermostat and inspect refrigerant levels for Room 204. Follow up same day to confirm fix is permanent.',resolutionStatus:'In Progress',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'Thermostat replaced. Refrigerant topped up. Monitoring.',isSample:true}
 ];
 
-var CACHE_KEY='hoi_reviews_v15', SRC_KEY='hoi_source_v15';
+var CACHE_KEY='hoi_reviews_v16', SRC_KEY='hoi_source_v16';
 var State={reviews:[],source:'sample',fileName:null,uploadedAt:null,alertFilter:'all'};
 var RevPage={current:0,perPage:10};
 
@@ -2406,9 +2406,20 @@ var App={
         LS.set(CACHE_KEY,{reviews:reviews,fileName:'Google Sheets',uploadedAt:State.uploadedAt});
         if(statusEl)statusEl.textContent='Live · '+reviews.length+' reviews · '+new Date().toLocaleTimeString();
         if(!silent)toast('✓ Synced '+reviews.length+' reviews from Google Sheets');
+        // Destroy ALL existing chart instances so they fully rebuild with fresh data
+        // (Chart.js holds internal references to old datasets otherwise)
+        Object.keys(Charts).forEach(function(k){
+          try{Charts[k].destroy();}catch(e){}
+          delete Charts[k];
+        });
+        // Re-render the currently active page with FRESH data
         var active=document.querySelector('.page.active');
-        if(active){var id=active.id.replace('page-','');try{showPage(id);}catch(e){renderOverview();}}
-        else renderOverview();
+        if(active){
+          var id=active.id.replace('page-','');
+          try{showPage(id);}catch(e){renderOverview();}
+        }else{
+          renderOverview();
+        }
         return reviews;
       })
       .catch(function(err){
@@ -2588,6 +2599,20 @@ var App={
     // 3. Background fetch always runs to refresh
     // 4. SAMPLE data is only ever shown if explicitly opted into via manual upload reset
     var hasUsableCache=cached&&cached.reviews&&cached.reviews.length;
+    // Schema check: if cached reviews are missing fields from the latest parser
+    // (e.g. verifiedStay, nationality, complaintSummary), the cache is from an older
+    // build and shouldn't be trusted. Discard it and force a fresh fetch.
+    if(hasUsableCache){
+      var sample=cached.reviews[0]||{};
+      var modernFields=['verifiedStay','nationality','complaintSummary','checkOutDate','nightsStayed'];
+      var missingModern=modernFields.filter(function(f){return !(f in sample);}).length;
+      if(missingModern>=3){
+        // Cache is from an older schema — discard
+        LS.del(CACHE_KEY);
+        hasUsableCache=false;
+        if(statusEl)statusEl.textContent='Cache outdated — fetching fresh data...';
+      }
+    }
     if(hasUsableCache){
       cached.reviews.forEach(function(r){
         // Normalize dates on every cached row
@@ -2597,8 +2622,7 @@ var App={
         if(r.checkInDate&&!r.date)r.date=r.checkInDate;
         // Defensive: if rating in cache looks like /10 (>5), re-normalize
         if(r.rating&&parseFloat(r.rating)>5){r.rating=Math.round(normalizeRating(r.rating,r.platform)*10)/10;}
-        // NEVER let a Resolved status stand if the original was In Progress — can't tell from cache,
-        // so safest action: if resolutionStatus is missing, set a safe default but never re-derive from sentiment
+        // Never let resolution status fall back to a stale wrong default
         if(!r.resolutionStatus)r.resolutionStatus='Open';
       });
       State.reviews=cached.reviews;
