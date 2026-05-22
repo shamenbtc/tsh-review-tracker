@@ -1643,7 +1643,11 @@ function renderAnalytics(){
 function renderStaff(){
   var sdata=Agg.byStaff(State.reviews);
   var staff=Object.values(sdata).sort(function(a,b){return b.total-a.total;});
-  
+
+  // Diagnostic: count how many reviews have any value in staffMentioned
+  var hasStaffField=State.reviews.filter(function(r){return r.staffMentioned&&String(r.staffMentioned).trim();}).length;
+  var allValues=State.reviews.map(function(r){return r.staffMentioned;}).filter(function(v){return v&&String(v).trim();});
+
   document.getElementById('staffLeader').innerHTML=staff.length?staff.slice(0,8).map(function(s,i){
     var posP=Math.round(s.pos/s.total*100);
     return '<div class="staff-row">'+
@@ -1654,7 +1658,16 @@ function renderStaff(){
       '<span style="font-size:12px;color:var(--t3)">'+s.total+' mentions</span>'+
     '</div>';
   }).join(''):
-  '<div class="empty"><span>👤</span>No staff mentions found</div>';
+  // Empty state — show a diagnostic so it's obvious WHY there are no results
+  '<div class="empty" style="text-align:left;padding:14px"><div style="font-size:14px;font-weight:600;color:var(--t1);margin-bottom:6px">👤 No staff mentions found</div>'+
+  '<div style="font-size:12px;color:var(--t3);line-height:1.5">'+
+    '<strong>Diagnostic:</strong><br>'+
+    '• Total reviews loaded: '+State.reviews.length+'<br>'+
+    '• Reviews with a value in Mentioned Staff column: '+hasStaffField+'<br>'+
+    '• Raw values found: '+(allValues.length?allValues.slice(0,5).map(function(v){return '"'+esc(String(v).slice(0,40))+'"';}).join(', '):'<span style="color:var(--red)">none</span>')+'<br>'+
+    (State.source==='sample'?'<br><span style="color:var(--red)">⚠ Currently showing SAMPLE data (live fetch failed). Real staff names from your sheet are not loaded.</span>':'')+
+    (State.source==='live'&&hasStaffField===0?'<br><span style="color:var(--amber)">⚠ Live data is loaded, but the "Mentioned Staff" column is empty for all '+State.reviews.length+' reviews. Check Import tab → Diagnostic to confirm the column was mapped correctly.</span>':'')+
+  '</div></div>';
 
   if(staff.length){
     makeChart('staffChart',{type:'bar',data:{
