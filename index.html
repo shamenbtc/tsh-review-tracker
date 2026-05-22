@@ -607,6 +607,7 @@ tr:hover td{background:var(--bg3)}
       </div>
       <button class="fbtn" style="background:var(--blue);color:#fff;border-color:var(--blue)" onclick="App.refreshLiveData()">↻ Sync Now</button>
       <button class="fbtn" onclick="App.showDiagnostic()">🔍 Diagnostic</button>
+      <button class="fbtn" onclick="App.runLiveTest()" title="Test each fetch method one by one">🧪 Run Live Test</button>
     </div>
     <div id="liveDiagnostic" style="margin-top:12px;display:none"></div>
   </div>
@@ -696,7 +697,7 @@ var SAMPLE = [
   {id:'r020',platform:'Traveloka',date:'2026-04-22',rating:3,booking:'BK-10040',room:'204',roomType:'Superior Room',text:'The room air conditioner was set to cool but was actually blowing warm air. Called engineering who came quickly and said they fixed it but it started doing the same thing again after an hour. Had an uncomfortable night.',sentiment:'Neutral',category:'Room Comfort & Quality',subcategory:'HVAC',severity:4,maintFlag:true,cleanFlag:false,staffMentioned:'',action:'Replace AC thermostat and inspect refrigerant levels for Room 204. Follow up same day to confirm fix is permanent.',resolutionStatus:'In Progress',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'Thermostat replaced. Refrigerant topped up. Monitoring.',isSample:true}
 ];
 
-var CACHE_KEY='hoi_reviews_v14', SRC_KEY='hoi_source_v14';
+var CACHE_KEY='hoi_reviews_v15', SRC_KEY='hoi_source_v15';
 var State={reviews:[],source:'sample',fileName:null,uploadedAt:null,alertFilter:'all'};
 var RevPage={current:0,perPage:10};
 
@@ -925,9 +926,16 @@ var Agg={
     var map={};
     reviews.forEach(function(r){
       if(!r.staffMentioned)return;
-      var names=String(r.staffMentioned).split(',');
+      // Accept multiple separators: comma, semicolon, slash, " and ", " & ", newlines
+      var raw=String(r.staffMentioned).trim();
+      var names=raw.split(/[,;\/\n]|\s+and\s+|\s+&\s+/i);
       names.forEach(function(n){
-        n=n.trim();if(!n)return;
+        n=n.replace(/[★*†‡]/g,'').trim();
+        // Strip leading/trailing quotes, periods, parentheses
+        n=n.replace(/^["'(\[]+|["')\].]+$/g,'').trim();
+        if(!n||n.length<2)return; // ignore single chars / empty
+        // Normalise inner whitespace
+        n=n.replace(/\s+/g,' ');
         if(!map[n])map[n]={name:n,total:0,pos:0,neg:0,neu:0,reviews:[]};
         map[n].total++;map[n].reviews.push(r);
         if(r.sentiment==='Positive')map[n].pos++;
@@ -2441,6 +2449,65 @@ var App={
     }catch(e){}
     return alts;
   },
+  // Runs an inline transparent test of each fetch method and shows the per-URL outcome.
+  // Useful when "Failed to fetch" persists and we need to see exactly which mechanism works.
+  runLiveTest:function(){
+    var el=document.getElementById('liveDiagnostic');
+    if(!el)return;
+    el.style.display='block';
+    var primary=this.LIVE_SHEET_URL;
+    var alts=this.buildFallbackUrls(primary);
+    var allUrls=[primary].concat(alts);
+    el.innerHTML='<div style="background:var(--bg3);padding:14px;border-radius:8px"><strong>Running live test... probing '+allUrls.length+' URL variations</strong><div id="testResults" style="margin-top:10px"></div></div>';
+    var results=document.getElementById('testResults');
+    var promises=allUrls.map(function(url,idx){
+      var start=Date.now();
+      return fetch(url,{cache:'no-store',redirect:'follow',credentials:'omit',mode:'cors'})
+        .then(function(r){
+          var elapsed=Date.now()-start;
+          return r.text().then(function(t){
+            var ok=r.ok;
+            var bytes=t.length;
+            var isHtml=t.indexOf('<!DOCTYPE')===0||t.indexOf('<html')>-1;
+            var status='success';
+            var msg='HTTP '+r.status+' • '+bytes+' bytes • '+elapsed+'ms';
+            if(!ok){status='fail';msg='HTTP '+r.status+' '+r.statusText+' • '+elapsed+'ms';}
+            else if(isHtml){status='fail';msg='Got HTML (sheet not published as CSV) • '+bytes+' bytes • '+elapsed+'ms';}
+            else if(bytes<10){status='fail';msg='Response too short ('+bytes+' bytes)';}
+            return {idx:idx,url:url,status:status,msg:msg,sample:t.slice(0,120)};
+          });
+        })
+        .catch(function(err){
+          return {idx:idx,url:url,status:'fail',msg:'['+(err.name||'Error')+'] '+(err.message||String(err))+' • '+(Date.now()-start)+'ms',sample:''};
+        });
+    });
+    Promise.all(promises).then(function(arr){
+      var html='';
+      arr.forEach(function(r){
+        var color=r.status==='success'?'var(--green)':'var(--red)';
+        var icon=r.status==='success'?'✓':'✗';
+        var urlLabel=r.idx===0?'Primary':'Fallback #'+r.idx;
+        var urlShort=r.url.replace(/^https?:\/\//,'').slice(0,90);
+        html+='<div style="border-left:3px solid '+color+';padding:8px 10px;margin-bottom:8px;background:var(--bg4);border-radius:4px;font-size:12px">'+
+          '<div style="font-weight:600;color:'+color+';margin-bottom:3px">'+icon+' '+esc(urlLabel)+': '+esc(r.status.toUpperCase())+'</div>'+
+          '<div style="color:var(--t3);font-size:11px;margin-bottom:3px">'+esc(urlShort)+'</div>'+
+          '<div style="color:var(--t2)">'+esc(r.msg)+'</div>'+
+          (r.sample?'<div style="font-family:monospace;font-size:10px;color:var(--t3);margin-top:4px;background:var(--bg5);padding:4px;border-radius:3px;max-height:60px;overflow:hidden">'+esc(r.sample)+'…</div>':'')+
+        '</div>';
+      });
+      var successCount=arr.filter(function(r){return r.status==='success';}).length;
+      var summary='<div style="font-size:13px;font-weight:600;margin-bottom:10px;padding:8px;background:'+(successCount>0?'var(--gs)':'var(--rs)')+';border-radius:5px;color:'+(successCount>0?'var(--green)':'var(--red)')+'">'+(successCount>0?'✓ '+successCount+' / '+arr.length+' URL methods succeeded — live fetch CAN work':'✗ All '+arr.length+' URL methods failed — see details below')+'</div>';
+      var advice='';
+      if(successCount===0){
+        advice='<div style="margin-top:10px;padding:10px;background:var(--as);border-radius:5px;font-size:12px;color:var(--t2)"><strong style="color:var(--amber)">All fetch methods failed.</strong> Likely causes in order of probability:<ol style="margin:6px 0 0 18px;padding:0">'+
+          '<li><strong>Browser extension blocking</strong> (uBlock Origin, Privacy Badger, ad-blockers) — try in incognito/private window</li>'+
+          '<li><strong>Service worker stuck</strong> — clear browsing data and hard refresh</li>'+
+          '<li><strong>Corporate or ISP firewall</strong> blocking docs.google.com</li>'+
+          '<li><strong>Sheet not actually published</strong> — re-publish from File → Share → Publish to web</li></ol></div>';
+      }
+      results.innerHTML=summary+html+advice;
+    });
+  },
   showDiagnostic:function(){
     var d=this.lastFetchDiagnostic;
     var el=document.getElementById('liveDiagnostic');
@@ -2449,8 +2516,7 @@ var App={
     if(!d){
       el.innerHTML='<div style="padding:12px;background:var(--bg3);border-radius:6px;font-size:13px;color:var(--t3)">No fetch attempted yet. Click "↻ Sync Now" first.</div>';
       return;
-    }
-    var statusColor=d.status==='success'?'var(--green)':'var(--red)';
+    }    var statusColor=d.status==='success'?'var(--green)':'var(--red)';
     var statusIcon=d.status==='success'?'✓':'✗';
     var url=this.LIVE_SHEET_URL;
     var html='<div style="background:var(--bg3);border-radius:8px;padding:14px;font-size:13px;line-height:1.6">'+
