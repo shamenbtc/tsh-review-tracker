@@ -724,7 +724,7 @@ var SAMPLE = [
   {id:'r020',platform:'Traveloka',date:'2026-04-22',rating:3,booking:'BK-10040',room:'204',roomType:'Superior Room',text:'The room air conditioner was set to cool but was actually blowing warm air. Called engineering who came quickly and said they fixed it but it started doing the same thing again after an hour. Had an uncomfortable night.',sentiment:'Neutral',category:'Room Comfort & Quality',subcategory:'HVAC',severity:4,maintFlag:true,cleanFlag:false,staffMentioned:'',action:'Replace AC thermostat and inspect refrigerant levels for Room 204. Follow up same day to confirm fix is permanent.',resolutionStatus:'In Progress',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'Thermostat replaced. Refrigerant topped up. Monitoring.',isSample:true}
 ];
 
-var CACHE_KEY='hoi_reviews_v18', SRC_KEY='hoi_source_v18';
+var CACHE_KEY='hoi_reviews_v19', SRC_KEY='hoi_source_v19';
 var State={reviews:[],source:'sample',fileName:null,uploadedAt:null,alertFilter:'all'};
 var RevPage={current:0,perPage:10};
 
@@ -2080,21 +2080,54 @@ var AI={
   category:function(text,sentiment){
     if(!text)text='';
     var t=text.toLowerCase();
-    // Staff is highest priority — if a staff member is praised or criticized, that's the primary category
-    if(/\b(staff|service|reception|receptionist|concierge|butler|waiter|waitress|server|housekeeping team|front desk|manager|chef|barman|bartender|valet|porter|bellboy|attendant|sharmendran|jasmine|farah|tang|arfa)\b/i.test(text)
-       &&(/\b(helpful|friendly|kind|polite|courteous|professional|attentive|excellent|great|amazing|outstanding|warm|wonderful|rude|slow|unresponsive|unhelpful|unprofessional)\b/i.test(text)
-          ||/\bthank|thanks|appreciate/i.test(text))){
+
+    // Step 1: detect if there's an OPERATIONAL COMPLAINT in the text, regardless of sentiment.
+    // The complaint TOPIC takes precedence over incidental praise of other areas.
+    // e.g. "Good staff and clean, BUT floors need polishing" → Cleanliness/Maintenance,
+    // NOT Staff (even though staff are praised in the same sentence).
+    var complaintTopics=[
+      // [Category, keywords that indicate THIS is the actual complaint, not incidental praise]
+      ['Cleanliness',/\b(dirty|filthy|stain|stained|mold|mould|mouldy|pest|cockroach|roach|dust|dusty|grime|grimy|musty|smell\w*|odour|odor|damp|hygien\w+|need\w*\s+(a\s+)?clean|cleaner|polish\w+|grout\b|tile\w*\s+(stain|dirty|grimy|need))\b/i],
+      ['Room Comfort & Quality',/\b(bed|mattress|pillow|linen|sheet|duvet|ac\s|air conditioning|hvac|aircon|noise|noisy|rattl|leak|drip|broken|faulty|hot water|cold|temperature|view\s+(blocked|poor)|furniture|chair|sofa|wardrobe|curtain|tv\s|television|remote|window|door|lock|safe)\b/i],
+      ['Facilities',/\b(pool|gym|spa|elevator|lift|wifi|internet|parking|breakfast\s+(was|is)\s+(cold|stale|limited|poor)|treadmill|equipment|facility|amenit|restaurant\s+(was|is)\s+(slow|poor|bad))\b/i],
+      ['Value for Money',/\b(overpriced|expensive|rip\s*off|rip-off|not worth|too pricey|extra charge|hidden fee|surcharge|poor value)\b/i],
+      ['Maintenance',/\b(needs?|need)\s+(\w+\s+){0,4}(upgrade|refurbish|renovat|polish|repaint|refresh)\b|\b(flo[ou]rs?)\s+polish|\bpolish\w*\s+(flo[ou]r|wood)|\b(outdated|old\s+(furniture|carpet|paint)|peeling\s+paint|chipped|cracked|worn|needs?\s+repair|repair\w*|fix\w*|broken|replace\w*)\b/i]
+    ];
+
+    // Maintenance is not a top-level category in the dashboard — fold it into Room Comfort & Quality or Cleanliness based on context
+    for(var i=0;i<complaintTopics.length;i++){
+      if(complaintTopics[i][1].test(t)){
+        var cat=complaintTopics[i][0];
+        // Map Maintenance → most appropriate primary category
+        if(cat==='Maintenance'){
+          // If the complaint mentions cleaning/polish/dirt → Cleanliness; otherwise Room Comfort & Quality
+          if(/\b(polish|clean|stain|dust|grim|hygien|smell|odour|odor|musty|dirty|filthy|moldy|mouldy)\b/i.test(t))return'Cleanliness';
+          return'Room Comfort & Quality';
+        }
+        return cat;
+      }
+    }
+
+    // Step 2: no operational complaint detected. NOW check if it's primarily a staff-focused review
+    // (someone praising or criticising the team specifically, with no other operational concern).
+    var staffMention=/\b(staff|service|reception|receptionist|concierge|butler|waiter|waitress|server|housekeeping team|front desk|manager|chef|barman|bartender|valet|porter|bellboy|attendant|sharmendran|jasmine|farah|tang|arfa|liza)\b/i;
+    var staffDescriptor=/\b(helpful|friendly|kind|polite|courteous|professional|attentive|excellent\s+(staff|service)|amazing\s+(staff|service)|outstanding\s+(staff|service)|warm|wonderful|welcoming|rude|slow|unresponsive|unhelpful|unprofessional|impolite|dismissive)\b/i;
+    if(staffMention.test(text)&&staffDescriptor.test(text)){
+      // It's a staff-focused review only if the complaint/praise CENTRES on staff,
+      // not if staff are just mentioned in passing.
       return'Staff';
     }
-    var checks=[
-      ['Cleanliness',['mold','mould','pest','cockroach','roach','dust','dirty','filthy','stain','tile','grout','grime','musty','hygiene','smell','odour','odor','damp']],
-      ['Room Comfort & Quality',['bed','mattress','pillow','linen','sheet','duvet','ac','air conditioning','hvac','aircon','temperature','noise','noisy','view','furniture','sofa','wardrobe','curtain','rattl']],
-      ['Facilities',['pool','gym','spa','elevator','lift','restaurant','wifi','internet','parking','breakfast','buffet','treadmill','equipment']],
-      ['Value for Money',['price','value','worth','expensive','cheap','overpriced','rate','cost','money','rip-off']],
-      ['Staff',['staff','service','reception','butler','concierge','waiter','helpful','friendly','attentive','rude','professional']]
+
+    // Step 3: fall back to keyword matching for generic mentions (no clear complaint pattern)
+    var fallbackChecks=[
+      ['Cleanliness',['clean','cleanliness','spotless','immaculate','tidy']],
+      ['Room Comfort & Quality',['room','bedroom','comfortable','cosy','cozy','spacious']],
+      ['Facilities',['pool','gym','spa','elevator','lift','restaurant','wifi','breakfast']],
+      ['Value for Money',['price','value','worth','rate']],
+      ['Staff',['staff','service']]
     ];
-    for(var i=0;i<checks.length;i++){
-      if(checks[i][1].some(function(w){return t.indexOf(w)>-1;}))return checks[i][0];
+    for(var j=0;j<fallbackChecks.length;j++){
+      if(fallbackChecks[j][1].some(function(w){return t.indexOf(w)>-1;}))return fallbackChecks[j][0];
     }
     return'Room Comfort & Quality';
   },
@@ -2110,6 +2143,10 @@ var AI={
     // Pest/crisis checks first — these dominate
     if(t.indexOf('pest')>-1||t.indexOf('cockroach')>-1||t.indexOf('roach')>-1||t.indexOf('bedbug')>-1)return'Pest Control';
     if(t.indexOf('mold')>-1||t.indexOf('mould')>-1||t.indexOf('damp')>-1)return'Mold/Damp';
+    // Maintenance / cosmetic complaints (often mentioned alongside praise)
+    if(/\b(flo[ou]rs?)\s+polish/i.test(t)||/\bpolish\w*\s+(flo[ou]r|wood)/i.test(t))return'Floor Maintenance';
+    if(/\b(needs?|need)\s+(\w+\s+){0,4}(upgrade|refurbish|renovat)/i.test(t))return'Refurbishment Needed';
+    if(/\b(outdated|old\s+(furniture|paint|carpet)|peeling\s+paint|chipped|worn|tatty|shabby)\b/i.test(t))return'Wear & Tear';
     if(t.indexOf('ac')>-1||t.indexOf('air conditioning')>-1||t.indexOf('aircon')>-1||t.indexOf('hvac')>-1)return'HVAC';
     if(t.indexOf('shower')>-1||t.indexOf('water pressure')>-1||t.indexOf('drain')>-1||t.indexOf('plumbing')>-1)return'Plumbing';
     if(t.indexOf('mattress')>-1||t.indexOf('pillow')>-1||(t.indexOf('bed')>-1&&t.indexOf('bedding')===-1))return'Bedding';
@@ -2147,7 +2184,12 @@ var AI={
       /\b(dirty|filthy|grimy|stained|musty|smelly|damp|moldy|mouldy|cockroach|roach|pest|bedbug)\b/i,
       /\b(broken|faulty|fault|not working|stopped working|out of order|out-of-order|leaking|dripping|rattl\w+|noisy|warm air|cold air|weak\s+(water|pressure|airflow)|low pressure|blocked|clogged)\b/i,
       /\bdoesn'?t\s+(fulfill|fulfil|meet|match|live up)/i,
-      /\b(disappointed|disappointing|let down|unhappy|unacceptable)\b/i
+      /\b(disappointed|disappointing|let down|unhappy|unacceptable)\b/i,
+      // Maintenance / cosmetic upgrade requests — often phrased mildly inside positive reviews
+      /\b(needs?|need)\s+(\w+\s+){0,4}(upgrade|refurbish\w*|renovat\w+|polish\w*|repaint|refresh)/i,
+      /\bpolish\w*\s+(flo[ou]r|wood|brass|metal|surface)/i,
+      /\b(flo[ou]rs?)\s+polish/i,
+      /\b(outdated|peeling\s+paint|chipped|worn|tatty|shabby)\b/i
     ];
     var matched=null;
     complaintPhrases.forEach(function(re){
@@ -2194,8 +2236,16 @@ var AI={
     var t=text.toLowerCase();
     var defectPattern=/\b(broken|faulty|fault|not working|stopped working|out of order|out-of-order|leak|leaking|leaked|dripping|rattl|noisy|warm air|cold air|weak\s+(airflow|water|pressure)|low pressure|blocked|clogged|slow|flickering|loose|stuck|cracked|chipped|peeling)\b/i;
     var itemPattern=/\b(ac|air conditioning|aircon|hvac|fcu|tv|remote|elevator|lift|shower|tap|faucet|drain|toilet|light|lamp|switch|socket|outlet|fan|kettle|fridge|treadmill|equipment|plumbing|pipe|water heater|boiler|door|window|windows|lock|safe|curtain|building|exterior)\b/i;
-    // Both a defect word and an item word must be present (within the same review)
-    return defectPattern.test(t)&&itemPattern.test(t);
+    // Both a defect word and an item word must be present
+    if(defectPattern.test(t)&&itemPattern.test(t))return true;
+    // Cosmetic / refurbishment maintenance signals — phrases like "needs upgrade", "floors need polishing"
+    // These are common in mixed-sentiment reviews where the guest praises some aspects.
+    // Permissive: "needs a bit of an upgrade", "could do with a refresh", "flours polished etc"
+    if(/\b(needs?|need)\s+(\w+\s+){0,4}(upgrade|refurbish|renovat|polish|repaint|refresh)/i.test(t))return true;
+    if(/\bpolish\w*\b/i.test(t)&&/\b(flo[ou]r|wood|brass|metal|surface)\w*/i.test(t))return true;
+    if(/\b(flo[ou]rs?)\s+polish/i.test(t))return true; // catches "flours polished" typo
+    if(/\b(outdated|peeling\s+paint|chipped|tatty|shabby|fraying)\b/i.test(t))return true;
+    return false;
   },
 
   // Cleaning flag — set whenever a cleanliness failure is mentioned, regardless of overall sentiment.
@@ -2254,6 +2304,10 @@ var AI={
     if(/\b(light|switch|socket|outlet)\b/i.test(t))return'Electrician to inspect and replace faulty fixture. Test all sockets in room for safety.';
     if(/\b(noise|noisy)\b/i.test(t)&&/\bfan\b/i.test(t))return'Service bathroom extractor fan — likely worn bearing. Replace if motor noise persists after lubrication.';
     if(/\b(kettle|limescale)\b/i.test(t))return'Replace kettle. Descale all in-room appliances. Audit similar items hotel-wide.';
+    // Cosmetic / maintenance upgrade requests (common in mixed-sentiment reviews praising staff/cleanliness)
+    if(/\b(flo[ou]rs?)\s+polish/i.test(t)||/\bpolish\w*\s+(flo[ou]r|wood)/i.test(t))return'Schedule wood-floor polishing/refinishing across room type. Inspect adjacent rooms for similar wear. Add to quarterly maintenance roster.';
+    if(/\b(needs?|need)\s+(\w+\s+){0,4}(upgrade|refurbish|renovat)/i.test(t))return'Log refurbishment feedback. Inspect room for cosmetic and structural wear. Flag for capex planning review.';
+    if(/\b(outdated|old\s+(furniture|paint|carpet)|peeling\s+paint|chipped|worn|tatty|shabby)\b/i.test(t))return'Conduct cosmetic audit of room. Address chipped paint, worn furnishings, peeling surfaces. Document for maintenance schedule.';
     return'Investigate complaint with relevant department. Assign owner. Follow up within 24 hours and document resolution.';
   },
 
@@ -2290,7 +2344,13 @@ var AI={
       [/\b(wifi|internet).{0,20}(slow|not working|weak)/i,'Slow / unreliable WiFi'],
       [/\b(breakfast|food).{0,20}(cold|stale|limited|poor)/i,'Breakfast / food quality issue'],
       [/\b(small|tiny|cramped)\s*(room|bathroom)/i,'Room feels small / cramped'],
-      [/\b(noisy|noise)\s*(ac|aircon|air conditioning)/i,'Noisy air conditioning']
+      [/\b(noisy|noise)\s*(ac|aircon|air conditioning)/i,'Noisy air conditioning'],
+      // Maintenance / upgrade requests — typically mentioned alongside praise
+      [/\b(needs?|need)\s+(\w+\s+){0,4}(upgrade|refurbish\w*|renovat\w+)/i,'Room / property needs upgrade'],
+      [/\b(flo[ou]rs?)\s+polish/i,'Floors need polishing / refinishing'],
+      [/\bpolish\w*\s+(flo[ou]r|wood|brass|metal)/i,'Floors need polishing / refinishing'],
+      [/\b(outdated|old\s+(furniture|paint|carpet)|peeling\s+paint|chipped|cracked\s+(wall|paint|tile))/i,'Outdated furnishings / cosmetic wear'],
+      [/\b(worn|fraying|tatty|shabby)\s+(carpet|curtain|sofa|chair|furniture)/i,'Worn-out furnishings']
     ];
     for(var i=0;i<patterns.length;i++){
       if(patterns[i][0].test(t))return patterns[i][1];
