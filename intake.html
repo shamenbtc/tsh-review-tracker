@@ -106,7 +106,29 @@ select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='htt
 .meta-row:last-child{border-bottom:none}
 .meta-row span:first-child{color:var(--t3)}
 .meta-row span:last-child{font-weight:500;color:var(--t1)}
-.recent-section{margin-top:8px}
+.mode-tabs{display:flex;gap:0;background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:3px;margin-bottom:20px;width:fit-content}
+.mode-tab{padding:6px 16px;border-radius:5px;border:none;background:transparent;color:var(--t3);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--fn);transition:all 150ms var(--ease)}
+.mode-tab.active{background:var(--gold);color:var(--bg1)}
+.bulk-wrap{max-width:780px}
+.bulk-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.bs-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px}
+.bs-val{font-size:24px;font-weight:600;color:var(--t1);font-family:var(--fn-mono);margin-bottom:2px}
+.bs-lbl{font-size:11px;color:var(--t3);font-weight:500;text-transform:uppercase;letter-spacing:.08em}
+.review-row{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px;margin-bottom:8px;display:grid;grid-template-columns:80px 60px 1fr auto;gap:12px;align-items:center}
+.review-row.needs{border-left:3px solid var(--amber)}
+.review-row.done{border-left:3px solid var(--green);opacity:.7}
+.review-row.error{border-left:3px solid var(--red)}
+.rr-room{font-family:var(--fn-mono);font-weight:600;font-size:13px;color:var(--t1)}
+.rr-plat{font-size:11px;color:var(--t3)}
+.rr-text{font-size:12px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rr-status{font-size:11px;font-weight:600;padding:3px 8px;border-radius:3px;white-space:nowrap;flex-shrink:0}
+.rs-pending{background:var(--as);color:var(--amber)}
+.rs-done{background:var(--gs);color:var(--green)}
+.rs-skip{background:var(--bg4);color:var(--t3)}
+.rs-error{background:var(--rs);color:var(--red)}
+.rs-running{background:var(--bs);color:var(--blue)}
+.bulk-log{background:var(--bg3);border-radius:var(--r);padding:12px;font-size:11px;font-family:var(--fn-mono);color:var(--t2);max-height:160px;overflow-y:auto;margin-top:12px;line-height:1.7;border:1px solid var(--bd)}
+.log-ok{color:var(--green)}.log-err{color:var(--red)}.log-info{color:var(--blue)}
 .recent-card{background:var(--bg2);border:1px solid var(--bd);border-radius:var(--rl);padding:14px 18px;display:none}
 .recent-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--bd);font-size:12px}
 .recent-item:last-child{border-bottom:none}
@@ -136,10 +158,15 @@ select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='htt
 </div>
 
 <div class="wrap">
-  <div class="page-title">New Review Entry</div>
-  <div class="page-sub">Paste a guest review — Claude AI classifies all 26 fields. Review the suggestions, correct if needed, then submit directly to your Google Sheet.</div>
+  <div class="mode-tabs">
+    <button class="mode-tab active" id="mTab1" onclick="switchMode('new')">＋ New Review</button>
+    <button class="mode-tab" id="mTab2" onclick="switchMode('bulk')">⚡ Bulk Classify</button>
+  </div>
 
-  <div class="steps">
+  <div class="page-title" id="pageTitle">New Review Entry</div>
+  <div class="page-sub" id="pageSub">Paste a guest review — Claude AI classifies all 26 fields. Review the suggestions, correct if needed, then submit directly to your Google Sheet.</div>
+
+  <div class="steps" id="steps">
     <div class="step active" id="s1"><div class="step-num">1</div><span>Review details</span></div>
     <div class="step" id="s2"><div class="step-num">2</div><span>AI classification</span></div>
     <div class="step" id="s3"><div class="step-num">3</div><span>Confirm &amp; submit</span></div>
@@ -333,6 +360,35 @@ select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='htt
         <a href="/" class="btn">View dashboard →</a>
       </div>
     </div>
+  </div>
+
+  <!-- BULK CLASSIFY PANE -->
+  <div id="pBulk" style="display:none">
+    <div class="bulk-summary">
+      <div class="bs-card"><div class="bs-val" id="bTotal">—</div><div class="bs-lbl">Total reviews</div></div>
+      <div class="bs-card"><div class="bs-val" id="bNeeds" style="color:var(--amber)">—</div><div class="bs-lbl">Need classification</div></div>
+      <div class="bs-card"><div class="bs-val" id="bDone" style="color:var(--green)">—</div><div class="bs-lbl">Already classified</div></div>
+    </div>
+
+    <div class="btn-row" style="margin-bottom:16px">
+      <button class="btn" id="btnLoad" onclick="loadSheet()">
+        🔄 Load from Google Sheet
+        <div class="spinner dark" id="spLoad"></div>
+      </button>
+      <button class="btn btn-primary" id="btnRunBulk" onclick="runBulk()" style="display:none">
+        ⚡ Classify all unclassified →
+        <div class="spinner" id="spBulk"></div>
+      </button>
+      <button class="btn" id="btnStopBulk" onclick="stopBulk()" style="display:none;background:var(--rs);color:var(--red);border-color:transparent">
+        ⏹ Stop
+      </button>
+    </div>
+
+    <div class="progress-bar" id="bpb" style="display:none"><div class="progress-fill" id="bpf" style="width:0%"></div></div>
+    <div class="status-msg" id="bsm"></div>
+
+    <div id="reviewRowList"></div>
+    <div class="bulk-log" id="bulkLog" style="display:none"></div>
   </div>
 
   <!-- RECENT -->
@@ -643,6 +699,198 @@ function toggleTheme() {
   document.getElementById('themeBtn').textContent = dark ? '☾' : '☀';
   localStorage.setItem('intake_theme', dark ? 'light' : 'dark');
 }
+
+// ── MODE SWITCHER ─────────────────────────────────────────────────────────
+function switchMode(mode) {
+  const isNew = mode === 'new';
+  document.getElementById('mTab1').classList.toggle('active', isNew);
+  document.getElementById('mTab2').classList.toggle('active', !isNew);
+  document.getElementById('p1').style.display       = isNew ? '' : 'none';
+  document.getElementById('p2').style.display       = 'none';
+  document.getElementById('pSuccess').style.display = 'none';
+  document.getElementById('pBulk').style.display    = isNew ? 'none' : '';
+  document.getElementById('recentCard').style.display = 'none';
+  if (isNew) {
+    document.getElementById('pageTitle').textContent = 'New Review Entry';
+    document.getElementById('pageSub').textContent   = 'Paste a guest review — Claude AI classifies all 26 fields. Review the suggestions, correct if needed, then submit directly to your Google Sheet.';
+    document.getElementById('steps').style.display = 'flex';
+  } else {
+    document.getElementById('pageTitle').textContent = 'Bulk Classify';
+    document.getElementById('pageSub').textContent   = 'Load your Google Sheet — Claude will classify every review that is missing Sentiment, Category or Severity. Results write directly back to the sheet.';
+    document.getElementById('steps').style.display = 'none';
+  }
+}
+
+// ── BULK CLASSIFY STATE ────────────────────────────────────────────────────
+let bulkRows = [];
+let bulkStop = false;
+
+function bStatus(msg, type='info') {
+  const el = document.getElementById('bsm');
+  el.textContent = msg; el.className = 'status-msg '+type; el.style.display = 'flex';
+}
+function bHideStatus() { document.getElementById('bsm').style.display = 'none'; }
+function bProgress(pct) {
+  const bar = document.getElementById('bpb');
+  bar.style.display = 'block';
+  document.getElementById('bpf').style.width = pct + '%';
+}
+function bLog(msg, type='info') {
+  const log = document.getElementById('bulkLog');
+  log.style.display = 'block';
+  const cls = type==='ok'?'log-ok':type==='err'?'log-err':'log-info';
+  log.innerHTML += `<div class="${cls}">${msg}</div>`;
+  log.scrollTop = log.scrollHeight;
+}
+
+// ── LOAD SHEET ─────────────────────────────────────────────────────────────
+async function loadSheet() {
+  const btn = document.getElementById('btnLoad');
+  const sp  = document.getElementById('spLoad');
+  btn.disabled = true; sp.style.display = 'inline-block';
+  bStatus('Fetching reviews from Google Sheet...', 'info');
+  document.getElementById('reviewRowList').innerHTML = '';
+  document.getElementById('bulkLog').style.display = 'none';
+  document.getElementById('bulkLog').innerHTML = '';
+
+  try {
+    const resp = await fetch('/api/bulk-classify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'preview' })
+    });
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error || 'Failed to load sheet');
+
+    bulkRows = data.rows;
+    const needs  = bulkRows.filter(r => r.needsClassification).length;
+    const done   = bulkRows.length - needs;
+
+    document.getElementById('bTotal').textContent = bulkRows.length;
+    document.getElementById('bNeeds').textContent = needs;
+    document.getElementById('bDone').textContent  = done;
+
+    renderRowList();
+    bHideStatus();
+
+    if (needs > 0) {
+      document.getElementById('btnRunBulk').style.display = 'inline-flex';
+      bStatus(`${needs} review${needs===1?'':'s'} need classification. Click "Classify all unclassified" to start.`, 'info');
+    } else {
+      bStatus('All reviews are already classified. Nothing to do.', 'success');
+    }
+
+  } catch(err) {
+    bStatus('Failed to load: ' + err.message, 'error');
+  } finally {
+    btn.disabled = false; sp.style.display = 'none';
+  }
+}
+
+function renderRowList() {
+  const list = document.getElementById('reviewRowList');
+  list.innerHTML = bulkRows.map((r, i) => {
+    const statusCls = r.classified ? 'rs-done' : r.errored ? 'rs-error' : r.needsClassification ? 'rs-pending' : 'rs-skip';
+    const statusLbl = r.classified ? '✓ Done' : r.errored ? '✗ Error' : r.needsClassification ? 'Pending' : 'Already done';
+    const rowCls    = r.classified ? 'done' : r.errored ? 'error' : r.needsClassification ? 'needs' : '';
+    const preview   = (r.text||'').slice(0,80) + ((r.text||'').length>80?'…':'');
+    return `<div class="review-row ${rowCls}" id="rr_${i}">
+      <div><div class="rr-room">Room ${r.room||'?'}</div><div class="rr-plat">${r.platform||''}</div></div>
+      <div style="font-size:11px;color:var(--t3);font-family:var(--fn-mono)">${r.rating||''}</div>
+      <div class="rr-text">${preview}</div>
+      <div class="rr-status ${statusCls}" id="rs_${i}">${statusLbl}</div>
+    </div>`;
+  }).join('');
+}
+
+function updateRowStatus(i, status, cls) {
+  const el = document.getElementById('rs_'+i);
+  const rr = document.getElementById('rr_'+i);
+  if (el) { el.textContent = status; el.className = 'rr-status ' + cls; }
+  if (rr) { rr.className = 'review-row ' + (cls==='rs-done'?'done':cls==='rs-error'?'error':'needs'); }
+}
+
+// ── RUN BULK ───────────────────────────────────────────────────────────────
+async function runBulk() {
+  bulkStop = false;
+  const toClassify = bulkRows.map((r, i) => ({ ...r, _idx: i })).filter(r => r.needsClassification && !r.classified);
+
+  if (!toClassify.length) { bStatus('Nothing to classify.', 'info'); return; }
+
+  document.getElementById('btnRunBulk').style.display = 'none';
+  document.getElementById('btnStopBulk').style.display = 'inline-flex';
+  document.getElementById('bulkLog').innerHTML = '';
+  document.getElementById('bulkLog').style.display = 'block';
+  bLog(`Starting bulk classification — ${toClassify.length} reviews`, 'info');
+
+  let done = 0, errors = 0;
+  bProgress(0);
+
+  for (let j = 0; j < toClassify.length; j++) {
+    if (bulkStop) { bLog('Stopped by user.', 'info'); break; }
+
+    const r = toClassify[j];
+    const i = r._idx;
+    updateRowStatus(i, '⟳ Classifying…', 'rs-running');
+    bLog(`[${j+1}/${toClassify.length}] Room ${r.room} · ${r.platform}…`, 'info');
+
+    try {
+      // Step 1: Classify with Claude
+      const cResp = await fetch('/api/bulk-classify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'classify-one', row: r })
+      });
+      const classification = await cResp.json();
+      if (!cResp.ok) throw new Error(classification.error || 'Classification failed');
+
+      // Step 2: Write back to sheet
+      const wResp = await fetch('/api/bulk-classify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'write', row: { sheetRow: r.sheetRow, classification } })
+      });
+      const wData = await wResp.json();
+      if (!wResp.ok) throw new Error(wData.error || 'Write failed');
+
+      // Mark done
+      bulkRows[i].classified = true;
+      updateRowStatus(i, '✓ Done', 'rs-done');
+      bLog(`✓ Room ${r.room} → ${classification.sentiment} · Sev ${classification.severity} · ${classification.category}`, 'ok');
+      done++;
+
+    } catch(err) {
+      bulkRows[i].errored = true;
+      updateRowStatus(i, '✗ Error', 'rs-error');
+      bLog(`✗ Room ${r.room}: ${err.message}`, 'err');
+      errors++;
+    }
+
+    bProgress(Math.round(((j+1)/toClassify.length)*100));
+    // Small delay to avoid hammering the API
+    if (j < toClassify.length - 1 && !bulkStop) {
+      await new Promise(r => setTimeout(r, 800));
+    }
+  }
+
+  document.getElementById('btnStopBulk').style.display = 'none';
+  document.getElementById('btnRunBulk').style.display = 'inline-flex';
+
+  if (bulkStop) {
+    bStatus(`Stopped. ${done} classified, ${errors} errors.`, 'info');
+  } else if (errors === 0) {
+    bStatus(`✓ All ${done} reviews classified successfully. Sync your dashboard to see them.`, 'success');
+    bLog(`Complete — ${done} classified, ${errors} errors.`, 'ok');
+  } else {
+    bStatus(`${done} classified, ${errors} errors — check the log below.`, 'error');
+  }
+
+  // Refresh counts
+  document.getElementById('bDone').textContent = bulkRows.filter(r => r.classified || !r.needsClassification).length;
+  document.getElementById('bNeeds').textContent = bulkRows.filter(r => r.needsClassification && !r.classified && !r.errored).length;
+}
+
+function stopBulk() { bulkStop = true; }
 
 (function init() {
   const t = localStorage.getItem('intake_theme');
