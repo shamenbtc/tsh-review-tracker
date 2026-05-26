@@ -528,7 +528,7 @@ tr:hover td{background:var(--bg3)}
   <button class="ntab" onclick="showPage('alerts')" id="tab-alerts">🔔<span class="nlabel"> Alerts</span></button>
   <button class="ntab" onclick="showPage('analytics')" id="tab-analytics">📊<span class="nlabel"> Analytics</span></button>
   <button class="ntab" onclick="showPage('staff')" id="tab-staff">👤<span class="nlabel"> Staff</span></button>
-  <button class="ntab" onclick="showPage('import')" id="tab-import">+<span class="nlabel"> Import</span></button>
+  <button class="ntab" onclick="showPage('import')" id="tab-import">⚙<span class="nlabel"> Data</span></button>
 </div>
 <div class="main">
 
@@ -724,107 +724,51 @@ tr:hover td{background:var(--bg3)}
 
 <!-- IMPORT PAGE -->
 <div class="page" id="page-import">
-  <div class="card" style="border-left:3px solid var(--gold)">
+
+  <!-- Live Data Sync -->
+  <div class="card" style="border-left:3px solid var(--green)">
     <div class="card-hd">
-      <span class="card-title">Weekly Operations Report</span>
-      <span style="font-size:11px;color:var(--t3)">Generate department reports — share via WhatsApp or email</span>
+      <span class="card-title">Live Data</span>
+      <span style="font-size:11px;color:var(--t3)">Connected to Google Sheets · auto-syncs on load</span>
     </div>
-    <div style="font-size:13px;color:var(--t2);margin-bottom:14px;line-height:1.6">
-      Generates three separate reports from your current data. Each report is tailored for its audience — <strong style="color:var(--t1)">Management</strong> (English, full), <strong style="color:var(--t1)">Mr Li Gang / Engineering</strong> (中文, maintenance only), <strong style="color:var(--t1)">Ms Rina / Housekeeping</strong> (English + Malay).
-    </div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
-      <button class="fbtn" style="background:var(--gold);color:var(--bg1);border-color:var(--gold);font-weight:600" id="btnGenReport" onclick="generateWeeklyReport()">
-        📋 Generate This Week's Reports
-      </button>
-      <span style="font-size:12px;color:var(--t3);align-self:center">Uses live data currently loaded in the dashboard</span>
-    </div>
-    <div id="reportStatus" style="display:none;font-size:12px;padding:8px 12px;border-radius:var(--r);margin-bottom:12px"></div>
-    <div id="reportLinks" style="display:none">
-      <div style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Reports ready — open and share via WhatsApp:</div>
-      <div style="display:flex;flex-direction:column;gap:8px" id="reportLinkList"></div>
-    </div>
-  </div>
-  <div class="card" style="border-left:3px solid var(--green);background:linear-gradient(to right,var(--gs),var(--bg2) 30%)">
-    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-      <div style="font-size:24px">🔄</div>
-      <div style="flex:1;min-width:200px">
-        <div style="font-size:15px;font-weight:600;color:var(--t1);margin-bottom:3px">Live Data Mode Active</div>
-        <div style="font-size:13px;color:var(--t2)">This dashboard is connected to a live Google Sheet. Data refreshes automatically when the page loads, and you can re-sync any time with the <strong>↻ Refresh Live</strong> button in the top bar.</div>
-      </div>
-      <button class="fbtn" style="background:var(--blue);color:#fff;border-color:var(--blue)" onclick="App.refreshLiveData()">↻ Sync Now</button>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:4px">
+      <button class="fbtn" style="background:var(--green);color:#fff;border-color:var(--green);font-weight:600" onclick="App.refreshLiveData()">↻ Sync Now</button>
       <button class="fbtn" onclick="App.showDiagnostic()">🔍 Diagnostic</button>
-      <button class="fbtn" onclick="App.runLiveTest()" title="Test each fetch method one by one">🧪 Run Live Test</button>
+      <button class="fbtn" onclick="App.runLiveTest()">🧪 Run Live Test</button>
     </div>
     <div id="liveDiagnostic" style="margin-top:12px;display:none"></div>
   </div>
-  <div class="grid-2">
-    <div class="card">
-      <div class="card-hd"><span class="card-title">Manual CSV Upload (Optional)</span></div>
-      <div style="font-size:12px;color:var(--t3);margin-bottom:10px">Use this only if you want to override live data with a one-off file. Manual uploads are stored locally in your browser only.</div>
-      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('csvInput').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="App.handleDrop(event)">
-        <div style="font-size:28px;margin-bottom:8px">📂</div>
-        <h3>Drop CSV file here or click to upload</h3>
-        <p>Supports: Google Sheets CSV, Excel CSV exports</p>
-        <p style="margin-top:6px;font-size:11px;color:var(--t4)">Expected columns: Platform, Check-in Date (DD/MM/YYYY), Reviewed Month, Rating, Booking Number, Room Number, Room Type, Review Text, Sentiment, Category, Subcategory, Severity, Maintenance Flag, Cleaning Flag, Mentioned Staff, Suggested Action, Resolution Status, Resolved Date, Assigned Department, Assigned Staff, Resolution Notes</p>
-        <input type="file" id="csvInput" accept=".csv,.txt" style="display:none" onchange="App.handleFile(this)">
-      </div>
-      <div id="uploadStatus" style="margin-top:10px"></div>
+
+  <!-- Weekly Report -->
+  <div class="card" style="border-left:3px solid var(--gold)">
+    <div class="card-hd">
+      <span class="card-title">Weekly Operations Report</span>
+      <span style="font-size:11px;color:var(--t3)">Management · Engineering (中文) · Housekeeping (EN + BM)</span>
     </div>
-    <div class="card">
-      <div class="card-hd"><span class="card-title">CSV Column Guide</span><span style="font-size:11px;color:var(--t3);font-weight:500;text-transform:none;letter-spacing:0">★ = required for dashboard accuracy</span></div>
-      <div class="tbl-wrap"><table>
-        <thead><tr><th style="width:25%">Column Name</th><th>Format / Allowed Values</th><th style="width:90px;text-align:center">Required</th></tr></thead>
-        <tbody>
-
-          <tr><td colspan="3" style="background:var(--bg3);font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;padding:6px 10px">Stay Information</td></tr>
-          <tr><td><strong>Check-in Date</strong> ★</td><td>DD-Mon-YYYY (e.g. <code style="font-size:11px">23-Mar-2026</code>) — when guest stayed. Drives all chart trending.</td><td style="text-align:center"><span class="badge badge-red">Required</span></td></tr>
-          <tr><td>Check-out Date</td><td>DD-Mon-YYYY — for length-of-stay tracking</td><td style="text-align:center"><span class="badge badge-gray">Optional</span></td></tr>
-          <tr><td>Night(s) Stayed</td><td>Integer (e.g. <code style="font-size:11px">2</code>)</td><td style="text-align:center"><span class="badge badge-gray">Optional</span></td></tr>
-          <tr><td><strong>Review Month</strong> ★</td><td>Free text (e.g. <code style="font-size:11px">May 2026</code>) — when review was posted online</td><td style="text-align:center"><span class="badge badge-red">Required</span></td></tr>
-
-          <tr><td colspan="3" style="background:var(--bg3);font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;padding:6px 10px">Booking</td></tr>
-          <tr><td><strong>Platform</strong> ★</td><td>Google Reviews / Tripadvisor / Booking.com / Agoda / Expedia / Trip.com / Hotels.com / Traveloka</td><td style="text-align:center"><span class="badge badge-red">Required</span></td></tr>
-          <tr><td><strong>Booking Number</strong> ★</td><td>Property booking reference (e.g. <code style="font-size:11px">4180726177645</code>)</td><td style="text-align:center"><span class="badge badge-red">Required</span></td></tr>
-          <tr><td><strong>Room Number</strong> ★</td><td>Room number (e.g. <code style="font-size:11px">214</code>) — drives heatmap and room-level alerts</td><td style="text-align:center"><span class="badge badge-red">Required</span></td></tr>
-          <tr><td><strong>Room Type</strong> ★</td><td>Standard Double / Deluxe / Suite / Sultan Room / Skylight Room — consistent naming required</td><td style="text-align:center"><span class="badge badge-red">Required</span></td></tr>
-          <tr><td>Guest Nationality</td><td>Country of guest (e.g. <code style="font-size:11px">Malaysian</code>)</td><td style="text-align:center"><span class="badge badge-gray">Optional</span></td></tr>
-
-          <tr><td colspan="3" style="background:var(--bg3);font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;padding:6px 10px">Review Content</td></tr>
-          <tr><td><strong>Rating</strong> ★</td><td>Any scale: <code style="font-size:11px">5/5</code>, <code style="font-size:11px">8/10</code>, <code style="font-size:11px">4.5</code> — dashboard auto-normalises to /5</td><td style="text-align:center"><span class="badge badge-red">Required</span></td></tr>
-          <tr><td><strong>Review Text</strong> ★</td><td>Full verbatim review text — copy the entire review, do not paraphrase. Most critical column for AI accuracy.</td><td style="text-align:center"><span class="badge badge-red">Required</span></td></tr>
-          <tr><td>Mentioned Staff</td><td>Staff name(s) — comma separated (e.g. <code style="font-size:11px">Arfa, Liza</code>). Powers Staff Leaderboard.</td><td style="text-align:center"><span class="badge badge-amber">Recommended</span></td></tr>
-          <tr><td>Verified Stay</td><td>Yes / No — is it a verified booking review</td><td style="text-align:center"><span class="badge badge-gray">Optional</span></td></tr>
-
-          <tr><td colspan="3" style="background:var(--bg3);font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;padding:6px 10px">Operational Analysis</td></tr>
-          <tr><td><strong>Sentiment</strong> ★</td><td>Positive / Neutral / Negative. <em>Mark overall guest experience — the dashboard detects embedded complaints in positive reviews automatically.</em></td><td style="text-align:center"><span class="badge badge-red">Required</span></td></tr>
-          <tr><td><strong>Category</strong> ★</td><td>Room Comfort &amp; Quality / Cleanliness / Staff / Facilities / Value for Money / F&amp;B / Other</td><td style="text-align:center"><span class="badge badge-red">Required</span></td></tr>
-          <tr><td><strong>Subcategory</strong> ★</td><td>Specific sub-issue (e.g. <code style="font-size:11px">HVAC</code>, <code style="font-size:11px">Building Exterior</code>, <code style="font-size:11px">Front Desk</code>). Most impactful column for alert quality.</td><td style="text-align:center"><span class="badge badge-red">Required</span></td></tr>
-          <tr><td>Complaint Summary</td><td>5-10 word plain-English summary (e.g. <code style="font-size:11px">Dirty windows and exterior metals</code>). Used on Alert cards.</td><td style="text-align:center"><span class="badge badge-amber">Recommended</span></td></tr>
-          <tr><td><strong>Severity</strong> ★</td><td>1 = minor · 2 = low · 3 = medium (action within week) · 4 = high (24-48hr) · 5 = critical (immediate)</td><td style="text-align:center"><span class="badge badge-red">Required</span></td></tr>
-          <tr><td><strong>Maintenance Flag</strong> ★</td><td>Yes / No — physical / engineering defect mentioned (AC, plumbing, elevator, door, window). Triggers maintenance alert count.</td><td style="text-align:center"><span class="badge badge-red">Required</span></td></tr>
-          <tr><td><strong>HSKP Flag</strong> ★</td><td>Yes / No — housekeeping / cleanliness failure mentioned. Mark Yes even on Positive reviews if a hygiene issue is mentioned.</td><td style="text-align:center"><span class="badge badge-red">Required</span></td></tr>
-          <tr><td>Suggested Action</td><td>Recommended operational action — leave blank to let dashboard AI generate one</td><td style="text-align:center"><span class="badge badge-gray">Optional</span></td></tr>
-
-          <tr><td colspan="3" style="background:var(--bg3);font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;padding:6px 10px">Resolution Tracking</td></tr>
-          <tr><td><strong>Resolution Status</strong> ★</td><td>Open / In Progress / Monitoring / Resolved / Escalated. Dashboard always trusts this value — never leave blank if there is a complaint.</td><td style="text-align:center"><span class="badge badge-red">Required</span></td></tr>
-          <tr><td>Resolved Date</td><td>DD-Mon-YYYY — date the issue was confirmed closed</td><td style="text-align:center"><span class="badge badge-gray">Optional</span></td></tr>
-          <tr><td>Assigned Department</td><td>Engineering / Housekeeping / Front Office / F&amp;B / Management</td><td style="text-align:center"><span class="badge badge-amber">Recommended</span></td></tr>
-          <tr><td>Assigned Staff</td><td>Name of staff member handling the issue</td><td style="text-align:center"><span class="badge badge-gray">Optional</span></td></tr>
-          <tr><td>Resolution Notes</td><td>Free text — what was done, parts ordered, follow-up needed</td><td style="text-align:center"><span class="badge badge-gray">Optional</span></td></tr>
-
-        </tbody>
-      </table></div>
-      <div style="margin-top:10px;padding:10px 12px;background:var(--bs);border-radius:6px;font-size:12px;color:var(--t2);line-height:1.5">
-        <strong style="color:var(--blue)">26 columns total · 14 required.</strong> The dashboard auto-detects header rows even when the CSV has a coloured group band on top (STAY INFO / BOOKING / REVIEW / OPERATIONAL / RESOLUTION) and a description row beneath the headers — both are skipped automatically.
-      </div>
+    <div style="font-size:13px;color:var(--t2);margin-bottom:14px;line-height:1.6">
+      Generates three department reports from your current data — share via WhatsApp or print as PDF.
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:4px">
+      <button class="fbtn" style="background:var(--gold);color:var(--bg1);border-color:var(--gold);font-weight:600" id="btnGenReport" onclick="generateWeeklyReport()">
+        📋 Generate This Week's Reports
+      </button>
+    </div>
+    <div id="reportStatus" style="display:none;font-size:12px;padding:8px 12px;border-radius:var(--r);margin-top:10px"></div>
+    <div id="reportLinks" style="display:none;margin-top:12px">
+      <div style="font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Reports ready — open and share:</div>
+      <div style="display:flex;flex-direction:column;gap:8px" id="reportLinkList"></div>
     </div>
   </div>
+
+  <!-- Data status -->
   <div class="card">
-    <div class="card-hd"><span class="card-title">Current Data</span>
-      <button class="fbtn" onclick="App.clearData()">🗑 Clear & Reset</button>
+    <div class="card-hd">
+      <span class="card-title">Current Data</span>
+      <button class="fbtn" onclick="App.clearData()">🗑 Reset to sample</button>
     </div>
     <div id="dataInfo" style="font-size:12px;color:var(--t2)">Loading...</div>
   </div>
+
 </div>
 
 </div><!-- /main -->
@@ -2877,7 +2821,7 @@ var App={
         // Surface a concise message in the status bar (truncated)
         var shortMsg=err.message.split('\n')[0].slice(0,80);
         if(statusEl)statusEl.textContent='⚠ '+shortMsg;
-        if(!silent)toast('⚠ '+shortMsg+' · See Import tab → Diagnostic for full details');
+        if(!silent)toast('⚠ '+shortMsg+' · See Data tab → Diagnostic for full details');
         throw err;
       });
   },
