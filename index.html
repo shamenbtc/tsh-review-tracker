@@ -525,6 +525,7 @@ body.admin-mode .admin-badge{display:inline-flex}
   <div class="bsub" id="statsLabel" style="font-size:11px;color:var(--t3)">Loading...</div>
   <div class="tr">
     <span class="admin-badge" id="adminBadge">🔓 Admin <button onclick="Admin.exit()">Exit</button></span>
+    <a class="tbtn" href="/intake.html" style="background:var(--gold);color:var(--bg1);border-color:var(--gold);text-decoration:none" title="Add a guest review">＋<span> Add Review</span></a>
     <button class="tbtn" id="themeBtn" onclick="App.toggleTheme()" title="Toggle light / dark theme">☾<span> Theme</span></button>
     <button class="tbtn" onclick="App.refreshLiveData()" title="Re-sync from Google Sheets">↻<span> Refresh</span></button>
     <button class="tbtn" data-admin onclick="App.exportCSV()" title="Download CSV">⬇<span> Export</span></button>
@@ -827,7 +828,7 @@ var SAMPLE = [
   {id:'r020',platform:'Traveloka',date:'2026-04-22',rating:3,booking:'BK-10040',room:'204',roomType:'Superior Room',text:'The room air conditioner was set to cool but was actually blowing warm air. Called engineering who came quickly and said they fixed it but it started doing the same thing again after an hour. Had an uncomfortable night.',sentiment:'Neutral',category:'Room Comfort & Quality',subcategory:'HVAC',severity:4,maintFlag:true,cleanFlag:false,staffMentioned:'',action:'Replace AC thermostat and inspect refrigerant levels for Room 204. Follow up same day to confirm fix is permanent.',resolutionStatus:'In Progress',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'Thermostat replaced. Refrigerant topped up. Monitoring.',isSample:true}
 ];
 
-var CACHE_KEY='hoi_reviews_v30', SRC_KEY='hoi_source_v30';
+var CACHE_KEY='hoi_reviews_v31', SRC_KEY='hoi_source_v31';
 var State={reviews:[],source:'sample',fileName:null,uploadedAt:null,alertFilter:'all'};
 var RevPage={current:0,perPage:10};
 
