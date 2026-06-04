@@ -828,7 +828,7 @@ var SAMPLE = [
   {id:'r020',platform:'Traveloka',date:'2026-04-22',rating:3,booking:'BK-10040',room:'204',roomType:'Superior Room',text:'The room air conditioner was set to cool but was actually blowing warm air. Called engineering who came quickly and said they fixed it but it started doing the same thing again after an hour. Had an uncomfortable night.',sentiment:'Neutral',category:'Room Comfort & Quality',subcategory:'HVAC',severity:4,maintFlag:true,cleanFlag:false,staffMentioned:'',action:'Replace AC thermostat and inspect refrigerant levels for Room 204. Follow up same day to confirm fix is permanent.',resolutionStatus:'In Progress',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'Thermostat replaced. Refrigerant topped up. Monitoring.',isSample:true}
 ];
 
-var CACHE_KEY='hoi_reviews_v32', SRC_KEY='hoi_source_v32';
+var CACHE_KEY='hoi_reviews_v33', SRC_KEY='hoi_source_v33';
 var State={reviews:[],source:'sample',fileName:null,uploadedAt:null,alertFilter:'all'};
 var RevPage={current:0,perPage:10};
 
@@ -1527,7 +1527,7 @@ var R={
           '</div>'+
           '<div style="text-align:right">'+
             '<div class="stars" style="font-size:12px">'+stars(r.rating)+'</div>'+
-            '<div style="font-size:12px;font-weight:600;color:var(--t1)">'+r.rating+'/5</div>'+
+            '<div style="font-size:12px;font-weight:600;color:var(--t1)">'+(r.rating?r.rating+'/5':'—')+'</div>'+
           '</div>'+
         '</div>'+
         '<div class="rev-meta">'+
@@ -2127,6 +2127,10 @@ function normalizeRating(raw, platform){
   // Bare number — infer scale
   var n=parseFloat(s.replace(/[^0-9.]/g,''));
   if(isNaN(n))return 0;
+  // Google Sheets date serial guard: if a rating like "7/10" was written with
+  // USER_ENTERED, Sheets interprets it as a date (July 10) → serial ~46213.
+  // Any value above 20 is definitively not a valid hotel rating — return 0.
+  if(n>20)return 0;
   // Definitive: >5 means it's a /10 scale
   if(n>5)return Math.max(0,Math.min(5,(n/10)*5));
   // Definitive: <=5 and platform is known to use /5 → already /5
