@@ -839,7 +839,7 @@ var SAMPLE = [
   {id:'r020',platform:'Traveloka',date:'2026-04-22',rating:3,booking:'BK-10040',room:'204',roomType:'Superior Room',text:'The room air conditioner was set to cool but was actually blowing warm air. Called engineering who came quickly and said they fixed it but it started doing the same thing again after an hour. Had an uncomfortable night.',sentiment:'Neutral',category:'Room Comfort & Quality',subcategory:'HVAC',severity:4,maintFlag:true,cleanFlag:false,staffMentioned:'',action:'Replace AC thermostat and inspect refrigerant levels for Room 204. Follow up same day to confirm fix is permanent.',resolutionStatus:'In Progress',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'Thermostat replaced. Refrigerant topped up. Monitoring.',isSample:true}
 ];
 
-var CACHE_KEY='hoi_reviews_v37', SRC_KEY='hoi_source_v37';
+var CACHE_KEY='hoi_reviews_v38', SRC_KEY='hoi_source_v38';
 var State={reviews:[],source:'sample',fileName:null,uploadedAt:null,alertFilter:'all'};
 var RevPage={current:0,perPage:10};
 
@@ -2022,9 +2022,23 @@ function renderAnalytics(){
   phHtml+='</tbody></table></div>';
   document.getElementById('platformSentHeatmap').innerHTML=phHtml;
 
-  // Recurring issues
+  // Recurring issues — count only reviews that are ACTUAL problems.
+  // A positive review with no flags can land in the same category (e.g. a guest
+  // praising "Room Comfort") but it is not an issue, so it must not inflate the count.
+  // A review counts as a problem if: negative/neutral sentiment, OR a maintenance/HSKP
+  // flag is set, OR severity is 3 or higher.
+  function isProblem(r){
+    var sev=parseInt(r.severity)||0;
+    var maint=(r.maintFlag===true||r.maintFlag==='Yes'||r.maintFlag==='true');
+    var clean=(r.cleanFlag===true||r.cleanFlag==='Yes'||r.cleanFlag==='true');
+    if(r.sentiment==='Negative')return true;
+    if(maint||clean)return true;
+    if(sev>=3)return true;
+    return false;
+  }
   var roomCats={};
   rv.forEach(function(r){
+    if(!isProblem(r))return; // skip praise / non-issues entirely
     var k=r.room+':'+r.category;
     if(!roomCats[k])roomCats[k]={room:r.room,cat:r.category,count:0,severity:[]};
     roomCats[k].count++;
