@@ -164,7 +164,7 @@ select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='htt
   </div>
 
   <div class="page-title" id="pageTitle">New Review Entry</div>
-  <div class="page-sub" id="pageSub">Paste a guest review — Claude AI classifies all 26 fields. Review the suggestions, correct if needed, then submit directly to your Google Sheet.</div>
+  <div class="page-sub" id="pageSub">Paste a guest review — Sultan AI classifies all 26 fields. Review the suggestions, correct if needed, then submit directly to your Google Sheet.</div>
 
   <div class="steps" id="steps">
     <div class="step active" id="s1"><div class="step-num">1</div><span>Review details</span></div>
@@ -202,18 +202,27 @@ select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='htt
       <div class="card-title">Booking details</div>
       <div class="fr3">
         <div class="field"><label>Booking Number <span class="req">★</span></label><input type="text" id="bookingNumber" placeholder="e.g. 4180726177645"></div>
-        <div class="field"><label>Room Number <span class="req">★</span></label><input type="text" id="roomNumber" placeholder="e.g. 214"></div>
+        <div class="field"><label>Room Number <span class="req">★</span></label><input type="text" id="roomNumber" placeholder="e.g. 214" oninput="autoFillRoomType()"></div>
         <div class="field"><label>Room Type <span class="req">★</span></label>
           <select id="roomType">
             <option value="">Select type</option>
-            <option>Standard Single</option><option>Standard Double</option><option>Standard Twin</option>
-            <option>Deluxe Room</option><option>Sultan Room</option><option>Sultan Loft</option>
-            <option>Skylight Room</option><option>Puteri Room</option><option>Suite</option>
+            <option>Standard Single</option>
+            <option>Standard Double</option>
+            <option>Standard Twin</option>
+            <option>Attic Room (No Windows)</option>
+            <option>Sultan Room</option>
+            <option>Sultan Loft</option>
+            <option>Skylight Room</option>
+            <option>Skylight Loft</option>
+            <option>Puteri Room</option>
           </select>
+          <div class="hint" id="roomTypeHint" style="display:none;color:var(--green)">✓ Auto-filled from room number</div>
         </div>
       </div>
       <div class="fr2">
-        <div class="field"><label>Guest Nationality</label><input type="text" id="guestNationality" placeholder="e.g. Malaysian"></div>
+        <div class="field"><label>Guest Country</label>
+          <select id="guestNationality"><option value="">Select country</option></select>
+        </div>
         <div class="field"><label>Rating <span class="req">★</span></label><input type="text" id="rating" placeholder="e.g. 9/10 or 4.5/5"></div>
       </div>
     </div>
@@ -222,14 +231,11 @@ select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='htt
       <div class="card-title">Review content</div>
       <div class="field">
         <label>Review Text <span class="req">★</span></label>
-        <textarea id="reviewText" placeholder="Paste the full review exactly as the guest wrote it. Do not summarise or edit — the complete text gives Claude the most accurate classification."></textarea>
+        <textarea id="reviewText" placeholder="Paste the full review exactly as the guest wrote it. Do not summarise or edit — the complete text gives Sultan AI the most accurate classification."></textarea>
         <div class="hint">Copy the complete review from the platform. More text = better AI accuracy.</div>
       </div>
       <div class="fr2">
         <div class="field"><label>Mentioned Staff</label><input type="text" id="mentionedStaff" placeholder="e.g. Arfa, Liza"></div>
-        <div class="field"><label>Verified Stay</label>
-          <select id="verifiedStay"><option value="">Unknown</option><option>Yes</option><option>No</option></select>
-        </div>
       </div>
     </div>
 
@@ -238,7 +244,7 @@ select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='htt
         ✦ Classify with AI
         <div class="spinner" id="sp1"></div>
       </button>
-      <span style="font-size:12px;color:var(--t3)">Claude will read the full review and suggest all 26 fields</span>
+      <span style="font-size:12px;color:var(--t3)">Sultan AI will read the full review and suggest all 26 fields</span>
     </div>
   </div>
 
@@ -496,7 +502,7 @@ async function runClassification() {
   const btn = document.getElementById('btnClassify');
   const sp = document.getElementById('sp1');
   btn.disabled = true; sp.style.display = 'inline-block';
-  setProgress(20); showStatus('Claude is reading the review...', 'info');
+  setProgress(20); showStatus('Sultan AI is reading the review...', 'info');
 
   try {
     setProgress(40);
@@ -586,7 +592,7 @@ async function submitToSheet() {
     "'" + document.getElementById('rating').value,                   // J — apostrophe forces text mode, prevents "7/10" being read as July 10 date
     document.getElementById('reviewText').value,                     // K
     document.getElementById('mentionedStaff').value || '',           // L
-    document.getElementById('verifiedStay').value || '',             // M
+    '',                                                              // M (Verified Stay — no longer collected)
     document.getElementById('ai_sentiment').value,                   // N
     document.getElementById('ai_category').value,                    // O
     document.getElementById('ai_subcategory').value || '',           // P
@@ -678,7 +684,8 @@ function goBack() {
 function resetForm() {
   ['checkinDate','checkoutDate','nightsStayed','bookingNumber','roomNumber',
    'guestNationality','rating','reviewText','mentionedStaff'].forEach(id => document.getElementById(id).value = '');
-  ['platform','roomType','verifiedStay'].forEach(id => document.getElementById(id).selectedIndex = 0);
+  ['platform','roomType'].forEach(id => document.getElementById(id).selectedIndex = 0);
+  var rth=document.getElementById('roomTypeHint'); if(rth)rth.style.display='none';
   document.getElementById('pSuccess').style.display = 'none';
   document.getElementById('p2').style.display = 'none';
   document.getElementById('p1').style.display = 'block';
@@ -712,11 +719,11 @@ function switchMode(mode) {
   document.getElementById('recentCard').style.display = 'none';
   if (isNew) {
     document.getElementById('pageTitle').textContent = 'New Review Entry';
-    document.getElementById('pageSub').textContent   = 'Paste a guest review — Claude AI classifies all 26 fields. Review the suggestions, correct if needed, then submit directly to your Google Sheet.';
+    document.getElementById('pageSub').textContent   = 'Paste a guest review — Sultan AI classifies all 26 fields. Review the suggestions, correct if needed, then submit directly to your Google Sheet.';
     document.getElementById('steps').style.display = 'flex';
   } else {
     document.getElementById('pageTitle').textContent = 'Bulk Classify';
-    document.getElementById('pageSub').textContent   = 'Load your Google Sheet — Claude will classify every review that is missing Sentiment, Category or Severity. Results write directly back to the sheet.';
+    document.getElementById('pageSub').textContent   = 'Load your Google Sheet — Sultan AI will classify every review that is missing Sentiment, Category or Severity. Results write directly back to the sheet.';
     document.getElementById('steps').style.display = 'none';
   }
 }
@@ -835,7 +842,7 @@ async function runBulk() {
     bLog(`[${j+1}/${toClassify.length}] Room ${r.room} · ${r.platform}…`, 'info');
 
     try {
-      // Step 1: Classify with Claude
+      // Step 1: Classify with Sultan AI
       const cResp = await fetch('/api/bulk-classify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -892,12 +899,64 @@ async function runBulk() {
 
 function stopBulk() { bulkStop = true; }
 
+// ── ROOM NUMBER → ROOM TYPE MAP ────────────────────────────────────────────
+// The Sultan Hotel Singapore room inventory. Typing a known room number
+// auto-fills its type (still editable for exceptions).
+const ROOM_TYPE_MAP = {
+  // Standard Single
+  '124':'Standard Single','125':'Standard Single','133':'Standard Single','134':'Standard Single','221':'Standard Single',
+  // Standard Double
+  '114':'Standard Double','115':'Standard Double','116':'Standard Double','118':'Standard Double','119':'Standard Double',
+  '120':'Standard Double','122':'Standard Double','123':'Standard Double','131':'Standard Double','132':'Standard Double',
+  '139':'Standard Double','140':'Standard Double','141':'Standard Double','142':'Standard Double','143':'Standard Double',
+  '214':'Standard Double','217':'Standard Double','224':'Standard Double',
+  // Standard Twin
+  '126':'Standard Twin','135':'Standard Twin','228':'Standard Twin',
+  // Attic Room (No Windows)
+  '311':'Attic Room (No Windows)','312':'Attic Room (No Windows)','314':'Attic Room (No Windows)',
+  '315':'Attic Room (No Windows)','317':'Attic Room (No Windows)','318':'Attic Room (No Windows)',
+  // Sultan Room
+  '117':'Sultan Room','121':'Sultan Room','127':'Sultan Room','128':'Sultan Room','129':'Sultan Room',
+  '130':'Sultan Room','136':'Sultan Room','137':'Sultan Room','138':'Sultan Room','216':'Sultan Room',
+  '220':'Sultan Room','226':'Sultan Room','227':'Sultan Room','231':'Sultan Room','233':'Sultan Room',
+  // Sultan Loft
+  '211':'Sultan Loft','212':'Sultan Loft','213':'Sultan Loft','218':'Sultan Loft',
+  // Skylight Room
+  '313':'Skylight Room','316':'Skylight Room',
+  // Skylight Loft
+  '215':'Skylight Loft','219':'Skylight Loft',
+  // Puteri Room
+  '222':'Puteri Room','223':'Puteri Room','225':'Puteri Room','229':'Puteri Room','230':'Puteri Room','232':'Puteri Room'
+};
+
+function autoFillRoomType() {
+  const num = document.getElementById('roomNumber').value.trim();
+  const hint = document.getElementById('roomTypeHint');
+  const typeSel = document.getElementById('roomType');
+  if (ROOM_TYPE_MAP[num]) {
+    typeSel.value = ROOM_TYPE_MAP[num];
+    hint.style.display = 'block';
+  } else {
+    hint.style.display = 'none';
+  }
+}
+
+// ── COUNTRY LIST ───────────────────────────────────────────────────────────
+const COUNTRIES = ['Afghanistan','Albania','Algeria','Andorra','Angola','Argentina','Armenia','Australia','Austria','Azerbaijan','Bahrain','Bangladesh','Belarus','Belgium','Bhutan','Bolivia','Bosnia and Herzegovina','Brazil','Brunei','Bulgaria','Cambodia','Cameroon','Canada','Chile','China','Colombia','Costa Rica','Croatia','Cuba','Cyprus','Czech Republic','Denmark','Dominican Republic','Ecuador','Egypt','Estonia','Ethiopia','Fiji','Finland','France','Georgia','Germany','Ghana','Greece','Guatemala','Hong Kong','Hungary','Iceland','India','Indonesia','Iran','Iraq','Ireland','Israel','Italy','Japan','Jordan','Kazakhstan','Kenya','Kuwait','Laos','Latvia','Lebanon','Lithuania','Luxembourg','Macau','Malaysia','Maldives','Malta','Mexico','Mongolia','Morocco','Myanmar','Nepal','Netherlands','New Zealand','Nigeria','North Macedonia','Norway','Oman','Pakistan','Palestine','Panama','Peru','Philippines','Poland','Portugal','Qatar','Romania','Russia','Saudi Arabia','Serbia','Singapore','Slovakia','Slovenia','South Africa','South Korea','Spain','Sri Lanka','Sweden','Switzerland','Taiwan','Tanzania','Thailand','Tunisia','Turkey','Ukraine','United Arab Emirates','United Kingdom','United States','Uruguay','Uzbekistan','Venezuela','Vietnam','Yemen','Other'];
+
+function populateCountries() {
+  const sel = document.getElementById('guestNationality');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">Select country</option>' + COUNTRIES.map(c => '<option>' + c + '</option>').join('');
+}
+
 (function init() {
   const t = localStorage.getItem('intake_theme');
   if (t) { document.documentElement.setAttribute('data-theme', t); document.getElementById('themeBtn').textContent = t==='dark'?'☀':'☾'; }
   const now = new Date();
   const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   document.getElementById('reviewMonth').value = months[now.getMonth()] + ' ' + now.getFullYear();
+  populateCountries();
   updateSubs(); renderRecent();
 })();
 </script>
