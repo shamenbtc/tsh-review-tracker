@@ -20,7 +20,7 @@
 
   --bd:#DDD8CE;   --bd2:#CCC7BB;  --bd3:#B8B2A5;
 
-  --t1:#0E0F14;   --t2:#2E3040;   --t3:#6B6B7A;   --t4:#A8A8B4;
+  --t1:#0E0F14;   --t2:#2A2C3A;   --t3:#565663;   --t4:#86868F;
 
   --gold:#A07800;       /* primary accent */
   --gold2:#7A5C00;      /* pressed/dark */
@@ -63,7 +63,7 @@
 
   --bd:#1E2035;   --bd2:#272A42;  --bd3:#333755;
 
-  --t1:#EEF0FF;   --t2:#B8BDD8;   --t3:#7A7F9A;   --t4:#454868;
+  --t1:#EEF0FF;   --t2:#C4C8E0;   --t3:#9398B5;   --t4:#666A8C;
 
   --gold:#C9930A;
   --gold2:#A07800;
@@ -92,9 +92,9 @@ html,body{height:100%;font-family:var(--fn);background:var(--bg0);color:var(--t1
 .brand{display:flex;align-items:center;gap:11px;flex-shrink:0}
 .bmark-img{width:34px;height:34px;object-fit:contain;flex-shrink:0}
 [data-theme="dark"] .bmark-img{filter:invert(1) brightness(1.1)}
-.bname{font-family:var(--fn);font-size:var(--ts-xs);font-weight:700;color:var(--t1);letter-spacing:.18em;text-transform:uppercase}
+.bname{font-family:var(--fn);font-size:var(--ts-sm);font-weight:700;color:var(--t1);letter-spacing:.16em;text-transform:uppercase}
 .bsub{font-size:var(--ts-xs);color:var(--t3)}
-.bsub-author{font-family:var(--fn);font-style:normal;font-weight:500;color:var(--t2);letter-spacing:.04em}
+.bsub-author{font-family:var(--fn);font-style:normal;font-weight:400;font-size:10px;color:var(--t4);letter-spacing:.04em;opacity:.85}
 .bdiv{width:1px;height:20px;background:var(--bd2);flex-shrink:0}
 .tr{margin-left:auto;display:flex;align-items:center;gap:6px}
 .tbtn{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:var(--r);border:1px solid var(--bd2);background:transparent;color:var(--t3);font-size:var(--ts-xs);font-weight:500;cursor:pointer;font-family:var(--fn);letter-spacing:.02em;
@@ -640,12 +640,11 @@ body.admin-mode .admin-badge{display:inline-flex}
       <input type="date" class="fselect" id="revDateFrom" onchange="R.onFilterChange()" title="Check-in date from">
       <input type="date" class="fselect" id="revDateTo" onchange="R.onFilterChange()" title="Check-in date to">
       <select class="fselect" id="revSort" onchange="R.onFilterChange()" title="Sort order">
-        <option value="updated-desc">↻ Recently updated</option>
-        <option value="updated-asc">↻ Oldest update first</option>
-        <option value="date-asc">↑ Check-in: oldest first</option>
         <option value="date-desc">↓ Check-in: newest first</option>
-        <option value="checkout-asc">↑ Check-out: oldest first</option>
+        <option value="date-asc">↑ Check-in: oldest first</option>
+        <option value="updated-desc">↻ Recently updated</option>
         <option value="checkout-desc">↓ Check-out: newest first</option>
+        <option value="checkout-asc">↑ Check-out: oldest first</option>
         <option value="rating-desc">↓ Highest rating</option>
         <option value="rating-asc">↑ Lowest rating</option>
         <option value="sev-desc">↓ Severity</option>
@@ -840,7 +839,7 @@ var SAMPLE = [
   {id:'r020',platform:'Traveloka',date:'2026-04-22',rating:3,booking:'BK-10040',room:'204',roomType:'Superior Room',text:'The room air conditioner was set to cool but was actually blowing warm air. Called engineering who came quickly and said they fixed it but it started doing the same thing again after an hour. Had an uncomfortable night.',sentiment:'Neutral',category:'Room Comfort & Quality',subcategory:'HVAC',severity:4,maintFlag:true,cleanFlag:false,staffMentioned:'',action:'Replace AC thermostat and inspect refrigerant levels for Room 204. Follow up same day to confirm fix is permanent.',resolutionStatus:'In Progress',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'Thermostat replaced. Refrigerant topped up. Monitoring.',isSample:true}
 ];
 
-var CACHE_KEY='hoi_reviews_v36', SRC_KEY='hoi_source_v36';
+var CACHE_KEY='hoi_reviews_v37', SRC_KEY='hoi_source_v37';
 var State={reviews:[],source:'sample',fileName:null,uploadedAt:null,alertFilter:'all'};
 var RevPage={current:0,perPage:10};
 
@@ -1454,7 +1453,7 @@ var R={
     var plat=document.getElementById('revPlatform').value;
     var dFrom=document.getElementById('revDateFrom').value;
     var dTo=document.getElementById('revDateTo').value;
-    var sortBy=document.getElementById('revSort')?document.getElementById('revSort').value:'updated-desc';
+    var sortBy=document.getElementById('revSort')?document.getElementById('revSort').value:'date-desc';
     var result=State.reviews.filter(function(r){
       if(sent&&r.sentiment!==sent)return false;
       if(sev){
@@ -1589,7 +1588,7 @@ var R={
     ['revSearch','revDateFrom','revDateTo'].forEach(function(id){document.getElementById(id).value='';});
     ['revSentiment','revSeverity','revCategory','revPlatform'].forEach(function(id){document.getElementById(id).value='';});
     var sortEl=document.getElementById('revSort');
-    if(sortEl)sortEl.value='updated-desc';
+    if(sortEl)sortEl.value='date-desc';
     RevPage.current=0;
     this.renderReviews();
   }
@@ -3553,9 +3552,14 @@ function drillKpi(key){
   else if(key==='open'){title='Open Issues — Unresolved';list=rv.filter(function(r){return !r.resolutionStatus||r.resolutionStatus==='Open';});}
   else{title='Reviews';list=rv.slice();}
 
-  // Sort most severe / lowest rating first for the operational lists
-  if(key==='maint'||key==='clean'||key==='open'||key==='negative'){
-    list=list.slice().sort(function(a,b){return (parseInt(b.severity)||0)-(parseInt(a.severity)||0);});
+  // Sort every drill-down list by check-in date, newest first.
+  // (lowrated keeps its rating sort since that's the point of that card.)
+  if(key!=='lowrated'){
+    list=list.slice().sort(function(a,b){
+      var da=a.checkInDate||a.date||'';
+      var db=b.checkInDate||b.date||'';
+      return da>db?-1:da<db?1:0;
+    });
   }
 
   var body=document.getElementById('modalBody');
