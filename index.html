@@ -713,6 +713,11 @@ body.admin-mode .admin-badge{display:inline-flex}
     </div>
   </div>
   <div class="card">
+    <div class="card-hd"><span class="card-title">Guest Market Mix</span><span class="info" data-tip="Where your reviewing guests are from. Use it to spot expectation gaps by market (e.g. a cluster of the same complaint from one country may mean your listing in that market sets wrong expectations) and to prioritise which language to respond in. With low review volume, treat this as context, not a firm signal.">i</span></div>
+    <div class="card-subtitle" style="margin:-4px 0 10px;font-size:11px;color:var(--t3)">Top guest countries by review count, with average rating per market</div>
+    <div id="marketMix"></div>
+  </div>
+  <div class="card">
     <div class="card-hd"><span class="card-title">Positive vs Negative Trend</span></div>
     <div class="chart-wrap" style="height:200px"><canvas id="posNegChart" role="img" aria-label="Positive vs negative trend">Positive vs negative trend.</canvas></div>
   </div>
@@ -828,7 +833,7 @@ var SAMPLE = [
   {id:'r020',platform:'Traveloka',date:'2026-04-22',rating:3,booking:'BK-10040',room:'204',roomType:'Superior Room',text:'The room air conditioner was set to cool but was actually blowing warm air. Called engineering who came quickly and said they fixed it but it started doing the same thing again after an hour. Had an uncomfortable night.',sentiment:'Neutral',category:'Room Comfort & Quality',subcategory:'HVAC',severity:4,maintFlag:true,cleanFlag:false,staffMentioned:'',action:'Replace AC thermostat and inspect refrigerant levels for Room 204. Follow up same day to confirm fix is permanent.',resolutionStatus:'In Progress',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'Thermostat replaced. Refrigerant topped up. Monitoring.',isSample:true}
 ];
 
-var CACHE_KEY='hoi_reviews_v33', SRC_KEY='hoi_source_v33';
+var CACHE_KEY='hoi_reviews_v34', SRC_KEY='hoi_source_v34';
 var State={reviews:[],source:'sample',fileName:null,uploadedAt:null,alertFilter:'all'};
 var RevPage={current:0,perPage:10};
 
@@ -1819,8 +1824,8 @@ var A={
           '<div class="res-track">'+resSteps.map(function(s,i){return'<div class="res-step'+(i<resIdx?' done':i===resIdx?' current':'')+'" title="'+s+'"></div>';}).join('<div style="width:4px"></div>')+'</div>'+
           '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t4);margin-top:3px">'+resSteps.map(function(s){return'<span>'+s+'</span>';}).join('')+'</div>'+
         '</div>'+
-        // Update Status panel — inline, no page navigation needed (admin only)
-        '<div style="margin-top:10px" data-admin>'+
+        // Update Status panel — inline, available to all staff
+        '<div style="margin-top:10px">'+
           '<button class="ubtn" onclick="A.toggleUpdate(\''+esc(r.booking||r.id)+'\',this)" id="updbtn_'+esc(r.booking||r.id)+'">'+
             '✎ Update Status'+
           '</button>'+
@@ -2041,6 +2046,35 @@ function renderAnalytics(){
         '<td><span class="sev '+getSevClass(maxSev)+'" style="width:auto;padding:2px 8px;border-radius:4px">'+maxSev+'</span></td></tr>';
     }).join('')+'</tbody></table></div>':
     '<div class="empty"><span>✓</span>No recurring high-severity issues (severity 4–5)</div>';
+
+  // ── GUEST MARKET MIX ──
+  // Counts reviews by guest country, with average rating per market.
+  // Framed as context, not a complaint signal — low volume means treat as indicative only.
+  var mkt={};
+  rv.forEach(function(r){
+    var c=(r.nationality||'').trim();
+    if(!c)return;
+    if(!mkt[c])mkt[c]={country:c,count:0,ratingSum:0,rated:0,neg:0};
+    mkt[c].count++;
+    var rn=parseFloat(r.rating)||0;
+    if(rn>0){mkt[c].ratingSum+=rn;mkt[c].rated++;}
+    if(r.sentiment==='Negative')mkt[c].neg++;
+  });
+  var markets=Object.values(mkt).sort(function(a,b){return b.count-a.count;});
+  var totalWithCountry=markets.reduce(function(s,m){return s+m.count;},0);
+  document.getElementById('marketMix').innerHTML=markets.length?
+    '<div class="tbl-wrap"><table><thead><tr><th>Country</th><th>Reviews</th><th>Share</th><th>Avg Rating</th><th>Negative</th></tr></thead><tbody>'+
+    markets.slice(0,10).map(function(m){
+      var avg=m.rated?(m.ratingSum/m.rated).toFixed(1):'—';
+      var share=totalWithCountry?Math.round(m.count/totalWithCountry*100):0;
+      return '<tr><td><strong style="color:var(--t1)">'+esc(m.country)+'</strong></td>'+
+        '<td>'+m.count+'</td>'+
+        '<td><span style="color:var(--t3)">'+share+'%</span></td>'+
+        '<td>'+(avg!=='—'?'<span class="stars" style="font-size:11px">'+stars(avg)+'</span> '+avg:'—')+'</td>'+
+        '<td>'+(m.neg>0?'<span style="color:var(--red);font-weight:600">'+m.neg+'</span>':'<span style="color:var(--t4)">0</span>')+'</td></tr>';
+    }).join('')+'</tbody></table></div>'+
+    '<div style="font-size:11px;color:var(--t3);margin-top:8px;font-style:italic">'+totalWithCountry+' of '+rv.length+' reviews have a country recorded. Patterns are indicative only until volume grows.</div>':
+    '<div class="empty"><span>🌐</span>No guest country data yet — add countries via the intake form</div>';
 }
 
 // ── STAFF ──
