@@ -612,7 +612,7 @@ body.admin-mode .admin-badge{display:inline-flex}
 <div class="page" id="page-reviews">
   <div class="card" style="padding:12px">
     <div class="filter-bar" style="margin-bottom:8px">
-      <input class="finput" id="revSearch" placeholder="🔍 Search: keyword, booking, room, platform, staff..." oninput="R.onFilterChange()" style="min-width:240px;max-width:400px">
+      <input class="finput" id="revSearch" placeholder="🔍 Search: keyword, country, room, platform, staff..." oninput="R.onFilterChange()" style="min-width:240px;max-width:400px">
       <select class="fselect" id="revSentiment" onchange="R.onFilterChange()">
         <option value="">All Sentiment</option>
         <option>Positive</option><option>Neutral</option><option>Negative</option>
@@ -629,8 +629,13 @@ body.admin-mode .admin-badge{display:inline-flex}
       </select>
       <select class="fselect" id="revPlatform" onchange="R.onFilterChange()">
         <option value="">All Platforms</option>
-        <option>Google Reviews</option><option>Tripadvisor</option><option>Agoda</option>
-        <option>Booking.com</option><option>Expedia</option><option>Trip.com</option><option>Traveloka</option>
+        <option>Agoda</option>
+        <option>Booking.com</option>
+        <option>Expedia</option>
+        <option>Google Reviews</option>
+        <option>Tripadvisor</option>
+        <option>Traveloka/Tiket.com</option>
+        <option>Trip.com</option>
       </select>
       <input type="date" class="fselect" id="revDateFrom" onchange="R.onFilterChange()" title="Check-in date from">
       <input type="date" class="fselect" id="revDateTo" onchange="R.onFilterChange()" title="Check-in date to">
@@ -695,21 +700,21 @@ body.admin-mode .admin-badge{display:inline-flex}
 <div class="page" id="page-analytics">
   <div class="grid-2">
     <div class="card">
-      <div class="card-hd"><span class="card-title">Monthly Review Volume & Avg Rating</span></div>
+      <div class="card-hd"><div><span class="card-title">Monthly Review Volume &amp; Avg Rating</span><span class="info" data-tip="Bars show how many reviews came in each month (by stay date); the line shows that month's average rating. Read them together — a month with many reviews AND a low line is a genuine problem month; few reviews swinging the line is just noise. Rising bars over time mean you're collecting more feedback.">i</span></div></div>
       <div class="chart-wrap" style="height:220px"><canvas id="volRatingChart" role="img" aria-label="Monthly volume and rating">Monthly review volume.</canvas></div>
     </div>
     <div class="card">
-      <div class="card-hd"><span class="card-title">Severity Trend Over Time</span></div>
+      <div class="card-hd"><div><span class="card-title">Severity Trend Over Time</span><span class="info" data-tip="The average seriousness of complaints each month, on a 1 (minor) to 5 (critical) scale. A downward line is good — issues are getting lighter. An upward line warns that problems are escalating. With few reviews per month a single severe complaint swings it hard, so click into a spike rather than trusting the line alone.">i</span></div></div>
       <div class="chart-wrap" style="height:220px"><canvas id="severityTrendChart" role="img" aria-label="Severity trend">Severity trend.</canvas></div>
     </div>
   </div>
   <div class="grid-2">
     <div class="card">
-      <div class="card-hd"><span class="card-title">Platform Sentiment Heatmap</span></div>
+      <div class="card-hd"><div><span class="card-title">Platform Sentiment Heatmap</span><span class="info" data-tip="Sentiment split per booking platform (Booking.com, Agoda, etc). Greener = guests from that channel are happier; redder = more complaints there. Use it to see whether one platform's guests are consistently harder to please — often a sign that channel's listing sets wrong expectations.">i</span></div></div>
       <div id="platformSentHeatmap"></div>
     </div>
     <div class="card">
-      <div class="card-hd"><span class="card-title">Recurring Issue Tracker</span></div>
+      <div class="card-hd"><div><span class="card-title">Recurring Issue Tracker</span><span class="info" data-tip="Rooms where the SAME issue has appeared 2+ times and reached high severity (4–5). These are your systemic problems — a room that keeps generating the same serious complaint needs a permanent fix, not a patch. Empty here is good news.">i</span></div></div>
       <div class="card-subtitle" style="margin:-4px 0 10px;font-size:11px;color:var(--t3)">Rooms with the same issue 2+ times, reaching severity 4–5</div>
       <div id="recurringIssues"></div>
     </div>
@@ -720,7 +725,7 @@ body.admin-mode .admin-badge{display:inline-flex}
     <div id="marketMix"></div>
   </div>
   <div class="card">
-    <div class="card-hd"><span class="card-title">Positive vs Negative Trend</span></div>
+    <div class="card-hd"><div><span class="card-title">Positive vs Negative Trend</span><span class="info" data-tip="Monthly count of positive versus negative reviews side by side. The gap between them is your reputation health — a widening green lead is good, red catching up or overtaking green is an early warning to act before it shows in your platform scores.">i</span></div></div>
     <div class="chart-wrap" style="height:200px"><canvas id="posNegChart" role="img" aria-label="Positive vs negative trend">Positive vs negative trend.</canvas></div>
   </div>
 </div>
@@ -835,7 +840,7 @@ var SAMPLE = [
   {id:'r020',platform:'Traveloka',date:'2026-04-22',rating:3,booking:'BK-10040',room:'204',roomType:'Superior Room',text:'The room air conditioner was set to cool but was actually blowing warm air. Called engineering who came quickly and said they fixed it but it started doing the same thing again after an hour. Had an uncomfortable night.',sentiment:'Neutral',category:'Room Comfort & Quality',subcategory:'HVAC',severity:4,maintFlag:true,cleanFlag:false,staffMentioned:'',action:'Replace AC thermostat and inspect refrigerant levels for Room 204. Follow up same day to confirm fix is permanent.',resolutionStatus:'In Progress',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'Thermostat replaced. Refrigerant topped up. Monitoring.',isSample:true}
 ];
 
-var CACHE_KEY='hoi_reviews_v35', SRC_KEY='hoi_source_v35';
+var CACHE_KEY='hoi_reviews_v36', SRC_KEY='hoi_source_v36';
 var State={reviews:[],source:'sample',fileName:null,uploadedAt:null,alertFilter:'all'};
 var RevPage={current:0,perPage:10};
 
@@ -1462,7 +1467,7 @@ var R={
       if(dFrom&&rDate<dFrom)return false;
       if(dTo&&rDate>dTo)return false;
       if(q){
-        var haystack=(r.text+' '+(r.booking||'')+' '+(r.room||'')+' '+r.platform+' '+(r.staffMentioned||'')+' '+(r.subcategory||'')+' '+(r.reviewedMonth||'')).toLowerCase();
+        var haystack=(r.text+' '+(r.booking||'')+' '+(r.room||'')+' '+r.platform+' '+(r.staffMentioned||'')+' '+(r.subcategory||'')+' '+(r.reviewedMonth||'')+' '+(r.nationality||'')+' '+(r.roomType||'')+' '+(r.category||'')).toLowerCase();
         if(haystack.indexOf(q)===-1)return false;
       }
       return true;
