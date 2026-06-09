@@ -136,6 +136,11 @@ html,body{height:100%;font-family:var(--fn);background:var(--bg0);color:var(--t1
   animation:_statIn 300ms var(--ease-out) both}
 #kpiCards .stat{cursor:pointer}
 #kpiCards .stat:hover{border-color:var(--bd3);box-shadow:0 2px 10px rgba(0,0,0,.06)}
+/* Lift the hovered/tapped card (and therefore its downward tooltip) above the card
+   beneath it — otherwise the next card in the grid paints over the tooltip. */
+#kpiCards .stat:hover,
+#kpiCards .stat:focus-within,
+#kpiCards .stat:has(.info.active){z-index:100}
 .stat:nth-child(1){animation-delay:0ms}
 .stat:nth-child(2){animation-delay:50ms}
 .stat:nth-child(3){animation-delay:100ms}
@@ -844,7 +849,7 @@ var SAMPLE = [
   {id:'r020',platform:'Traveloka',date:'2026-04-22',rating:3,booking:'BK-10040',room:'204',roomType:'Superior Room',text:'The room air conditioner was set to cool but was actually blowing warm air. Called engineering who came quickly and said they fixed it but it started doing the same thing again after an hour. Had an uncomfortable night.',sentiment:'Neutral',category:'Room Comfort & Quality',subcategory:'HVAC',severity:4,maintFlag:true,cleanFlag:false,staffMentioned:'',action:'Replace AC thermostat and inspect refrigerant levels for Room 204. Follow up same day to confirm fix is permanent.',resolutionStatus:'In Progress',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'Thermostat replaced. Refrigerant topped up. Monitoring.',isSample:true}
 ];
 
-var CACHE_KEY='hoi_reviews_v40', SRC_KEY='hoi_source_v40';
+var CACHE_KEY='hoi_reviews_v41', SRC_KEY='hoi_source_v41';
 var State={reviews:[],source:'sample',fileName:null,uploadedAt:null,alertFilter:'all'};
 var RevPage={current:0,perPage:10};
 
