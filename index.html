@@ -795,6 +795,18 @@ body.admin-mode .admin-badge{display:inline-flex}
     </div>
   </div>
 
+  <!-- Duplicate Review Check -->
+  <div class="card">
+    <div class="card-hd">
+      <span class="card-title">Duplicate Review Check</span>
+      <button class="fbtn" onclick="renderDuplicateCheck()">↻ Re-scan</button>
+    </div>
+    <div style="font-size:12px;color:var(--t3);margin-bottom:10px;line-height:1.5">
+      Flags reviews that look entered twice — same booking number, or identical review text. Nothing is deleted automatically; review the matches and remove the extra row in your Google Sheet, then Sync.
+    </div>
+    <div id="dupCheck" style="font-size:13px;color:var(--t2)">Scanning…</div>
+  </div>
+
   <!-- Data status -->
   <div class="card">
     <div class="card-hd">
@@ -849,7 +861,7 @@ var SAMPLE = [
   {id:'r020',platform:'Traveloka',date:'2026-04-22',rating:3,booking:'BK-10040',room:'204',roomType:'Superior Room',text:'The room air conditioner was set to cool but was actually blowing warm air. Called engineering who came quickly and said they fixed it but it started doing the same thing again after an hour. Had an uncomfortable night.',sentiment:'Neutral',category:'Room Comfort & Quality',subcategory:'HVAC',severity:4,maintFlag:true,cleanFlag:false,staffMentioned:'',action:'Replace AC thermostat and inspect refrigerant levels for Room 204. Follow up same day to confirm fix is permanent.',resolutionStatus:'In Progress',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'Thermostat replaced. Refrigerant topped up. Monitoring.',isSample:true}
 ];
 
-var CACHE_KEY='hoi_reviews_v41', SRC_KEY='hoi_source_v41';
+var CACHE_KEY='hoi_reviews_v42', SRC_KEY='hoi_source_v42';
 var State={reviews:[],source:'sample',fileName:null,uploadedAt:null,alertFilter:'all'};
 var RevPage={current:0,perPage:10};
 
@@ -2167,6 +2179,76 @@ function renderImport(){
     '<div class="stat"><div class="stat-label">File</div><div class="stat-val" style="font-size:15px">'+esc(State.fileName||'sample_data')+'</div></div>'+
     '<div class="stat"><div class="stat-label">Loaded</div><div class="stat-val" style="font-size:15px">'+esc(State.uploadedAt||'—')+'</div></div>'+
     '</div>';
+  renderDuplicateCheck();
+}
+
+// ── DUPLICATE REVIEW CHECK ────────────────────────────────────────────────────
+// Surfaces likely duplicate entries for human review. Never deletes anything.
+// Signal 1 (high confidence): same booking number on 2+ rows.
+// Signal 2: identical review text on 2+ rows that AREN'T already caught by signal 1
+// (catches the same review re-entered under a different/typo'd booking number).
+function findDuplicates(reviews){
+  var byBooking={}, byText={};
+  reviews.forEach(function(r){
+    var bk=(r.booking||'').trim();
+    if(bk){ (byBooking[bk]=byBooking[bk]||[]).push(r); }
+    var sig=(r.text||'').toLowerCase().replace(/\s+/g,' ').trim().slice(0,80);
+    if(sig.length>=20){ (byText[sig]=byText[sig]||[]).push(r); }
+  });
+  var bookingDups=Object.keys(byBooking).filter(function(k){return byBooking[k].length>1;})
+    .map(function(k){return {key:k,rows:byBooking[k]};});
+  // Mark which bookings are already flagged, so text matches don't double-report the same set.
+  var flaggedBookings={};
+  bookingDups.forEach(function(g){flaggedBookings[g.key]=true;});
+  var textDups=Object.keys(byText).filter(function(k){
+    var rows=byText[k];
+    if(rows.length<2)return false;
+    // Skip if every row in this text-group shares one booking number already flagged.
+    var bks=rows.map(function(r){return (r.booking||'').trim();});
+    var allSameFlagged=bks.every(function(b){return b&&b===bks[0]&&flaggedBookings[b];});
+    return !allSameFlagged;
+  }).map(function(k){return {key:k,rows:byText[k]};});
+  return {bookingDups:bookingDups,textDups:textDups};
+}
+
+function renderDuplicateCheck(){
+  var el=document.getElementById('dupCheck');
+  if(!el)return;
+  var rv=State.reviews||[];
+  var res=findDuplicates(rv);
+  var totalGroups=res.bookingDups.length+res.textDups.length;
+  if(!totalGroups){
+    el.innerHTML='<div class="empty"><span>✓</span>No duplicates detected across '+rv.length+' reviews.</div>';
+    return;
+  }
+  function rowLine(r){
+    return '<div style="font-size:12px;color:var(--t2);padding:4px 0;border-top:1px solid var(--bd)">'+
+      '<strong style="color:var(--t1)">Room '+esc(r.room||'?')+'</strong> · '+
+      esc(r.platform||'—')+' · '+esc(DateU.fmt(r.checkInDate||r.date)||'no date')+' · '+
+      (r.rating?esc(r.rating)+'/5':'—')+' · '+esc(r.sentiment||'—')+
+      (r.booking?' · <span style="font-family:var(--fn-mono);font-size:11px">'+esc(r.booking)+'</span>':' · <span style="color:var(--t4)">no booking #</span>')+
+      '<div style="color:var(--t3);font-size:11px;margin-top:2px">'+esc((r.text||'').slice(0,90))+((r.text||'').length>90?'…':'')+'</div>'+
+    '</div>';
+  }
+  function group(g,labelType){
+    return '<div style="background:var(--bg3);border:1px solid var(--amber);border-radius:var(--r);padding:10px 12px;margin-bottom:8px">'+
+      '<div style="font-size:11px;font-weight:600;color:var(--amber);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px">'+
+      labelType+' · '+g.rows.length+' matching rows</div>'+
+      g.rows.map(rowLine).join('')+
+    '</div>';
+  }
+  var html='<div style="margin-bottom:10px;font-size:13px;color:var(--t1);font-weight:600">'+
+    '⚠ '+totalGroups+' suspected duplicate group'+(totalGroups>1?'s':'')+' found</div>';
+  if(res.bookingDups.length){
+    html+='<div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin:8px 0 6px">Same booking number (high confidence)</div>';
+    html+=res.bookingDups.map(function(g){return group(g,'Booking #'+g.key);}).join('');
+  }
+  if(res.textDups.length){
+    html+='<div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin:12px 0 6px">Identical review text (different booking #)</div>';
+    html+=res.textDups.map(function(g){return group(g,'Same review text');}).join('');
+  }
+  html+='<div style="font-size:11px;color:var(--t3);margin-top:8px;font-style:italic">To resolve: open your Google Sheet, delete the extra row(s) in each group, then Sync Now. Keep the most complete entry.</div>';
+  el.innerHTML=html;
 }
 
 // ── RATING NORMALIZER ──
@@ -3624,6 +3706,7 @@ window.A = A;
 window.generateWeeklyReport = generateWeeklyReport;
 window.openReport = openReport;
 window.drillKpi = drillKpi;
+window.renderDuplicateCheck = renderDuplicateCheck;
 })();
 </script>
 </body>
