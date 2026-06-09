@@ -160,6 +160,9 @@ html,body{height:100%;font-family:var(--fn);background:var(--bg0);color:var(--t1
 .info:hover{background:var(--gold);color:var(--bg1);border-color:var(--gold)}
 .info[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--bg5);color:var(--t1);font-size:12px;font-family:var(--fn);font-style:normal;font-weight:400;padding:8px 10px;border-radius:6px;border:1px solid var(--bd3);width:220px;white-space:normal;text-align:left;line-height:1.5;z-index:1000;box-shadow:0 4px 12px rgba(0,0,0,.3);pointer-events:none}
 .info[data-tip]:hover::before{content:'';position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--bg5);z-index:1000;pointer-events:none}
+/* tip-below: drop the tooltip downward (used for icons near the top, under the sticky header) */
+.info.tip-below[data-tip]:hover::after{bottom:auto;top:calc(100% + 8px)}
+.info.tip-below[data-tip]:hover::before{bottom:auto;top:calc(100% + 2px);border-top-color:transparent;border-bottom-color:var(--bg5)}
 .card-subtitle{font-size:var(--ts-sm);color:var(--t3);font-weight:400;margin-top:-6px;margin-bottom:10px;letter-spacing:0}
 .chart-legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px;font-size:var(--ts-sm);color:var(--t3);font-weight:500}
 .chart-legend-item{display:inline-flex;align-items:center;gap:5px}
@@ -500,6 +503,8 @@ body.admin-mode .admin-badge{display:inline-flex}
   .info:focus{outline:none;background:var(--blue);color:#fff;border-color:var(--blue)}
   .info[data-tip]:focus::after,.info[data-tip].active::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--bg5);color:var(--t1);font-size:11px;font-family:var(--fn);font-style:normal;font-weight:400;padding:8px 10px;border-radius:6px;border:1px solid var(--bd3);width:220px;white-space:normal;text-align:left;line-height:1.5;z-index:1000;box-shadow:0 4px 12px rgba(0,0,0,.3);pointer-events:none}
   .info[data-tip]:focus::before,.info[data-tip].active::before{content:'';position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--bg5);z-index:1000;pointer-events:none}
+  .info.tip-below[data-tip]:focus::after,.info.tip-below[data-tip].active::after{bottom:auto;top:calc(100% + 8px)}
+  .info.tip-below[data-tip]:focus::before,.info.tip-below[data-tip].active::before{bottom:auto;top:calc(100% + 2px);border-top-color:transparent;border-bottom-color:var(--bg5)}
   /* Heatmap cells: tap to show popup */
   .hc.active .hc-pop{opacity:1;visibility:visible}
   .hc.active{transform:scale(1.15);z-index:10;border-color:var(--t1);box-shadow:0 4px 16px rgba(0,0,0,.4)}
@@ -551,7 +556,7 @@ body.admin-mode .admin-badge{display:inline-flex}
   <div class="grid-2">
     <div class="card">
       <div class="card-hd">
-        <div><span class="card-title">Sentiment Trend by Month</span><span class="info" data-tip="Shows how positive, negative, and neutral reviews evolve month-to-month. An upward green line means improvement; a rising red line means more complaints.">i</span></div>
+        <div><span class="card-title">Sentiment Trend by Month</span><span class="info tip-below" data-tip="Shows how positive, negative, and neutral reviews evolve month-to-month. An upward green line means improvement; a rising red line means more complaints.">i</span></div>
         <span id="sentTrendLabel" style="font-size:11px;color:var(--t3)"></span>
       </div>
       <div class="card-subtitle">Monthly sentiment volume from uploaded review dates · upward green = improving</div>
@@ -563,19 +568,19 @@ body.admin-mode .admin-badge{display:inline-flex}
       <div class="chart-wrap" id="sentTrendWrap" style="height:240px"><canvas id="sentTrendChart" role="img" aria-label="Sentiment trend by month">Monthly sentiment trend.</canvas></div>
     </div>
     <div class="card">
-      <div class="card-hd"><div><span class="card-title">Platform Performance</span><span class="info" data-tip="Average guest rating per OTA platform. Higher bars = better experience reported on that channel. Use this to identify where to focus reputation management.">i</span></div></div>
+      <div class="card-hd"><div><span class="card-title">Platform Performance</span><span class="info tip-below" data-tip="Average guest rating per OTA platform. Higher bars = better experience reported on that channel. Use this to identify where to focus reputation management.">i</span></div></div>
       <div class="card-subtitle">Average rating (out of 5) per booking platform</div>
       <div class="chart-wrap" style="height:220px"><canvas id="platformChart" role="img" aria-label="Platform comparison">Platform ratings.</canvas></div>
     </div>
   </div>
   <div class="card">
-    <div class="card-hd"><div><span class="card-title">Monthly Tabulation · by Stay Month</span><span class="info" data-tip="Every month where guests actually checked in. Only real check-in months appear — empty periods are never shown.">i</span></div></div>
+    <div class="card-hd"><div><span class="card-title">Monthly Tabulation · by Stay Month</span><span class="info tip-below" data-tip="Every month where guests actually checked in. Only real check-in months appear — empty periods are never shown.">i</span></div></div>
     <div class="card-subtitle">Tabulated review data grouped by guest check-in month</div>
     <div id="monthlyTable"></div>
   </div>
   <div class="grid-2">
     <div class="card">
-      <div class="card-hd"><div><span class="card-title">Category Sentiment Trend</span><span class="info" data-tip="Positive vs Negative mentions across operational categories. Compare the green bar to the red bar — if red is taller, that area needs immediate attention.">i</span></div></div>
+      <div class="card-hd"><div><span class="card-title">Category Sentiment Trend</span><span class="info tip-below" data-tip="Positive vs Negative mentions across operational categories. Compare the green bar to the red bar — if red is taller, that area needs immediate attention.">i</span></div></div>
       <div class="card-subtitle">Compare positive (green) vs negative (red) mentions per category</div>
       <div class="chart-legend">
         <span class="chart-legend-item"><span class="chart-legend-dot" style="background:#35c985"></span>Positive mentions</span>
@@ -584,24 +589,24 @@ body.admin-mode .admin-badge{display:inline-flex}
       <div class="chart-wrap" style="height:240px"><canvas id="catSentChart" role="img" aria-label="Category sentiment comparison">Category sentiment breakdown.</canvas></div>
     </div>
     <div class="card">
-      <div class="card-hd"><div><span class="card-title">Recent Alerts Summary</span><span class="info" data-tip="Critical (severity 5) issues that are still Open or Escalated. These need immediate operational attention.">i</span></div></div>
+      <div class="card-hd"><div><span class="card-title">Recent Alerts Summary</span><span class="info tip-below" data-tip="Critical (severity 5) issues that are still Open or Escalated. These need immediate operational attention.">i</span></div></div>
       <div class="card-subtitle">Critical issues currently open or escalated</div>
       <div id="alertSummary"></div>
     </div>
   </div>
   <div class="grid-3">
     <div class="card">
-      <div class="card-hd"><div><span class="card-title">Top Complaint Types</span><span class="info" data-tip="The most common operational issues reported in negative reviews. Use this to prioritize maintenance and housekeeping workstreams.">i</span></div></div>
+      <div class="card-hd"><div><span class="card-title">Top Complaint Types</span><span class="info tip-below" data-tip="The most common operational issues reported in negative reviews. Use this to prioritize maintenance and housekeeping workstreams.">i</span></div></div>
       <div class="card-subtitle">Recurring negative subcategories — frequency count</div>
       <div id="complaintTypes"></div>
     </div>
     <div class="card">
-      <div class="card-hd"><div><span class="card-title">Rating Distribution</span><span class="info" data-tip="Number of reviews per rating band (0–5 scale). Red bars (≤2) = dissatisfied; amber (2.5–3) = mixed; green (3.5+) = satisfied.">i</span></div></div>
+      <div class="card-hd"><div><span class="card-title">Rating Distribution</span><span class="info tip-below" data-tip="Number of reviews per rating band (0–5 scale). Red bars (≤2) = dissatisfied; amber (2.5–3) = mixed; green (3.5+) = satisfied.">i</span></div></div>
       <div class="card-subtitle">Number of reviews per rating band · red = dissatisfied · green = satisfied</div>
       <div class="chart-wrap" style="height:170px"><canvas id="ratingDistChart" role="img" aria-label="Rating distribution">Rating distribution.</canvas></div>
     </div>
     <div class="card">
-      <div class="card-hd"><div><span class="card-title">Operational Health</span><span class="info" data-tip="Snapshot of resolution lifecycle. Higher Resolved + lower Open = better operational responsiveness.">i</span></div></div>
+      <div class="card-hd"><div><span class="card-title">Operational Health</span><span class="info tip-below" data-tip="Snapshot of resolution lifecycle. Higher Resolved + lower Open = better operational responsiveness.">i</span></div></div>
       <div class="card-subtitle">Resolution status mix across all flagged issues</div>
       <div id="opsHealth"></div>
     </div>
@@ -699,32 +704,32 @@ body.admin-mode .admin-badge{display:inline-flex}
 <div class="page" id="page-analytics">
   <div class="grid-2">
     <div class="card">
-      <div class="card-hd"><div><span class="card-title">Monthly Review Volume &amp; Avg Rating</span><span class="info" data-tip="Bars show how many reviews came in each month (by stay date); the line shows that month's average rating. Read them together — a month with many reviews AND a low line is a genuine problem month; few reviews swinging the line is just noise. Rising bars over time mean you're collecting more feedback.">i</span></div></div>
+      <div class="card-hd"><div><span class="card-title">Monthly Review Volume &amp; Avg Rating</span><span class="info tip-below" data-tip="Bars show how many reviews came in each month (by stay date); the line shows that month's average rating. Read them together — a month with many reviews AND a low line is a genuine problem month; few reviews swinging the line is just noise. Rising bars over time mean you're collecting more feedback.">i</span></div></div>
       <div class="chart-wrap" style="height:220px"><canvas id="volRatingChart" role="img" aria-label="Monthly volume and rating">Monthly review volume.</canvas></div>
     </div>
     <div class="card">
-      <div class="card-hd"><div><span class="card-title">Severity Trend Over Time</span><span class="info" data-tip="The average seriousness of complaints each month, on a 1 (minor) to 5 (critical) scale. A downward line is good — issues are getting lighter. An upward line warns that problems are escalating. With few reviews per month a single severe complaint swings it hard, so click into a spike rather than trusting the line alone.">i</span></div></div>
+      <div class="card-hd"><div><span class="card-title">Severity Trend Over Time</span><span class="info tip-below" data-tip="The average seriousness of complaints each month, on a 1 (minor) to 5 (critical) scale. A downward line is good — issues are getting lighter. An upward line warns that problems are escalating. With few reviews per month a single severe complaint swings it hard, so click into a spike rather than trusting the line alone.">i</span></div></div>
       <div class="chart-wrap" style="height:220px"><canvas id="severityTrendChart" role="img" aria-label="Severity trend">Severity trend.</canvas></div>
     </div>
   </div>
   <div class="grid-2">
     <div class="card">
-      <div class="card-hd"><div><span class="card-title">Platform Sentiment Heatmap</span><span class="info" data-tip="Sentiment split per booking platform (Booking.com, Agoda, etc). Greener = guests from that channel are happier; redder = more complaints there. Use it to see whether one platform's guests are consistently harder to please — often a sign that channel's listing sets wrong expectations.">i</span></div></div>
+      <div class="card-hd"><div><span class="card-title">Platform Sentiment Heatmap</span><span class="info tip-below" data-tip="Sentiment split per booking platform (Booking.com, Agoda, etc). Greener = guests from that channel are happier; redder = more complaints there. Use it to see whether one platform's guests are consistently harder to please — often a sign that channel's listing sets wrong expectations.">i</span></div></div>
       <div id="platformSentHeatmap"></div>
     </div>
     <div class="card">
-      <div class="card-hd"><div><span class="card-title">Recurring Issue Tracker</span><span class="info" data-tip="Rooms where the SAME issue has appeared 2+ times and reached high severity (4–5). These are your systemic problems — a room that keeps generating the same serious complaint needs a permanent fix, not a patch. Empty here is good news.">i</span></div></div>
+      <div class="card-hd"><div><span class="card-title">Recurring Issue Tracker</span><span class="info tip-below" data-tip="Rooms where the SAME issue has appeared 2+ times and reached high severity (4–5). These are your systemic problems — a room that keeps generating the same serious complaint needs a permanent fix, not a patch. Empty here is good news.">i</span></div></div>
       <div class="card-subtitle" style="margin:-4px 0 10px;font-size:11px;color:var(--t3)">Rooms with the same issue 2+ times, reaching severity 4–5</div>
       <div id="recurringIssues"></div>
     </div>
   </div>
   <div class="card">
-    <div class="card-hd"><span class="card-title">Guest Market Mix</span><span class="info" data-tip="Where your reviewing guests are from. Use it to spot expectation gaps by market (e.g. a cluster of the same complaint from one country may mean your listing in that market sets wrong expectations) and to prioritise which language to respond in. With low review volume, treat this as context, not a firm signal.">i</span></div>
+    <div class="card-hd"><span class="card-title">Guest Market Mix</span><span class="info tip-below" data-tip="Where your reviewing guests are from. Use it to spot expectation gaps by market (e.g. a cluster of the same complaint from one country may mean your listing in that market sets wrong expectations) and to prioritise which language to respond in. With low review volume, treat this as context, not a firm signal.">i</span></div>
     <div class="card-subtitle" style="margin:-4px 0 10px;font-size:11px;color:var(--t3)">Top guest countries by review count, with average rating per market</div>
     <div id="marketMix"></div>
   </div>
   <div class="card">
-    <div class="card-hd"><div><span class="card-title">Positive vs Negative Trend</span><span class="info" data-tip="Monthly count of positive versus negative reviews side by side. The gap between them is your reputation health — a widening green lead is good, red catching up or overtaking green is an early warning to act before it shows in your platform scores.">i</span></div></div>
+    <div class="card-hd"><div><span class="card-title">Positive vs Negative Trend</span><span class="info tip-below" data-tip="Monthly count of positive versus negative reviews side by side. The gap between them is your reputation health — a widening green lead is good, red catching up or overtaking green is an early warning to act before it shows in your platform scores.">i</span></div></div>
     <div class="chart-wrap" style="height:200px"><canvas id="posNegChart" role="img" aria-label="Positive vs negative trend">Positive vs negative trend.</canvas></div>
   </div>
 </div>
@@ -839,7 +844,7 @@ var SAMPLE = [
   {id:'r020',platform:'Traveloka',date:'2026-04-22',rating:3,booking:'BK-10040',room:'204',roomType:'Superior Room',text:'The room air conditioner was set to cool but was actually blowing warm air. Called engineering who came quickly and said they fixed it but it started doing the same thing again after an hour. Had an uncomfortable night.',sentiment:'Neutral',category:'Room Comfort & Quality',subcategory:'HVAC',severity:4,maintFlag:true,cleanFlag:false,staffMentioned:'',action:'Replace AC thermostat and inspect refrigerant levels for Room 204. Follow up same day to confirm fix is permanent.',resolutionStatus:'In Progress',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'Thermostat replaced. Refrigerant topped up. Monitoring.',isSample:true}
 ];
 
-var CACHE_KEY='hoi_reviews_v38', SRC_KEY='hoi_source_v38';
+var CACHE_KEY='hoi_reviews_v39', SRC_KEY='hoi_source_v39';
 var State={reviews:[],source:'sample',fileName:null,uploadedAt:null,alertFilter:'all'};
 var RevPage={current:0,perPage:10};
 
@@ -1210,7 +1215,7 @@ function renderOverview(){
 
   function kpi(label,val,sub,color,icon,tip,drill){
     return '<div class="stat"'+(drill?' onclick="drillKpi(\''+drill+'\')" title="Click to view the reviews behind this number"':'')+'>'+
-      '<div class="stat-label">'+label+'<span class="info" data-tip="'+esc(tip)+'">i</span></div>'+
+      '<div class="stat-label">'+label+'<span class="info tip-below" data-tip="'+esc(tip)+'">i</span></div>'+
       '<div class="stat-val"'+(color?' style="color:'+color+'"':'')+'>'+val+'</div>'+
       '<div class="stat-sub">'+sub+'</div>'+
       '<div class="stat-accent">'+icon+'</div>'+
