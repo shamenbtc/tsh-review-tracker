@@ -64,6 +64,23 @@ Rules:
 - Ratings-only with no sub-score below 6: severity = 1, resolution_status = "Resolved"
 - If severity >= 3, default resolution_status to "Open" unless clearly resolved
 - If purely positive with no issues: severity = 1, resolution_status = "Resolved"
+
+CATEGORY SELECTION (read carefully — pick the category that matches what the review is actually ABOUT):
+- "Location" → the review's main point is the hotel's location, neighbourhood, surroundings, nearby food/restaurants, MRT/transport/walkability, distance to attractions or city centre. Example: "great location, near eating places, MRT within walking distance" = Location, NOT Room Comfort.
+- "Room Comfort & Quality" → only when the review is about the room itself: bed, space, furnishings, temperature/AC, noise inside the room, view from the room.
+- "Cleanliness" → dirt, dust, stains, hygiene, pests in the context of cleaning.
+- "Staff" → service, front desk, helpfulness, attitude.
+- "Facilities" → pool, gym, lift, wifi, breakfast area, shared amenities.
+- "Value for Money" → price vs what was received.
+- "F&B" → food and beverage quality.
+- "Other" → only if genuinely none of the above fit.
+- This applies to POSITIVE reviews too — a positive review praising the location is a "Location" review, not "Room Comfort & Quality".
+
+SUBCATEGORY (must come from the actual text):
+- The subcategory must describe something the guest ACTUALLY mentioned. Never invent one.
+- NEVER default to "HVAC" (or any specific subcategory) unless the review genuinely refers to air-conditioning, heating, or temperature.
+- If there is no specific sub-issue (e.g. a short positive review), use a plain descriptor of the topic such as "General" or the main subject in a few words — do not fabricate a technical issue.
+
 - Use "Location" as category when the main signal is about the hotel's location or nearby environment
 - analyst_note: flag issues masked by service recovery, safety concerns, recurring patterns, or low sub-scores worth monitoring`;
 
