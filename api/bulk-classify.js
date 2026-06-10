@@ -6,9 +6,17 @@
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-TSH-Key');
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+
+  // Shared-secret gate: blocks drive-by use from anyone who discovers the URL.
+  // Set TSH_INTAKE_KEY in Vercel env vars. If unset, the gate is skipped.
+  const requiredKey = process.env.TSH_INTAKE_KEY;
+  if (requiredKey && req.headers['x-tsh-key'] !== requiredKey) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
 
   const apiKey  = process.env.ANTHROPIC_API_KEY;
   const saEmail = process.env.GOOGLE_SA_EMAIL;
@@ -171,21 +179,28 @@ function parseCSV(text) {
 // ── CLASSIFY WITH CLAUDE ───────────────────────────────────────────────────────
 async function classifyWithClaude(row, apiKey) {
   const prompt = `You are a hotel operations analyst for The Sultan Hotel Singapore.
-Analyse this guest review and return a JSON object with ALL fields filled.
+Analyse this guest input and return a JSON object with ALL fields filled.
+
+The input may be one of two formats:
+1. A written guest review (narrative text)
+2. A ratings-only entry — sub-category scores copied from a booking platform, e.g.:
+   "Staff 10 / Cleanliness 10 / Location 7.5 / Comfort 10 / Room view 5"
+
+For ratings-only entries: infer sentiment from the overall rating and sub-scores. A sub-score below 6 is a weak point — treat it as a mild complaint signal. No written complaint means severity is at most 2 unless a sub-score is below 5. Set complaint_summary to the weakest sub-category if any score is below 7, otherwise leave empty.
 
 Review details:
 - Platform: ${row.platform}
 - Room: ${row.room} (${row.roomType || 'unknown'})
 - Rating: ${row.rating}
 - Check-in: ${row.checkIn}
-- Review text: ${row.text}
+- Review text / ratings: ${row.text}
 
 Return ONLY valid JSON, no markdown, no explanation:
 {
   "sentiment": "Positive" | "Neutral" | "Negative",
-  "category": "Room Comfort & Quality" | "Cleanliness" | "Staff" | "Facilities" | "Value for Money" | "F&B" | "Other",
+  "category": "Room Comfort & Quality" | "Cleanliness" | "Staff" | "Facilities" | "Value for Money" | "F&B" | "Location" | "Other",
   "subcategory": string,
-  "complaint_summary": string (5-10 words or empty if purely positive),
+  "complaint_summary": string (5-10 words or empty if no issues),
   "severity": 1 | 2 | 3 | 4 | 5,
   "maintenance_flag": "Yes" | "No",
   "hskp_flag": "Yes" | "No",
@@ -194,10 +209,22 @@ Return ONLY valid JSON, no markdown, no explanation:
   "assigned_department": "Engineering" | "Housekeeping" | "Front Office" | "F&B" | "Management" | ""
 }
 
+CATEGORY SELECTION — read carefully:
+- "Location" = anything about the hotel's surroundings: neighbourhood, nearby food/restaurants, MRT/transport, walking distance to attractions, the area. Example: "great location, near eating places, MRT within walking distance" = Location, NOT Room Comfort.
+- "Room Comfort & Quality" = ONLY the room itself: bed, furniture, size, temperature, noise inside the room, view from the room.
+- A positive review praising the location is a "Location" review. Categorise every review (positive or negative) by its MAIN topic.
+
+SUBCATEGORY — must come from the actual text:
+- The subcategory must reflect something the review genuinely mentions.
+- NEVER default to "HVAC" unless the review genuinely refers to air-conditioning, heating, or ventilation.
+- If no specific sub-topic is mentioned, use a general one like "General" — do not invent specifics.
+
 Rules:
 - sentiment = overall guest experience
 - Positive reviews CAN have maintenance_flag/hskp_flag = Yes if physical issue mentioned
+- For ratings-only: if Room view, Comfort, or Facilities score < 6 → consider maintenance_flag or hskp_flag
 - severity 5=pest/mould/health, 4=urgent, 3=action this week, 2=low, 1=informational
+- Ratings-only with no sub-score below 6: severity=1, resolution_status="Resolved"
 - severity>=3 and no clear resolution → resolution_status="Open"
 - purely positive no issues → severity=1, resolution_status="Resolved"`;
 
