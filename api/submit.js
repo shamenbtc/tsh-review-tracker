@@ -28,14 +28,21 @@ export default async function handler(req, res) {
   // Column mapping (matches intake form row array order A–AA)
   // Strip apostrophe prefix used to prevent Google Sheets date interpretation
   const clean = v => typeof v === 'string' ? v.replace(/^'+/, '').trim() : v;
+  const MONTHS = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
   const toDate = v => {
     if (!v) return null;
     const s = clean(v);
-    // YYYY-MM-DD
+    // YYYY-MM-DD (ISO — from browser date picker direct)
     if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
-    // DD/MM/YYYY
-    const m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
-    if (m) return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+    // DD-Mon-YYYY (from fmtDate in intake form e.g. "10-Jun-2026")
+    const m2 = s.match(/^(\d{1,2})-([A-Za-z]{3})-(\d{4})$/);
+    if (m2) {
+      const mo = MONTHS[m2[2].toLowerCase()];
+      if (mo) return `${m2[3]}-${String(mo).padStart(2,'0')}-${m2[1].padStart(2,'0')}`;
+    }
+    // DD/MM/YYYY or DD-MM-YYYY
+    const m3 = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+    if (m3) return `${m3[3]}-${m3[2].padStart(2,'0')}-${m3[1].padStart(2,'0')}`;
     return null;
   };
   const toInt  = v => { const n = parseInt(v); return isNaN(n) ? null : n; };
