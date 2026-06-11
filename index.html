@@ -874,7 +874,7 @@ var SAMPLE = [
   {id:'r020',platform:'Traveloka',date:'2026-04-22',rating:3,booking:'BK-10040',room:'204',roomType:'Superior Room',text:'The room air conditioner was set to cool but was actually blowing warm air. Called engineering who came quickly and said they fixed it but it started doing the same thing again after an hour. Had an uncomfortable night.',sentiment:'Neutral',category:'Room Comfort & Quality',subcategory:'HVAC',severity:4,maintFlag:true,cleanFlag:false,staffMentioned:'',action:'Replace AC thermostat and inspect refrigerant levels for Room 204. Follow up same day to confirm fix is permanent.',resolutionStatus:'In Progress',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'Thermostat replaced. Refrigerant topped up. Monitoring.',isSample:true}
 ];
 
-var CACHE_KEY='hoi_reviews_v46', SRC_KEY='hoi_source_v46';
+var CACHE_KEY='hoi_reviews_v47', SRC_KEY='hoi_source_v47';
 var State={reviews:[],source:'sample',fileName:null,uploadedAt:null,alertFilter:'all'};
 var RevPage={current:0,perPage:10};
 
@@ -1261,10 +1261,10 @@ function renderOverview(){
         'Percentage of reviews classified as positive. Higher is better. Above 60% indicates healthy guest experience.','positive')+
     kpi('Negative Sentiment',negPct+'%',neg+' negative reviews','var(--red)','↓',
         'Percentage of reviews classified as negative. Lower is better. Above 20% signals systemic operational issues.','negative')+
-    kpi('Maint. Flags',maintN,'Rooms need attention','var(--amber)','◈',
-        'Reviews flagged for engineering follow-up (broken AC, plumbing, electrical, etc). Click to list the affected rooms.','maint')+
-    kpi('Cleaning Flags',cleanN,'Housekeeping alerts','var(--teal)','◇',
-        'Reviews flagged for housekeeping follow-up (dirt, dust, mold, hygiene issues). Click to list the affected rooms.','clean')+
+    kpi('Maint. Flags',maintN,'Across all reviews','var(--amber)','◈',
+        'Total reviews that mention a physical/engineering issue (AC, plumbing, doors, windows etc). This is a cumulative count — not a to-do list. Resolve the issue by updating the alert status on the Alerts tab. Click to see the flagged reviews.','maint')+
+    kpi('Cleaning Flags',cleanN,'Across all reviews','var(--teal)','◇',
+        'Total reviews that mention a housekeeping or cleanliness issue. Cumulative — stays counted even after the issue is resolved. Use the Alerts tab to track resolution. Click to see the flagged reviews.','clean')+
     kpi('Open Issues',open,'Unresolved alerts','var(--red)','⚠',
         'Number of issues still awaiting resolution. Should trend downward week-over-week. Click to list them.','open')+
     kpi('Satisfaction Score',satScore,'Positive minus Negative %','var(--blue)','◑',
@@ -2176,8 +2176,8 @@ function renderStaff(){
   var srevs=State.reviews.filter(function(r){return r.staffMentioned;}).slice(0,8);
   document.getElementById('staffReviews').innerHTML=srevs.map(function(r){
     return '<div class="rev-card">'+
-      '<div class="rev-hd"><div style="display:flex;gap:6px;align-items:center"><span class="badge badge-purple">👤 '+esc(r.staffMentioned)+'</span><span class="badge '+getSentClass(r.sentiment)+'">'+esc(r.sentiment)+'</span></div>'+
-      '<div style="font-size:12px;color:var(--t3)">Room '+esc(r.room)+' • '+esc(DateU.fmt(r.checkInDate||r.date))+'</div></div>'+
+      '<div class="rev-hd"><div style="display:flex;gap:6px;align-items:center"><span class="badge badge-purple">'+esc(r.staffMentioned)+'</span><span class="badge '+getSentClass(r.sentiment)+'">'+esc(r.sentiment)+'</span></div>'+
+      '<div style="font-size:12px;color:var(--t3);font-family:var(--fn-mono)">'+esc(r.booking||'—')+'</div></div>'+
       '<div class="rev-text">'+esc(r.text)+'</div></div>';
   }).join('');
 }
