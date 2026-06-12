@@ -542,8 +542,11 @@ body.admin-mode .admin-badge{display:inline-flex}
   .hc:nth-child(-n+5) .hc-pop{bottom:auto;top:calc(100% + 8px)}
   .hc:nth-child(-n+5) .hc-pop::after{top:auto;bottom:100%;border-top-color:transparent;border-bottom-color:var(--bg5)}
   /* Reviews filter bar: stack cleanly */
-  .filter-bar{flex-direction:column;align-items:stretch;gap:6px}
-  .finput,.fselect,.fbtn{width:100%;font-size:13px;padding:9px 11px;min-height:38px}
+  .filter-bar{display:grid;grid-template-columns:1fr 1fr;gap:6px;align-items:stretch}
+  .filter-bar .finput{grid-column:1 / -1;width:100%!important;max-width:none!important;min-width:0!important;font-size:13px;padding:8px 11px;min-height:36px}
+  .filter-bar .fselect{width:100%;font-size:12px;padding:8px 9px;min-height:36px;min-width:0}
+  .filter-bar #revSort{grid-column:1 / -1}
+  .filter-bar .fbtn{grid-column:1 / -1;width:100%;font-size:13px;padding:8px 11px;min-height:36px}
   /* Review cards */
   .rev-card{padding:11px}
   .rev-hd{flex-wrap:wrap}
@@ -775,7 +778,7 @@ body.admin-mode .admin-badge{display:inline-flex}
   <div class="grid-3" id="roomKpis"></div>
   <div class="grid-2">
     <div class="card">
-      <div class="card-hd"><span class="card-title">Rooms Requiring Attention</span></div>
+      <div class="card-hd"><div><span class="card-title">Rooms Requiring Attention</span><span class="info tip-below" data-tip="Every room with at least one issue (1+ complaint, maintenance, or cleaning flag), ranked by severity. This lists MORE rooms than the Critical Rooms count above, because that count only includes rooms with 2+ of a single issue type. Maintenance is weighted heaviest in the ranking.">i</span></div></div>
       <div class="tbl-wrap"><table><thead><tr><th>Room</th><th>Type</th><th>Complaints</th><th>Maint</th><th>Clean</th><th>Avg Rating</th><th class="hide-mobile">Last Review</th></tr></thead><tbody id="roomAlertTbl"></tbody></table></div>
     </div>
     <div class="card">
@@ -964,7 +967,7 @@ var SAMPLE = [
   {id:'r020',platform:'Traveloka',date:'2026-04-22',rating:3,booking:'BK-10040',room:'204',roomType:'Superior Room',text:'The room air conditioner was set to cool but was actually blowing warm air. Called engineering who came quickly and said they fixed it but it started doing the same thing again after an hour. Had an uncomfortable night.',sentiment:'Neutral',category:'Room Comfort & Quality',subcategory:'HVAC',severity:4,maintFlag:true,cleanFlag:false,staffMentioned:'',action:'Replace AC thermostat and inspect refrigerant levels for Room 204. Follow up same day to confirm fix is permanent.',resolutionStatus:'In Progress',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'Thermostat replaced. Refrigerant topped up. Monitoring.',isSample:true}
 ];
 
-var CACHE_KEY='hoi_reviews_v52', SRC_KEY='hoi_source_v52';
+var CACHE_KEY='hoi_reviews_v53', SRC_KEY='hoi_source_v53';
 var State={reviews:[],source:'sample',fileName:null,uploadedAt:null,alertFilter:'all'};
 var RevPage={current:0,perPage:10};
 
@@ -1500,8 +1503,10 @@ function renderOverview(){
   document.getElementById('alertSummary').innerHTML=criticals.length?
     '<div style="font-size:11px;color:var(--t3);margin-bottom:8px">'+alertLabel+' · showing '+Math.min(5,criticals.length)+' of '+criticals.length+'</div>'+
     criticals.slice(0,5).map(function(r){
-      // Prefer CSV-provided complaint summary; fall back to AI; then to category
-      var complaintText=r.complaintSummary||AI.complaintSummary(r.text)||esc(r.subcategory||r.category||'Issue reported');
+      // Use AI-classified data from the database; only fall back to category if absent.
+      var complaintText=r.complaintSummary&&r.complaintSummary.trim()?r.complaintSummary.trim():
+        (r.subcategory&&r.subcategory.trim()&&r.subcategory.toLowerCase()!=='general'?r.subcategory.trim():
+        esc(r.category||'Issue reported'));
       var sevN=parseInt(r.severity)||3;
       return '<div style="display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--bd)">'+
         '<span class="sev '+getSevClass(sevN)+'" style="flex-shrink:0">'+sevN+'</span>'+
@@ -1718,9 +1723,9 @@ function renderRooms(){
   var totalClean=rooms.reduce(function(a,b){return a+b.clean;},0);
   var criticalRooms=rooms.filter(function(r){return r.neg>=2||r.maint>=2||r.clean>=2;}).length;
   document.getElementById('roomKpis').innerHTML=
-    '<div class="stat"><div class="stat-label">Rooms Tracked</div><div class="stat-val">'+rooms.length+'</div><div class="stat-sub">Unique rooms in data</div></div>'+
-    '<div class="stat"><div class="stat-label">Critical Rooms</div><div class="stat-val" style="color:var(--red)">'+criticalRooms+'</div><div class="stat-sub">Multiple complaints</div></div>'+
-    '<div class="stat"><div class="stat-label">Maint Issues</div><div class="stat-val" style="color:var(--amber)">'+totalMaint+'</div><div class="stat-sub">Flagged reviews</div></div>';
+    '<div class="stat" style="cursor:pointer" onclick="drillRoomKpi(\'tracked\')"><div class="stat-label">Rooms Tracked<span class="info tip-below" data-tip="How many unique rooms appear anywhere in your review data. Click to see the full list.">i</span></div><div class="stat-val">'+rooms.length+'</div><div class="stat-sub">Unique rooms in data</div></div>'+
+    '<div class="stat" style="cursor:pointer" onclick="drillRoomKpi(\'critical\')"><div class="stat-label">Critical Rooms<span class="info tip-below" data-tip="Rooms with 2 or more of any single issue type (2+ complaints, OR 2+ maintenance flags, OR 2+ cleaning flags). These are the genuinely repeat-problem rooms. The table below shows ALL rooms with even one issue, so it lists more rooms than this count — this number is the subset that crosses the 2+ threshold. Click to see which.">i</span></div><div class="stat-val" style="color:var(--red)">'+criticalRooms+'</div><div class="stat-sub">2+ of one issue type</div></div>'+
+    '<div class="stat" style="cursor:pointer" onclick="drillRoomKpi(\'maint\')"><div class="stat-label">Maint Issues<span class="info tip-below" data-tip="Total reviews across all rooms flagged for maintenance. Cumulative count, not a to-do list. Click to see which rooms.">i</span></div><div class="stat-val" style="color:var(--amber)">'+totalMaint+'</div><div class="stat-sub">Flagged reviews</div></div>';
   
   var alertRooms=rooms.filter(function(r){return r.neg>0||r.maint>0||r.clean>0;}).sort(function(a,b){return(b.neg+b.maint*2+b.clean)-(a.neg+a.maint*2+a.clean);}).slice(0,10);
   document.getElementById('roomAlertTbl').innerHTML=alertRooms.map(function(r){
@@ -1805,29 +1810,13 @@ var A={
     this.render();
   },
   getComplaint:function(r){
-    var text=r.text||'';
-    var lower=text.toLowerCase();
-    if(lower.indexOf('ac')>-1||lower.indexOf('air conditioning')>-1||lower.indexOf('rattl')>-1)return'Air conditioning noisy / faulty';
-    if(lower.indexOf('drip')>-1||lower.indexOf('dripping')>-1)return'AC unit dripping water';
-    if(lower.indexOf('mold')>-1||lower.indexOf('mould')>-1||lower.indexOf('damp smell')>-1)return'Mold / damp smell detected';
-    if(lower.indexOf('drain')>-1&&lower.indexOf('block')>-1)return'Blocked bathroom drain';
-    if(lower.indexOf('water pressure')>-1||lower.indexOf('weak')>-1&&lower.indexOf('shower')>-1)return'Weak water pressure in shower';
-    if(lower.indexOf('hot water')>-1&&(lower.indexOf('slow')>-1||lower.indexOf('long time')>-1))return'Slow hot water delivery';
-    if(lower.indexOf('dust')>-1)return'Excessive dust — deep clean required';
-    if(lower.indexOf('dirty')>-1&&lower.indexOf('tile')>-1)return'Dirty bathroom tiles / stains';
-    if(lower.indexOf('cockroach')>-1||lower.indexOf('pest')>-1||lower.indexOf('bug')>-1)return'Pest sighting (cockroach / insects)';
-    if(lower.indexOf('mattress')>-1||lower.indexOf('sag')>-1)return'Uncomfortable / sagging mattress';
-    if(lower.indexOf('pillow')>-1&&lower.indexOf('flat')>-1)return'Flat / unsupportive pillows';
-    if(lower.indexOf('elevator')>-1||lower.indexOf('lift')>-1)return'Elevator out of service / slow';
-    if(lower.indexOf('gym')>-1&&(lower.indexOf('broken')>-1||lower.indexOf('out of order')>-1))return'Gym equipment out of service';
-    if(lower.indexOf('tv')>-1&&lower.indexOf('remote')>-1)return'TV remote not functioning';
-    if(lower.indexOf('fan')>-1&&lower.indexOf('nois')>-1)return'Noisy bathroom extractor fan';
-    if(lower.indexOf('kettle')>-1||lower.indexOf('limescale')>-1)return'Limescale in kettle / appliances';
-    if(lower.indexOf('switch')>-1&&lower.indexOf('not working')>-1)return'Faulty electrical switch';
-    if(lower.indexOf('warm air')>-1)return'AC blowing warm air';
-    if(lower.indexOf('smell')>-1||lower.indexOf('musty')>-1)return'Musty / unpleasant room odour';
-    if(r.subcategory)return r.subcategory+' issue reported';
-    return'Operational complaint lodged';
+    // Use the AI-classified data from the database — NOT keyword guessing from raw text.
+    // (The old keyword version matched "ac" inside words like "access"/"place" and
+    // mislabelled everything as an AC fault.)
+    if(r.complaintSummary&&r.complaintSummary.trim())return r.complaintSummary.trim();
+    if(r.subcategory&&r.subcategory.trim()&&r.subcategory.toLowerCase()!=='general')return r.subcategory.trim();
+    if(r.category&&r.category.trim())return r.category.trim();
+    return 'Issue reported — see review';
   },
   getRootCause:function(r){
     var c=this.getComplaint(r);
@@ -3918,6 +3907,36 @@ window.A = A;
 window.generateWeeklyReport = generateWeeklyReport;
 window.openReport = openReport;
 window.drillKpi = drillKpi;
+
+// ── ROOMS-TAB KPI DRILL-DOWN ──────────────────────────────────────────────────
+function drillRoomKpi(key){
+  var rmap=Agg.byRoom(State.reviews);
+  var rooms=Object.values(rmap);
+  var list,title;
+  if(key==='tracked'){title='All Rooms Tracked';list=rooms.slice().sort(function(a,b){return (b.neg+b.maint+b.clean)-(a.neg+a.maint+a.clean);});}
+  else if(key==='critical'){title='Critical Rooms (2+ of one issue type)';list=rooms.filter(function(r){return r.neg>=2||r.maint>=2||r.clean>=2;}).sort(function(a,b){return (b.neg+b.maint*2+b.clean)-(a.neg+a.maint*2+a.clean);});}
+  else if(key==='maint'){title='Rooms with Maintenance Flags';list=rooms.filter(function(r){return r.maint>0;}).sort(function(a,b){return b.maint-a.maint;});}
+  else{title='Rooms';list=rooms;}
+
+  var body=document.getElementById('modalBody');
+  document.getElementById('modalTitle').textContent=title+' ('+list.length+')';
+  if(!list.length){
+    body.innerHTML='<div class="empty"><span>✓</span>No rooms in this category.</div>';
+  }else{
+    body.innerHTML='<div class="tbl-wrap"><table><thead><tr><th>Room</th><th>Type</th><th>Complaints</th><th>Maint</th><th>Clean</th><th>Avg Rating</th></tr></thead><tbody>'+
+      list.map(function(r){
+        var avgR=Math.round(r.ratingSum/r.total*10)/10;
+        return '<tr><td><strong style="color:var(--t1)">'+esc(r.room)+'</strong></td>'+
+          '<td><span class="badge badge-gray">'+esc(r.type)+'</span></td>'+
+          '<td>'+(r.neg?'<span style="color:var(--red);font-weight:600">'+r.neg+'</span>':'<span style="color:var(--t4)">0</span>')+'</td>'+
+          '<td>'+(r.maint?'<span class="badge badge-red">'+r.maint+'</span>':'<span style="color:var(--t4)">—</span>')+'</td>'+
+          '<td>'+(r.clean?'<span class="badge badge-amber">'+r.clean+'</span>':'<span style="color:var(--t4)">—</span>')+'</td>'+
+          '<td><span class="stars" style="font-size:11px">'+stars(avgR)+'</span> '+avgR+'</td></tr>';
+      }).join('')+'</tbody></table></div>';
+  }
+  document.getElementById('reviewModal').classList.add('open');
+}
+window.drillRoomKpi = drillRoomKpi;
 window.renderDuplicateCheck = renderDuplicateCheck;
 })();
 </script>
