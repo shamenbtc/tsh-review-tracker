@@ -201,20 +201,17 @@ input.valid{border-color:var(--green)!important}
           <span class="field-err" id="err-nightsStayed">Must be between 1 and 60 nights.</span>
         </div>
       </div>
-      <div class="fr2">
-        <div class="field"><label>Review Month <span class="req">★</span></label><input type="text" id="reviewMonth" placeholder="e.g. May 2026"></div>
-        <div class="field"><label>Platform <span class="req">★</span></label>
-          <select id="platform">
-            <option value="">Select platform</option>
-            <option>Agoda</option>
-            <option>Booking.com</option>
-            <option>Expedia</option>
-            <option>Google Reviews</option>
-            <option>Tripadvisor</option>
-            <option>Traveloka/Tiket.com</option>
-            <option>Trip.com</option>
-          </select>
-        </div>
+      <div class="field"><label>Platform <span class="req">★</span></label>
+        <select id="platform">
+          <option value="">Select platform</option>
+          <option>Agoda</option>
+          <option>Booking.com</option>
+          <option>Expedia</option>
+          <option>Google Reviews</option>
+          <option>Tripadvisor</option>
+          <option>Traveloka/Tiket.com</option>
+          <option>Trip.com</option>
+        </select>
       </div>
     </div>
 
@@ -235,10 +232,10 @@ input.valid{border-color:var(--green)!important}
             <option>Standard Twin</option>
             <option>Attic Room</option>
             <option>Sultan Room</option>
-            <option>Sultan Loft</option>
             <option>Skylight Room</option>
             <option>Skylight Loft</option>
             <option>Puteri Room</option>
+            <option>Sultan Loft</option>
           </select>
           <div class="hint" id="roomTypeHint" style="display:none;color:var(--green)">✓ Auto-filled from room number</div>
         </div>
@@ -478,7 +475,7 @@ function conf(level, label) {
 
 function validate() {
   const req = [
-    ['checkinDate','Check-in Date'],['reviewMonth','Review Month'],
+    ['checkinDate','Check-in Date'],
     ['platform','Platform'],['bookingNumber','Booking Number'],
     ['roomNumber','Room Number'],['roomType','Room Type'],
     ['rating','Rating'],['reviewText','Review Text']
@@ -516,10 +513,6 @@ function fmtDate(iso) {
 document.getElementById('checkinDate').addEventListener('change', function() {
   V.checkin(this);
   if (!this.value) return;
-  const d = new Date(this.value + 'T00:00:00');
-  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const rm = document.getElementById('reviewMonth');
-  if (!rm.value) rm.value = months[d.getMonth()] + ' ' + d.getFullYear();
   if (document.getElementById('nightsStayed').value) calcCheckout();
   else if (document.getElementById('checkoutDate').value) calcNights();
 });
@@ -665,7 +658,7 @@ async function submitToSheet() {
     fmtDate(document.getElementById('checkinDate').value),           // A
     fmtDate(document.getElementById('checkoutDate').value),          // B
     document.getElementById('nightsStayed').value || '',             // C
-    document.getElementById('reviewMonth').value,                    // D
+    '',                                                              // D (Review Month — no longer collected)
     document.getElementById('platform').value,                       // E
     document.getElementById('bookingNumber').value,                  // F
     document.getElementById('roomNumber').value,                     // G
@@ -778,10 +771,6 @@ function resetForm() {
   document.getElementById('p1').style.display = 'block';
   setStep(1); hideStatus();
   document.getElementById('pb').style.display = 'none';
-  // Reset review month to current
-  const now = new Date();
-  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  document.getElementById('reviewMonth').value = months[now.getMonth()] + ' ' + now.getFullYear();
   renderRecent();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -1139,9 +1128,6 @@ function populateCountries() {
 (function init() {
   const t = localStorage.getItem('intake_theme');
   if (t) { document.documentElement.setAttribute('data-theme', t); document.getElementById('themeBtn').textContent = t==='dark'?'☀':'☾'; }
-  const now = new Date();
-  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  document.getElementById('reviewMonth').value = months[now.getMonth()] + ' ' + now.getFullYear();
   populateCountries();
   updateSubs(); renderRecent();
 })();
