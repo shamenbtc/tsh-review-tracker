@@ -52,7 +52,7 @@ export default async function handler(req, res) {
     check_in_date:       toDate(row[0]),
     check_out_date:      toDate(row[1]),
     nights_stayed:       toInt(row[2]),
-    review_month:        clean(row[3]) || null,
+    // row[3] = Review Month — no longer collected, skip
     platform:            clean(row[4]) || null,
     booking_number:      clean(row[5]) || null,
     room_number:         clean(row[6]) || null,
