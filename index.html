@@ -970,7 +970,7 @@ var SAMPLE = [
   {id:'r020',platform:'Traveloka',date:'2026-04-22',rating:3,booking:'BK-10040',room:'204',roomType:'Superior Room',text:'The room air conditioner was set to cool but was actually blowing warm air. Called engineering who came quickly and said they fixed it but it started doing the same thing again after an hour. Had an uncomfortable night.',sentiment:'Neutral',category:'Room Comfort & Quality',subcategory:'HVAC',severity:4,maintFlag:true,cleanFlag:false,staffMentioned:'',action:'Replace AC thermostat and inspect refrigerant levels for Room 204. Follow up same day to confirm fix is permanent.',resolutionStatus:'In Progress',resolvedDate:'',assignedDept:'Engineering',assignedStaff:'',resolutionNotes:'Thermostat replaced. Refrigerant topped up. Monitoring.',isSample:true}
 ];
 
-var CACHE_KEY='hoi_reviews_v54', SRC_KEY='hoi_source_v54';
+var CACHE_KEY='hoi_reviews_v55', SRC_KEY='hoi_source_v55';
 var State={reviews:[],source:'sample',fileName:null,uploadedAt:null,alertFilter:'all'};
 var RevPage={current:0,perPage:10};
 
@@ -1229,17 +1229,6 @@ var Agg={
     var keys=Object.keys(map).sort();
     return{keys:keys,map:map};
   },
-  // Reviewed-month tally (when guests posted the review online).
-  // Internal-only metric — shown in import/stats panel, not used for trend charts.
-  byReviewedMonth:function(reviews){
-    var map={};
-    reviews.forEach(function(r){
-      var rm=(r.reviewedMonth||'').trim();
-      if(!rm)return;
-      map[rm]=(map[rm]||0)+1;
-    });
-    return map;
-  },
   byRoom:function(reviews){
     var map={};
     reviews.forEach(function(r){
@@ -1410,8 +1399,6 @@ function renderOverview(){
     if(!mkeys.length){
       tabEl.innerHTML='<div class="empty" style="padding:20px"><span>📅</span>No check-in months to tabulate</div>';
     }else{
-      var revMonthMap=Agg.byReviewedMonth(rv);
-
       var totalAll=0,posAll=0,negAll=0,neuAll=0,ratingSumAll=0,ratingCountAll=0;
       var rowsHtml=mkeys.map(function(k){
         var m=mdata.map[k];
@@ -1589,7 +1576,7 @@ var R={
       if(dFrom&&rDate<dFrom)return false;
       if(dTo&&rDate>dTo)return false;
       if(q){
-        var haystack=(r.text+' '+(r.booking||'')+' '+(r.room||'')+' '+r.platform+' '+(r.staffMentioned||'')+' '+(r.subcategory||'')+' '+(r.reviewedMonth||'')+' '+(r.nationality||'')+' '+(r.roomType||'')+' '+(r.category||'')).toLowerCase();
+        var haystack=(r.text+' '+(r.booking||'')+' '+(r.room||'')+' '+r.platform+' '+(r.staffMentioned||'')+' '+(r.subcategory||'')+' '+(r.nationality||'')+' '+(r.roomType||'')+' '+(r.category||'')).toLowerCase();
         if(haystack.indexOf(q)===-1)return false;
       }
       return true;
@@ -1656,7 +1643,7 @@ var R={
             '<span class="sev '+sevC+'">'+(r.severity||'—')+'</span>'+
             '<div>'+
               '<div style="font-size:14px;font-weight:600;color:var(--t1)">Room '+esc(r.room||'?')+' &nbsp;<span style="font-size:12px;font-weight:400;color:var(--t3)">'+esc(r.roomType||'')+'</span></div>'+
-              '<div style="font-size:12px;color:var(--t3);margin-top:1px">'+esc(r.booking||'—')+' • Check-in: '+esc(DateU.fmt(r.checkInDate||r.date)||'—')+(r.nightsStayed?' ('+esc(r.nightsStayed)+' night'+(r.nightsStayed!='1'?'s':'')+')':'')+(r.reviewedMonth?' • Reviewed: '+esc(r.reviewedMonth):'')+(r.nationality?' • '+esc(r.nationality):'')+(r.repeatGuest&&(r.repeatGuest||'').toLowerCase()==='yes'?' • <span style="color:var(--purple);font-weight:600">⟳ Repeat guest</span>':'')+'</div>'+
+              '<div style="font-size:12px;color:var(--t3);margin-top:1px">'+esc(r.booking||'—')+' • Check-in: '+esc(DateU.fmt(r.checkInDate||r.date)||'—')+(r.nightsStayed?' ('+esc(r.nightsStayed)+' night'+(r.nightsStayed!='1'?'s':'')+')':'')+(r.nationality?' • '+esc(r.nationality):'')+(r.repeatGuest&&(r.repeatGuest||'').toLowerCase()==='yes'?' • <span style="color:var(--purple);font-weight:600">⟳ Repeat guest</span>':'')+'</div>'+
             '</div>'+
           '</div>'+
           '<div style="text-align:right">'+
